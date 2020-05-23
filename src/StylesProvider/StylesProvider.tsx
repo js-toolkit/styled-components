@@ -20,8 +20,6 @@ export default function StylesProvider({
   ...rest
 }: StylesProviderProps): JSX.Element {
   const jss = useMemo(() => {
-    const defaultPlugins = presetPlugins();
-
     let insertionPointRef = insertionPoint;
 
     if (!insertionPointRef && injectFirst && typeof window !== 'undefined') {
@@ -38,7 +36,7 @@ export default function StylesProvider({
     }
 
     return create({
-      plugins: createPlugins ? createPlugins() : defaultPlugins,
+      plugins: createPlugins ? createPlugins() : presetPlugins(),
       ...(Renderer ? { Renderer } : undefined),
       ...(insertionPointRef ? { insertionPoint: insertionPointRef } : undefined),
       ...(id ? { id } : undefined),

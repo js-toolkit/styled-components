@@ -1,34 +1,32 @@
 import type { JssOptions, Plugin } from 'jss';
-// import ruleValueFunction from 'jss-plugin-rule-value-function';
-// import ruleValueObservable from 'jss-plugin-rule-value-observable';
-// import template from 'jss-plugin-template';
-// import global from 'jss-plugin-global';
-// import extend from 'jss-plugin-extend';
-// import nested from 'jss-plugin-nested';
-// import compose from 'jss-plugin-compose';
-// import camelCase from 'jss-plugin-camel-case';
-// import defaultUnit from 'jss-plugin-default-unit';
-// import expand from 'jss-plugin-expand';
-// import vendorPrefixer from 'jss-plugin-vendor-prefixer';
-// import propsSort from 'jss-plugin-props-sort';
 
 type PluginCreator = () => Plugin;
 
+function getInstalledPlugin(name: string): PluginCreator | undefined {
+  try {
+    // eslint-disable-next-line import/no-dynamic-require, global-require, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
+    return require(name).default();
+  } catch (ex) {
+    console.error((ex as Error).message || ex);
+    return undefined;
+  }
+}
+
 export const Plugins = {
-  /* eslint-disable global-require, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
-  ruleValueFunction: (): PluginCreator => require('jss-plugin-rule-value-function').default(),
-  ruleValueObservable: (): PluginCreator => require('jss-plugin-rule-value-observable').default(),
-  template: (): PluginCreator => require('jss-plugin-template').default(),
-  global: (): PluginCreator => require('jss-plugin-global').default(),
-  extend: (): PluginCreator => require('jss-plugin-extend').default(),
-  nested: (): PluginCreator => require('jss-plugin-nested').default(),
-  compose: (): PluginCreator => require('jss-plugin-compose').default(),
-  camelCase: (): PluginCreator => require('jss-plugin-camel-case').default(),
-  defaultUnit: (): PluginCreator => require('jss-plugin-default-unit').default(),
-  expand: (): PluginCreator => require('jss-plugin-expand').default(),
-  vendorPrefixer: (): PluginCreator => require('jss-plugin-vendor-prefixer').default(),
-  propsSort: (): PluginCreator => require('jss-plugin-props-sort').default(),
-  /* eslint-enable */
+  ruleValueFunction: (): PluginCreator | undefined =>
+    getInstalledPlugin('jss-plugin-rule-value-function'),
+  ruleValueObservable: (): PluginCreator | undefined =>
+    getInstalledPlugin('jss-plugin-rule-value-observable'),
+  template: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-template'),
+  global: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-global'),
+  extend: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-extend'),
+  nested: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-nested'),
+  compose: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-compose'),
+  camelCase: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-camel-case'),
+  defaultUnit: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-default-unit'),
+  expand: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-expand'),
+  vendorPrefixer: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-vendor-prefixer'),
+  propsSort: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-props-sort'),
 };
 
 export function getSortOrder(): Record<keyof typeof Plugins, number> {
@@ -69,5 +67,5 @@ export default function presetPlugins(options: PresetOptions = {}): JssOptions['
 
   return plugins
     .sort((a, b) => sortOrderMap[a] - sortOrderMap[b])
-    .map((plugin) => (Plugins[plugin] as PluginCreator)());
+    .map((plugin) => (Plugins[plugin] as PluginCreator)() ?? '');
 }

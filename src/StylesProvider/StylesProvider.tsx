@@ -8,11 +8,11 @@ import presetPlugins from '../presetPlugins';
 export interface StylesProviderProps
   extends MuiStylesProviderProps,
     Partial<Pick<JssOptions, 'Renderer' | 'insertionPoint' | 'id'>> {
-  createPlugins?: () => JssOptions['plugins'];
+  plugins?: () => JssOptions['plugins'];
 }
 
 export default function StylesProvider({
-  createPlugins = presetPlugins,
+  plugins = presetPlugins,
   Renderer,
   insertionPoint,
   id,
@@ -36,12 +36,12 @@ export default function StylesProvider({
     }
 
     return create({
-      plugins: createPlugins(),
+      plugins: plugins(),
       ...(Renderer ? { Renderer } : undefined),
       ...(insertionPointRef ? { insertionPoint: insertionPointRef } : undefined),
       ...(id ? { id } : undefined),
     });
-  }, [Renderer, createPlugins, id, injectFirst, insertionPoint]);
+  }, [Renderer, plugins, id, injectFirst, insertionPoint]);
 
   return <MuiStylesProvider jss={jss} {...rest} />;
 }

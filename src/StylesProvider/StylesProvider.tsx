@@ -12,7 +12,7 @@ export interface StylesProviderProps
 }
 
 export default function StylesProvider({
-  createPlugins,
+  createPlugins = presetPlugins,
   Renderer,
   insertionPoint,
   id,
@@ -36,7 +36,7 @@ export default function StylesProvider({
     }
 
     return create({
-      plugins: createPlugins ? createPlugins() : presetPlugins(),
+      plugins: createPlugins(),
       ...(Renderer ? { Renderer } : undefined),
       ...(insertionPointRef ? { insertionPoint: insertionPointRef } : undefined),
       ...(id ? { id } : undefined),

@@ -1,32 +1,32 @@
 import type { JssOptions, Plugin } from 'jss';
+import ruleValueFunction from 'jss-plugin-rule-value-function';
+import ruleValueObservable from 'jss-plugin-rule-value-observable';
+import template from 'jss-plugin-template';
+import global from 'jss-plugin-global';
+import extend from 'jss-plugin-extend';
+import nested from 'jss-plugin-nested';
+import compose from 'jss-plugin-compose';
+import camelCase from 'jss-plugin-camel-case';
+import defaultUnit from 'jss-plugin-default-unit';
+import expand from 'jss-plugin-expand';
+import vendorPrefixer from 'jss-plugin-vendor-prefixer';
+import propsSort from 'jss-plugin-props-sort';
 
-type PluginCreator = () => Plugin;
-
-function getInstalledPlugin(name: string): PluginCreator | undefined {
-  try {
-    // eslint-disable-next-line import/no-dynamic-require, global-require, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
-    return require(name).default();
-  } catch (ex) {
-    console.error((ex as Error).message || ex);
-    return undefined;
-  }
-}
+export type PluginCreator = () => Plugin;
 
 export const Plugins = {
-  ruleValueFunction: (): PluginCreator | undefined =>
-    getInstalledPlugin('jss-plugin-rule-value-function'),
-  ruleValueObservable: (): PluginCreator | undefined =>
-    getInstalledPlugin('jss-plugin-rule-value-observable'),
-  template: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-template'),
-  global: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-global'),
-  extend: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-extend'),
-  nested: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-nested'),
-  compose: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-compose'),
-  camelCase: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-camel-case'),
-  defaultUnit: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-default-unit'),
-  expand: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-expand'),
-  vendorPrefixer: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-vendor-prefixer'),
-  propsSort: (): PluginCreator | undefined => getInstalledPlugin('jss-plugin-props-sort'),
+  ruleValueFunction: (): Plugin => ruleValueFunction(),
+  ruleValueObservable: (): Plugin => ruleValueObservable(),
+  template: (): Plugin => template(),
+  global: (): Plugin => global(),
+  extend: (): Plugin => extend(),
+  nested: (): Plugin => nested(),
+  compose: (): Plugin => compose(),
+  camelCase: (): Plugin => camelCase(),
+  defaultUnit: (): Plugin => defaultUnit(),
+  expand: (): Plugin => expand(),
+  vendorPrefixer: (): Plugin => vendorPrefixer(),
+  propsSort: (): Plugin => propsSort(),
 };
 
 export function getSortOrder(): Record<keyof typeof Plugins, number> {

@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => {
         textAlign: 'center',
         backgroundColor: 'unset',
         color: 'inherit',
+        padding: 0,
         ...buttonTheme.root,
 
         '&:disabled': {

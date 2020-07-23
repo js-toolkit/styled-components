@@ -1,6 +1,6 @@
 {
   "name": "@vlazh/styled-components",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Styled react components powered by JSS via @material-ui/styles",
   "author": "Vladimir Zhukov",
   "license": "MIT",

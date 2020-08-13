@@ -27,67 +27,53 @@ export type LoadableFlexProps<
     }
 >;
 
-const useStyles = makeStyles((theme: Theme) => {
-  const loadingZIndex = 1000;
-  const loadableFlexTheme = theme.rc?.LoadableFlex ?? {};
-  const loadingTransition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+type MakeStylesProps = LoadableStyleProps & { showLoading?: boolean };
 
-  return {
-    root: ({
-      disableOnLoading,
-      backdrop,
-      blur,
-      loading,
-      showLoading,
-      transition,
-    }: LoadableStyleProps & { showLoading?: boolean }) => ({
-      position: 'relative',
-      pointerEvents: loading && disableOnLoading ? 'none' : undefined,
-      ...loadableFlexTheme.root,
+const useStyles = makeStyles(
+  (theme: Theme) => {
+    const loadingZIndex = 1000;
+    const loadableFlexTheme = theme.rc?.LoadableFlex ?? {};
+    const loadingTransition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-      // Backdrop background
-      ...(backdrop
-        ? {
-            '&::before': {
-              content: loading || showLoading ? '""' : 'unset', // Show backdrop
-              position: 'absolute',
-              top: '0',
-              left: '0',
-              width: '100%',
-              height: '100%',
-              borderRadius: 'inherit',
-              backgroundColor: 'rgba(0, 0, 0, 0.25)',
-              zIndex: loadingZIndex,
-              transition: transition ? loadingTransition : undefined,
-              opacity: transition ? (loading ? 1 : 0) : undefined,
-              ...(loadableFlexTheme.root?.['&::before'] as CSSProperties),
-              ...loadableFlexTheme.backdrop,
-            },
-          }
-        : undefined),
+    return {
+      root: {
+        position: 'relative',
+        pointerEvents: ({ loading, disableOnLoading }: MakeStylesProps) =>
+          loading && disableOnLoading ? 'none' : undefined,
+        ...loadableFlexTheme.root,
 
-      ...(blur
-        ? {
-            '& > *:not($spinner)': {
-              filter: 'blur(2px)',
-              ...(loadableFlexTheme.root?.['& > *:not($spinner)'] as CSSProperties),
-            },
-          }
-        : undefined),
-    }),
+        // Backdrop background
+        '&::before': {
+          content: ({ loading, showLoading, backdrop }: MakeStylesProps) =>
+            backdrop && (loading || showLoading) ? '""' : 'unset', // Show/hide backdrop
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          borderRadius: 'inherit',
+          backgroundColor: 'rgba(0, 0, 0, 0.25)',
+          zIndex: loadingZIndex,
+          transition: ({ transition }: MakeStylesProps) =>
+            transition ? loadingTransition : undefined,
+          opacity: ({ loading, transition }: MakeStylesProps) =>
+            transition ? (loading ? 1 : 0) : undefined,
+          ...(loadableFlexTheme.root?.['&::before'] as CSSProperties),
+          ...loadableFlexTheme.backdrop,
+        },
 
-    spinner: ({ spinnerSize, spinnerPosition, loading, transition }: LoadableStyleProps) => {
-      return {
+        '& > *:not($spinner)': {
+          filter: ({ blur }: MakeStylesProps) => (blur ? 'blur(2px)' : undefined),
+          ...(loadableFlexTheme.root?.['& > *:not($spinner)'] as CSSProperties),
+        },
+      },
+
+      spinner: ({ loading, transition, spinnerSize, spinnerPosition }: MakeStylesProps) => ({
         position: 'absolute',
         zIndex: loadingZIndex,
         transition: transition ? loadingTransition : undefined,
         opacity: transition ? (loading ? 1 : 0) : undefined,
         ...loadableFlexTheme.spinner,
-
-        // stretch spinner by size
-        '& > *': {
-          width: '100%',
-        },
 
         // Size
         ...(() => {
@@ -176,12 +162,17 @@ const useStyles = makeStyles((theme: Theme) => {
           }
           return {};
         })(),
-      };
-    },
+      }),
 
-    ring: loadableFlexTheme.ring ?? {},
-  };
-});
+      ring: {
+        // Stretch spinner by size
+        width: '100%',
+        ...loadableFlexTheme.ring,
+      },
+    };
+  },
+  { meta: 'LoadableFlex' }
+);
 
 export default function LoadableFlex<C extends React.ElementType = DefaultComponentType>({
   loading,

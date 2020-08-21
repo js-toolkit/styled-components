@@ -7,23 +7,25 @@ const useStyles = makeStyles((theme: Theme) => {
   const { light: lightTheme, ...defaultTheme } = theme.rc?.Divider ?? {};
 
   return {
-    root: ({ light }: Pick<DividerProps, 'light'>) => ({
-      ...{
-        "&[data-orientation='horizontal']": {
-          height: '1px',
-        },
-
-        "&[data-orientation='vertical']": {
-          width: '1px',
-        },
+    root: {
+      "&[data-orientation='horizontal']": {
+        height: '1px',
       },
 
-      backgroundColor: light
-        ? 'var(--rc--divider-color-light, rgba(255, 255, 255, 0.1))'
-        : 'var(--rc--divider-color, rgba(0, 0, 0, 0.1))',
+      "&[data-orientation='vertical']": {
+        width: '1px',
+      },
+    },
 
-      ...(light ? lightTheme : defaultTheme),
-    }),
+    default: {
+      backgroundColor: 'var(--rc--divider-color, rgba(0, 0, 0, 0.1))',
+      ...defaultTheme,
+    },
+
+    light: {
+      backgroundColor: 'var(--rc--divider-color-light, rgba(255, 255, 255, 0.1))',
+      ...lightTheme,
+    },
   };
 });
 
@@ -37,13 +39,13 @@ export default function Divider<C extends React.ElementType = DefaultComponentTy
   className,
   ...rest
 }: DividerProps<C>): JSX.Element {
-  const css = useStyles({ classes: { root: className }, light });
+  const css = useStyles({ classes: { root: className } });
 
   return (
     <Flex
       column={column}
       shrink={0}
-      className={css.root}
+      className={`${css.root} ${light ? css.light : css.default}`}
       data-orientation={column ? 'vertical' : 'horizontal'}
       {...rest}
     />

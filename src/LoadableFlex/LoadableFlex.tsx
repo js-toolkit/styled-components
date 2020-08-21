@@ -29,150 +29,147 @@ export type LoadableFlexProps<
 
 type MakeStylesProps = LoadableStyleProps & { showLoading?: boolean };
 
-const useStyles = makeStyles(
-  (theme: Theme) => {
-    const loadingZIndex = 1000;
-    const loadableFlexTheme = theme.rc?.LoadableFlex ?? {};
-    const loadingTransition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+const useStyles = makeStyles((theme: Theme) => {
+  const loadingZIndex = 1000;
+  const loadableFlexTheme = theme.rc?.LoadableFlex ?? {};
+  const loadingTransition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-    return {
-      root: {
-        position: 'relative',
-        pointerEvents: ({ loading, disableOnLoading }: MakeStylesProps) =>
-          loading && disableOnLoading ? 'none' : undefined,
-        ...loadableFlexTheme.root,
+  return {
+    root: {
+      position: 'relative',
+      pointerEvents: ({ loading, disableOnLoading }: MakeStylesProps) =>
+        loading && disableOnLoading ? 'none' : undefined,
+      ...loadableFlexTheme.root,
 
-        // Backdrop background
-        '&::before': {
-          content: ({ loading, showLoading, backdrop }: MakeStylesProps) =>
-            backdrop && (loading || showLoading) ? '""' : 'unset', // Show/hide backdrop
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          width: '100%',
-          height: '100%',
-          borderRadius: 'inherit',
-          backgroundColor: 'rgba(0, 0, 0, 0.25)',
-          zIndex: loadingZIndex,
-          transition: ({ transition }: MakeStylesProps) =>
-            transition ? loadingTransition : undefined,
-          opacity: ({ loading, transition }: MakeStylesProps) =>
-            transition ? (loading ? 1 : 0) : undefined,
-          ...(loadableFlexTheme.root?.['&::before'] as CSSProperties),
-          ...loadableFlexTheme.backdrop,
-        },
-
-        '& > *:not($spinner)': {
-          filter: ({ blur }: MakeStylesProps) => (blur ? 'blur(2px)' : undefined),
-          ...(loadableFlexTheme.root?.['& > *:not($spinner)'] as CSSProperties),
-        },
-      },
-
-      spinner: ({ loading, transition, spinnerSize, spinnerPosition }: MakeStylesProps) => ({
+      // Backdrop background
+      '&::before': {
+        content: ({ loading, showLoading, backdrop }: MakeStylesProps) =>
+          backdrop && (loading || showLoading) ? '""' : 'unset', // Show/hide backdrop
         position: 'absolute',
-        zIndex: loadingZIndex,
-        transition: transition ? loadingTransition : undefined,
-        opacity: transition ? (loading ? 1 : 0) : undefined,
-        ...loadableFlexTheme.spinner,
-
-        // Size
-        ...(() => {
-          if (spinnerSize === 'auto') {
-            return {
-              width: 'var(--rc--spinner-size-auto, 5%)',
-              minWidth: '1em',
-              maxWidth: 'var(--rc--spinner-size-auto-maxwidth, calc(50px + (20 * (1vw / 20))))', // flexible size by view port
-              ...loadableFlexTheme.spinnerSizeAuto,
-            };
-          }
-          if (spinnerSize === 'xs') {
-            return {
-              width: 'var(--rc--spinner-size-xs, 1em)',
-              ...loadableFlexTheme.spinnerSizeXS,
-            };
-          }
-          if (spinnerSize === 's') {
-            return {
-              width: 'var(--rc--spinner-size-s, 2em)',
-              ...loadableFlexTheme.spinnerSizeS,
-            };
-          }
-          if (spinnerSize === 'm') {
-            return {
-              width: 'var(--rc--spinner-size-m, 3em)',
-              ...loadableFlexTheme.spinnerSizeM,
-            };
-          }
-          if (spinnerSize === 'l') {
-            return {
-              width: 'var(--rc--spinner-size-l, 4em)',
-              ...loadableFlexTheme.spinnerSizeL,
-            };
-          }
-          if (spinnerSize === 'xl') {
-            return {
-              width: 'var(--rc--spinner-size-xl, 5em)',
-              ...loadableFlexTheme.spinnerSizeXL,
-            };
-          }
-          return {};
-        })(),
-
-        // Position
-        ...(() => {
-          if (spinnerPosition === 'center') {
-            return {
-              left: '50%',
-              top: '50%',
-              translate: '-50% -50%',
-              ...loadableFlexTheme.spinnerPositionCenter,
-            };
-          }
-          if (spinnerPosition === 'top') {
-            return {
-              left: '50%',
-              top: '5%',
-              translate: '-50% 0',
-              ...loadableFlexTheme.spinnerPositionTop,
-            };
-          }
-          if (spinnerPosition === 'left') {
-            return {
-              left: '5%',
-              top: '50%',
-              translate: '0 -50%',
-              ...loadableFlexTheme.spinnerPositionLeft,
-            };
-          }
-          if (spinnerPosition === 'right') {
-            return {
-              right: '5%',
-              top: '50%',
-              translate: '0 -50%',
-              ...loadableFlexTheme.spinnerPositionRight,
-            };
-          }
-          if (spinnerPosition === 'bottom') {
-            return {
-              left: '50%',
-              bottom: '5%',
-              translate: '-50% 0',
-              ...loadableFlexTheme.spinnerPositionBottom,
-            };
-          }
-          return {};
-        })(),
-      }),
-
-      ring: {
-        // Stretch spinner by size
+        top: '0',
+        left: '0',
         width: '100%',
-        ...loadableFlexTheme.ring,
+        height: '100%',
+        borderRadius: 'inherit',
+        backgroundColor: 'rgba(0, 0, 0, 0.25)',
+        zIndex: loadingZIndex,
+        transition: ({ transition }: MakeStylesProps) =>
+          transition ? loadingTransition : undefined,
+        opacity: ({ loading, transition }: MakeStylesProps) =>
+          transition ? (loading ? 1 : 0) : undefined,
+        ...(loadableFlexTheme.root?.['&::before'] as CSSProperties),
+        ...loadableFlexTheme.backdrop,
       },
-    };
-  },
-  { meta: 'LoadableFlex' }
-);
+
+      '& > *:not($spinner)': {
+        filter: ({ blur }: MakeStylesProps) => (blur ? 'blur(2px)' : undefined),
+        ...(loadableFlexTheme.root?.['& > *:not($spinner)'] as CSSProperties),
+      },
+    },
+
+    spinner: ({ loading, transition, spinnerSize, spinnerPosition }: MakeStylesProps) => ({
+      position: 'absolute',
+      zIndex: loadingZIndex,
+      transition: transition ? loadingTransition : undefined,
+      opacity: transition ? (loading ? 1 : 0) : undefined,
+      ...loadableFlexTheme.spinner,
+
+      // Size
+      ...(() => {
+        if (spinnerSize === 'auto') {
+          return {
+            width: 'var(--rc--spinner-size-auto, 5%)',
+            minWidth: '1em',
+            maxWidth: 'var(--rc--spinner-size-auto-maxwidth, calc(50px + (20 * (1vw / 20))))', // flexible size by view port
+            ...loadableFlexTheme.spinnerSizeAuto,
+          };
+        }
+        if (spinnerSize === 'xs') {
+          return {
+            width: 'var(--rc--spinner-size-xs, 1em)',
+            ...loadableFlexTheme.spinnerSizeXS,
+          };
+        }
+        if (spinnerSize === 's') {
+          return {
+            width: 'var(--rc--spinner-size-s, 2em)',
+            ...loadableFlexTheme.spinnerSizeS,
+          };
+        }
+        if (spinnerSize === 'm') {
+          return {
+            width: 'var(--rc--spinner-size-m, 3em)',
+            ...loadableFlexTheme.spinnerSizeM,
+          };
+        }
+        if (spinnerSize === 'l') {
+          return {
+            width: 'var(--rc--spinner-size-l, 4em)',
+            ...loadableFlexTheme.spinnerSizeL,
+          };
+        }
+        if (spinnerSize === 'xl') {
+          return {
+            width: 'var(--rc--spinner-size-xl, 5em)',
+            ...loadableFlexTheme.spinnerSizeXL,
+          };
+        }
+        return {};
+      })(),
+
+      // Position
+      ...(() => {
+        if (spinnerPosition === 'center') {
+          return {
+            left: '50%',
+            top: '50%',
+            translate: '-50% -50%',
+            ...loadableFlexTheme.spinnerPositionCenter,
+          };
+        }
+        if (spinnerPosition === 'top') {
+          return {
+            left: '50%',
+            top: '5%',
+            translate: '-50% 0',
+            ...loadableFlexTheme.spinnerPositionTop,
+          };
+        }
+        if (spinnerPosition === 'left') {
+          return {
+            left: '5%',
+            top: '50%',
+            translate: '0 -50%',
+            ...loadableFlexTheme.spinnerPositionLeft,
+          };
+        }
+        if (spinnerPosition === 'right') {
+          return {
+            right: '5%',
+            top: '50%',
+            translate: '0 -50%',
+            ...loadableFlexTheme.spinnerPositionRight,
+          };
+        }
+        if (spinnerPosition === 'bottom') {
+          return {
+            left: '50%',
+            bottom: '5%',
+            translate: '-50% 0',
+            ...loadableFlexTheme.spinnerPositionBottom,
+          };
+        }
+        return {};
+      })(),
+    }),
+
+    ring: {
+      // Stretch spinner by size
+      width: '100%',
+      ...loadableFlexTheme.ring,
+    },
+  };
+});
 
 export default function LoadableFlex<C extends React.ElementType = DefaultComponentType>({
   loading,

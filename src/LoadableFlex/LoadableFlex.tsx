@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme: Theme) => {
           return {
             left: '50%',
             top: '50%',
-            translate: '-50% -50%',
+            transform: 'translate(-50%, -50%)',
             ...loadableFlexTheme.spinnerPositionCenter,
           };
         }
@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme: Theme) => {
           return {
             left: '50%',
             top: '5%',
-            translate: '-50% 0',
+            transform: 'translate(-50%, 0)',
             ...loadableFlexTheme.spinnerPositionTop,
           };
         }
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme: Theme) => {
           return {
             left: '5%',
             top: '50%',
-            translate: '0 -50%',
+            transform: 'translate(0, -50%)',
             ...loadableFlexTheme.spinnerPositionLeft,
           };
         }
@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme: Theme) => {
           return {
             right: '5%',
             top: '50%',
-            translate: '0 -50%',
+            transform: 'translate(0, -50%)',
             ...loadableFlexTheme.spinnerPositionRight,
           };
         }
@@ -155,7 +155,7 @@ const useStyles = makeStyles((theme: Theme) => {
           return {
             left: '50%',
             bottom: '5%',
-            translate: '-50% 0',
+            transform: 'translate(-50%, 0)',
             ...loadableFlexTheme.spinnerPositionBottom,
           };
         }

@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => {
       cursor: 'pointer',
       userSelect: 'none',
       textAlign: 'center',
-      backgroundColor: 'unset',
+      backgroundColor: 'transparent',
       color: 'inherit',
       padding: 0,
       ...buttonTheme.root,

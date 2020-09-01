@@ -1,4 +1,4 @@
-type BaseCSSProperties = import('react').CSSProperties;
+import type { BaseCSSProperties } from '@material-ui/styles/withStyles';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -9,6 +9,7 @@ export type BaseCreateCSSProperties = {
 };
 
 export interface CreateCSSProperties extends BaseCreateCSSProperties {
+  // Allow pseudo selectors and media queries
   [k: string]: BaseCreateCSSProperties[keyof BaseCreateCSSProperties] | CreateCSSProperties;
 }
 

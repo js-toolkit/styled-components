@@ -19,7 +19,10 @@ export default function ResizeListener({ onSizeChange }: ResizeListenerProps): J
       height: '100%',
       background: 'transparent',
       border: 'none',
-      visibility: 'hidden',
+      // Must be visible for FireFox.
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1295245
+      visibility: 'visible',
+      opacity: 0,
       zIndex: -1,
     }),
     []

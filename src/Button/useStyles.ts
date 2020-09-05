@@ -2,16 +2,13 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import Theme, { CSSProperties } from '../Theme';
 import type { ButtonProps } from './Button';
 
-type MakeStylesProps = Pick<ButtonProps, 'variant' | 'loading' | 'spinnerPosition'>;
+type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 
 const useStyles = makeStyles((theme: Theme) => {
-  const spinnerSize = '1.5em';
   const buttonTheme = theme.rc?.Button ?? {};
 
   const getBorderWidth = (variant?: MakeStylesProps['variant']): string =>
     variant === 'outlined' ? '1px' : '0px';
-
-  // const sizeProp = `size${size === 'contain' ? 'Contain' : size?.toUpperCase()}`;
 
   return {
     root: {
@@ -33,15 +30,6 @@ const useStyles = makeStyles((theme: Theme) => {
         cursor: 'not-allowed',
         opacity: 'var(--rc--disabled-opacity, 0.5)',
         ...(buttonTheme.root?.['&:disabled'] as CSSProperties),
-      },
-
-      // Space for spinner
-      // ...(loading && spinnerPosition !== 'center' ? {} : undefined),
-      '&::after': {
-        content: ({ loading, spinnerPosition }: MakeStylesProps) =>
-          loading && spinnerPosition !== 'center' ? '""' : 'unset',
-        width: spinnerSize,
-        ...(buttonTheme.root?.['&::after'] as CSSProperties),
       },
     },
 
@@ -274,23 +262,6 @@ const useStyles = makeStyles((theme: Theme) => {
         color: '#fff',
         ...(buttonTheme.root?.['&&:active'] as CSSProperties),
         ...(buttonTheme.secondary?.text?.['&&:active'] as CSSProperties),
-      },
-    },
-
-    spinner: {
-      width: spinnerSize,
-      left: ({ spinnerPosition }: MakeStylesProps) =>
-        spinnerPosition === 'left' ? '0.75em' : undefined,
-      right: ({ spinnerPosition }: MakeStylesProps) =>
-        spinnerPosition === 'right' ? '0.75em' : undefined,
-      order: ({ spinnerPosition }: MakeStylesProps) =>
-        spinnerPosition === 'left' ? -1 : undefined,
-      ...buttonTheme.spinner,
-
-      '& > svg': {
-        left: ({ spinnerPosition }: MakeStylesProps) =>
-          spinnerPosition !== 'center' ? 0 : undefined,
-        ...(buttonTheme.spinner?.['& > svg'] as CSSProperties),
       },
     },
   };

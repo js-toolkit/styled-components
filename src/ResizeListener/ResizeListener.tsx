@@ -6,10 +6,16 @@ export interface Size {
 }
 
 export interface ResizeListenerProps {
-  onSizeChange: (size: Size) => void;
+  onlyWidth?: boolean;
+  onlyHeight?: boolean;
+  onSizeChange: (size: Size, domRect: DOMRect) => void;
 }
 
-export default function ResizeListener({ onSizeChange }: ResizeListenerProps): JSX.Element {
+export default function ResizeListener({
+  onlyWidth,
+  onlyHeight,
+  onSizeChange,
+}: ResizeListenerProps): JSX.Element {
   const style = useMemo<React.CSSProperties>(
     () => ({
       position: 'absolute',
@@ -29,6 +35,7 @@ export default function ResizeListener({ onSizeChange }: ResizeListenerProps): J
   );
 
   const rootRef = useRef<HTMLIFrameElement>(null);
+  const lastRectRef = useRef<DOMRect>();
 
   useEffect(() => {
     const { current: root } = rootRef;
@@ -36,7 +43,23 @@ export default function ResizeListener({ onSizeChange }: ResizeListenerProps): J
     if (!root) return () => {};
 
     const resizeHandler = (): void => {
-      onSizeChange({ width: root.offsetWidth, height: root.offsetHeight });
+      const checkWidth = onlyWidth ?? true;
+      const checkHeight = onlyHeight ?? true;
+      const nextRect = root.getBoundingClientRect();
+      const { current: prevRect } = lastRectRef;
+      if (prevRect) {
+        if (
+          checkWidth &&
+          checkHeight &&
+          prevRect.width === nextRect.width &&
+          prevRect.height === nextRect.height
+        )
+          return;
+        if (checkWidth && !checkHeight && prevRect.width === nextRect.width) return;
+        if (checkHeight && !checkWidth && prevRect.height === nextRect.height) return;
+      }
+      lastRectRef.current = nextRect;
+      onSizeChange({ width: root.offsetWidth, height: root.offsetHeight }, nextRect);
     };
 
     const setupWindow = (windowToListenOn: Window): void => {
@@ -57,8 +80,9 @@ export default function ResizeListener({ onSizeChange }: ResizeListenerProps): J
     return () => {
       root.removeEventListener('load', loadHandler);
       root.contentWindow && root.contentWindow.removeEventListener('resize', resizeHandler);
+      lastRectRef.current = undefined;
     };
-  }, [onSizeChange]);
+  }, [onSizeChange, onlyHeight, onlyWidth]);
 
   // eslint-disable-next-line jsx-a11y/iframe-has-title
   return <iframe ref={rootRef} style={style} />;

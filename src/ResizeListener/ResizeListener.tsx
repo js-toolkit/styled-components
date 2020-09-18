@@ -43,8 +43,8 @@ export default function ResizeListener({
     if (!root) return () => {};
 
     const resizeHandler = (): void => {
-      const checkWidth = onlyWidth ?? true;
-      const checkHeight = onlyHeight ?? true;
+      const checkWidth = onlyWidth == null ? !onlyHeight : onlyWidth;
+      const checkHeight = onlyHeight == null ? !onlyWidth : onlyHeight;
       const nextRect = root.getBoundingClientRect();
       const { current: prevRect } = lastRectRef;
       if (prevRect) {

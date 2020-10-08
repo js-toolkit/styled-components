@@ -1,7 +1,10 @@
 import React from 'react';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 
-export type ErrorBoundaryProps = { error?: unknown } & (
+export type ErrorBoundaryProps = {
+  error?: unknown;
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+} & (
   | ({ renderer?: undefined } & Partial<DefaultRendererProps>)
   | { renderer: (error: unknown) => React.ReactNode }
 );
@@ -30,13 +33,14 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, S
     return { error };
   }
 
-  // componentDidCatch(): void {
-  // Define it just for logging error by react itself.
-  // }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    const { onError } = this.props;
+    onError && onError(error, errorInfo);
+  }
 
   render(): React.ReactNode {
+    const { renderer, children } = this.props;
     const { error } = this.state;
-    const { renderer, error: _, children, ...rest } = this.props;
 
     if (error == null) {
       return children;
@@ -46,6 +50,6 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, S
       return renderer(error);
     }
 
-    return <DefaultRenderer error={error} {...rest} />;
+    return <DefaultRenderer error={error} />;
   }
 }

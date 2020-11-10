@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useCallback, useEffect, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
 import Theme, { CSSProperties } from '../Theme';
@@ -14,7 +15,9 @@ interface LoadableStyleProps {
   blur?: boolean;
   spinnerSize?: SpinnerSize;
   spinnerPosition?: SpinnerPosition;
+  /** @deprecated */
   transition?: boolean;
+  animation?: boolean;
 }
 
 export type LoadableFlexProps<
@@ -27,14 +30,22 @@ export type LoadableFlexProps<
     }
 >;
 
-type MakeStylesProps = LoadableStyleProps & { showLoading?: boolean };
+type MakeStylesProps = LoadableStyleProps & { keepShowing: boolean };
 
 const useStyles = makeStyles((theme: Theme) => {
   const loadingZIndex = 1000;
   const loadableFlexTheme = theme.rc?.LoadableFlex ?? {};
-  const loadingTransition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
   return {
+    '@keyframes show': {
+      '0%': { opacity: 0 },
+      '100%': { opacity: 1 },
+    },
+    '@keyframes hide': {
+      '0%': { opacity: 1 },
+      '100%': { opacity: 0 },
+    },
+
     root: {
       position: 'relative',
       pointerEvents: ({ loading, disableOnLoading }: MakeStylesProps) =>
@@ -43,8 +54,10 @@ const useStyles = makeStyles((theme: Theme) => {
 
       // Backdrop background
       '&::before': {
-        content: ({ loading, showLoading, backdrop }: MakeStylesProps) =>
-          backdrop && (loading || showLoading) ? '""' : 'unset', // Show/hide backdrop
+        content: ({ loading, keepShowing, backdrop }: MakeStylesProps) =>
+          backdrop && (loading || keepShowing) ? '""' : 'unset', // Show/hide backdrop
+        // content: ({ backdrop }: MakeStylesProps) => (backdrop ? '""' : 'unset'), // Enable/disable backdrop
+        opacity: ({ loading, animation }: MakeStylesProps) => (animation ? +!!loading : undefined),
         position: 'absolute',
         top: '0',
         left: '0',
@@ -53,10 +66,6 @@ const useStyles = makeStyles((theme: Theme) => {
         borderRadius: 'inherit',
         backgroundColor: 'rgba(0, 0, 0, 0.25)',
         zIndex: loadingZIndex,
-        transition: ({ transition }: MakeStylesProps) =>
-          transition ? loadingTransition : undefined,
-        opacity: ({ loading, transition }: MakeStylesProps) =>
-          transition ? (loading ? 1 : 0) : undefined,
         ...(loadableFlexTheme.root?.['&::before'] as CSSProperties),
         ...loadableFlexTheme.backdrop,
       },
@@ -67,11 +76,27 @@ const useStyles = makeStyles((theme: Theme) => {
       },
     },
 
-    spinner: ({ loading, transition, spinnerSize, spinnerPosition }: MakeStylesProps) => ({
+    showBackdrop: {
+      '&::before': {
+        animation: `$show 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+      },
+    },
+    hideBackdrop: {
+      '&::before': {
+        animation: `$hide 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+      },
+    },
+    showSpinner: {
+      animation: `$show 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+    },
+    hideSpinner: {
+      animation: `$hide 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+    },
+
+    spinner: ({ animation, loading, spinnerSize, spinnerPosition }: MakeStylesProps) => ({
       position: 'absolute',
       zIndex: loadingZIndex,
-      transition: transition ? loadingTransition : undefined,
-      opacity: transition ? (loading ? 1 : 0) : undefined,
+      opacity: animation ? +!!loading : undefined,
       ...loadableFlexTheme.spinner,
 
       // Size
@@ -181,17 +206,18 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   backdrop = true,
   blur,
   transition = true,
+  animation = transition ?? true,
   className,
   children,
   ...rest
 }: LoadableFlexProps<C>): JSX.Element {
-  const [showLoading, setShowLoading] = useState(false);
+  const [keepShowing, setKeepShowing] = useState(false);
 
   const css = useStyles({
     classes: { root: className, spinner: spinnerClassName },
+    animation,
     loading,
-    showLoading,
-    transition,
+    keepShowing,
     disableOnLoading,
     backdrop,
     blur,
@@ -199,28 +225,34 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
     spinnerPosition,
   });
 
-  const stopShowLoading = useCallback<React.TransitionEventHandler>(
-    (event) => {
-      if (event.propertyName !== 'opacity') return;
-      !loading && showLoading && setShowLoading(false);
-    },
-    [loading, showLoading]
-  );
+  const animationEndHandler = useCallback<React.AnimationEventHandler>((event) => {
+    if (event.animationName.includes('keyframes-hide')) {
+      setKeepShowing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    transition && loading && setShowLoading(loading);
-  }, [loading, transition]);
+    if (animation && loading) setKeepShowing(true);
+    else if (!animation && !loading) setKeepShowing(false);
+  }, [animation, loading]);
 
   const spinnerElement =
     spinner && (typeof spinner === 'object' ? spinner : <Ring className={css.ring} />);
 
+  const backdropAnimation = animation ? ` ${loading ? css.showBackdrop : css.hideBackdrop}` : '';
+  const spinnerAnimation = animation ? ` ${loading ? css.showSpinner : css.hideSpinner}` : '';
+
   return (
-    <Flex className={css.root} data-loading={loading || showLoading || undefined} {...rest}>
-      {spinnerElement && (loading || showLoading) && (
+    <Flex
+      className={`${css.root}${backdropAnimation}`}
+      data-loading={!!loading || keepShowing || undefined}
+      {...rest}
+    >
+      {spinnerElement && (!!loading || keepShowing) && (
         <Flex
           center
-          className={css.spinner}
-          onTransitionEnd={transition ? stopShowLoading : undefined}
+          className={`${css.spinner}${spinnerAnimation}`}
+          onAnimationEnd={animationEndHandler}
         >
           {spinnerElement}
         </Flex>

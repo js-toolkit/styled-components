@@ -1,5 +1,4 @@
-/* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
 import Theme, { CSSProperties } from '../Theme';
@@ -212,6 +211,8 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   ...rest
 }: LoadableFlexProps<C>): JSX.Element {
   const [keepShowing, setKeepShowing] = useState(false);
+  const loadingRef = useRef(false);
+  loadingRef.current = !!loading;
 
   const css = useStyles({
     classes: { root: className, spinner: spinnerClassName },
@@ -225,13 +226,16 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
     spinnerPosition,
   });
 
-  const animationEndHandler = useCallback<React.AnimationEventHandler>((event) => {
-    if (event.animationName.includes('keyframes-hide')) {
+  const animationEndHandler = useCallback<React.AnimationEventHandler>(() => {
+    // console.log('animationEnd', event.animationName);
+    // animationName will changed in prod so we can't use it to detect what animation is ended
+    if (!loadingRef.current) {
       setKeepShowing(false);
     }
   }, []);
 
   useEffect(() => {
+    // console.log('update loading', loading);
     if (animation && loading) setKeepShowing(true);
     else if (!animation && !loading) setKeepShowing(false);
   }, [animation, loading]);

@@ -1,6 +1,6 @@
 {
   "name": "@vlazh/styled-components",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Styled react components powered by JSS via @material-ui/styles",
   "author": "VZH",
   "license": "MIT",

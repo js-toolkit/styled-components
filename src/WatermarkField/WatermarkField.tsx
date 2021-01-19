@@ -22,9 +22,9 @@ export default function WatermarkField({
           id="textstripe"
           width={textWidth * 2}
           height={textHeight * 2}
-          patternUnits={patternUnits || 'userSpaceOnUse'}
+          patternUnits={patternUnits ?? 'userSpaceOnUse'}
           patternContentUnits={patternContentUnits}
-          patternTransform={patternTransform || 'rotate(-45)'}
+          patternTransform={patternTransform ?? 'rotate(-45)'}
         >
           <text x={0} y={0} dy={textHeight}>
             {text}

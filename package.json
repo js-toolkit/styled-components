@@ -30,7 +30,9 @@
     "@types/react-modal": "^3.10.6",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
     "@typescript-eslint/parser": "^4.14.0",
+    "@vlazh/web-utils": "^1.13.1",
     "@vzh/configs": "^3.71.1",
+    "@vzh/ts-utils": "^1.18.0",
     "copyfiles": "^2.4.1",
     "eslint": "^7.18.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -57,6 +59,7 @@
     "react": "^17.0.1",
     "react-modal": "^3.12.1",
     "react-outside-click-listener": "^1.3.0",
+    "react-use": "^15.3.8",
     "reflexy": "^3.32.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.1.3"

@@ -187,5 +187,10 @@ export default interface Theme {
       DropDownLabel?: CSSProperties;
       DropDownBox?: CSSProperties;
     };
+
+    VideoWatermark?: {
+      default?: CSSProperties;
+      random?: CSSProperties;
+    };
   };
 }

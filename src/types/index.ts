@@ -1,11 +1,14 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-duplicates */
 
 // todo: remove after fixed in original source
 declare module '@material-ui/styles/makeStyles' {
-  import { ClassNameMap, Styles, WithStylesOptions } from '@material-ui/styles/withStyles';
-  import { Omit } from '@material-ui/types';
-  import { DefaultTheme } from '@material-ui/styles/defaultTheme';
+  import type { ClassNameMap, Styles, WithStylesOptions } from '@material-ui/styles/withStyles';
+  import type { Omit } from '@material-ui/types';
+  import type { DefaultTheme } from '@material-ui/styles/defaultTheme';
 
   export type MakeStylesHook<
     Props extends {} = {},

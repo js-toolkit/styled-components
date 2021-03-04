@@ -215,10 +215,10 @@
     "@typescript-eslint/types" "4.16.1"
     eslint-visitor-keys "^2.0.0"
 
-"@vlazh/web-utils@^1.17.0":
-  version "1.17.0"
-  resolved "https://npm.pkg.github.com/download/@vlazh/web-utils/1.17.0/550e79f6c3c5f679a4c7a6ae7f34810e33dda06606aeae1afcd2bd1c339b428a#0779ab519ab5d36c4f4b791c11e9fed5fbd9d9e5"
-  integrity sha1-B3mrUZq102xPS3kcEen+1fvZ2eU=
+"@vlazh/web-utils@^1.17.1":
+  version "1.17.1"
+  resolved "https://npm.pkg.github.com/download/@vlazh/web-utils/1.17.1/442ff6ffd4e047c743ce1be3c8d2a0e35b68ce829a895bb1236b7e1fa02a4321#6d2c1d432181e270d282e6527e36478ee1a8bc6b"
+  integrity sha512-avUcPS2LGap0/Pll3Bz+g2JoSyISFU1AWyVCWQ8FjO+IZcyPrWX8nz3WZ9TKFUbjppZ+sFbFje5ddL2//S4kew==
 
 "@vzh/configs@^3.73.8":
   version "3.73.8"
@@ -1838,10 +1838,10 @@ readable-stream@~2.3.6:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-reflexy@^3.33.0:
-  version "3.33.0"
-  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.33.0.tgz#919364c4b8c82da103bb0e0c6ad18c506a219d0f"
-  integrity sha512-pH1FvRymWxdzRwWlW+z1atLz+iTSxFwcKWVVHRbzlTDIc8d396Li20MQP4qzZMs1ccqR+3TOlolCVs7HM1FSdw==
+reflexy@^3.33.1:
+  version "3.33.1"
+  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.33.1.tgz#3ef17bdf67858b8ac1bbac83b8bc2af0cc2c5685"
+  integrity sha512-0h/HPRLP0/rV+2vvmtmMsUXyIwe82h6xDphlAxFqWffG8M+G2T92XrkIyerOdL/FHYgmfzmB/6JNCRjfXZPh2w==
 
 regenerator-runtime@^0.13.4:
   version "0.13.7"

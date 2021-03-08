@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useRafState from 'react-use/esm/useRafState';
-import noop from '@vzh/ts-utils/noop';
+import noop from '@vlazh/ts-utils/noop';
 import EventTargetListener from '@vlazh/web-utils/EventTargetListener';
 
 const useStyles = makeStyles({

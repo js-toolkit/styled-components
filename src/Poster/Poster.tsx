@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@vlazh/web-utils/loadImage';
 import takePicture from '@vlazh/web-utils/takePicture';
-import noop from '@vzh/ts-utils/noop';
+import noop from '@vlazh/ts-utils/noop';
 import HideableFlex, { HideableFlexProps } from '../HideableFlex';
 
 // type MakeStylesProps = Pick<PosterProps, 'url'>;

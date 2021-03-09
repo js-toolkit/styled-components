@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
-import loadImage from '@vlazh/web-utils/loadImage';
-import takePicture from '@vlazh/web-utils/takePicture';
-import noop from '@vlazh/ts-utils/noop';
+import loadImage from '@js-toolkit/web-utils/loadImage';
+import takePicture from '@js-toolkit/web-utils/takePicture';
+import noop from '@js-toolkit/ts-utils/noop';
 import HideableFlex, { HideableFlexProps } from '../HideableFlex';
 
 // type MakeStylesProps = Pick<PosterProps, 'url'>;

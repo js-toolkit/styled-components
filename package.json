@@ -1,5 +1,5 @@
 {
-  "name": "@vlazh/styled-components",
+  "name": "@js-toolkit/styled-components",
   "version": "0.16.1",
   "description": "Styled react components powered by JSS via @material-ui/styles",
   "author": "VZH",
@@ -8,7 +8,7 @@
   "types": "./index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vlazh/styled-components"
+    "url": "https://github.com/js-toolkit/styled-components"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -18,8 +18,8 @@
     "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
     "build-ts": "npm run clean && tsc --project ./tsconfig.json",
     "build": "npm run build-ts",
-    "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@vlazh/styled-components'",
-    "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/node_modules/@vlazh/styled-components'",
+    "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/styled-components'",
+    "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/node_modules/@js-toolkit/styled-components'",
     "patch-publish": "npm run build && npm version patch && npm run copy:configs && npm publish ./dist/ && git push origin master --follow-tags",
     "minor-publish": "npm run build && npm version minor && npm run copy:configs && npm publish ./dist/ && git push origin master --follow-tags",
     "major-publish": "npm run build && npm version major && npm run copy:configs && npm publish ./dist/ && git push origin master --follow-tags"
@@ -30,9 +30,9 @@
     "@types/react-modal": "^3.12.0",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
-    "@vlazh/configs": "^3.73.8",
-    "@vlazh/ts-utils": "^1.25.0",
-    "@vlazh/web-utils": "^1.18.1",
+    "@js-toolkit/configs": "^3.73.8",
+    "@js-toolkit/ts-utils": "^1.25.0",
+    "@js-toolkit/web-utils": "^1.18.1",
     "copyfiles": "^2.4.1",
     "eslint": "^7.21.0",
     "eslint-config-airbnb": "^18.2.1",

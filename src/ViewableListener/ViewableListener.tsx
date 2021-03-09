@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useRafState from 'react-use/esm/useRafState';
-import noop from '@vlazh/ts-utils/noop';
-import EventTargetListener from '@vlazh/web-utils/EventTargetListener';
+import noop from '@js-toolkit/ts-utils/noop';
+import EventTargetListener from '@js-toolkit/web-utils/EventTargetListener';
 
 const useStyles = makeStyles({
   root: {

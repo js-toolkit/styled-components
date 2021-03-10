@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@js-toolkit/web-utils/loadImage';
 import takePicture from '@js-toolkit/web-utils/takePicture';
+// import blobToDataUrl from '@js-toolkit/web-utils/blobToDataUrl';
 import noop from '@js-toolkit/ts-utils/noop';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import HideableFlex, { HideableFlexProps } from '../HideableFlex';
-
-// type MakeStylesProps = Pick<PosterProps, 'url'>;
 
 const useStyles = makeStyles({
   root: {
@@ -14,7 +14,6 @@ const useStyles = makeStyles({
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
-    // backgroundImage: ({ url }: MakeStylesProps) => (url ? `url('${url}')` : ''),
   },
 });
 
@@ -22,7 +21,7 @@ export interface PosterProps
   extends FlexComponentProps,
     Pick<HideableFlexProps, 'hidden' | 'disposable'> {
   url: string;
-  crossOrigin?: HTMLImageElement['crossOrigin'];
+  crossOrigin?: 'anonymous' | 'use-credentials' | null;
   showAfterLoad?: boolean;
   onLoaded?: VoidFunction;
   onShow?: VoidFunction;
@@ -48,16 +47,33 @@ export default function Poster({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadImagePromise = useMemo(() => loadImage(urlProp, crossOrigin), [urlProp]);
+  // const loadImagePromise = useMemo(
+  //   () =>
+  //     // With `mode: 'no-cors'` can't access to response body so blob length will 0.
+  //     window
+  //       .fetch(urlProp, {
+  //         method: 'GET',
+  //         mode: 'cors',
+  //         credentials:
+  //           (crossOrigin === 'anonymous' && 'omit') ||
+  //           (crossOrigin === 'use-credentials' && 'include') ||
+  //           undefined,
+  //         cache: 'default',
+  //       })
+  //       .then((res) => res.blob())
+  //       .then((blob) => (blob.size > 0 ? blobToDataUrl(blob) : '')),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [urlProp]
+  // );
 
   useEffect(() => {
     if (!showAfterLoad) return noop;
     let unmount = false;
 
     void loadImagePromise
-      // void loadImage(urlProp, crossOrigin)
       .then((img) => {
         if (unmount) return;
-        const dataUrl = takePicture(img, { width: img.width, height: img.height, quality: 1 });
+        const dataUrl = takePicture(img, { quality: 1 });
         setUrl(dataUrl);
       })
       .catch(onError ?? ((ex) => console.error(ex)))
@@ -67,16 +83,13 @@ export default function Poster({
       unmount = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadImagePromise, urlProp]);
+  }, [loadImagePromise]);
 
-  const transitionEndHandler = useCallback<React.TransitionEventHandler>(
-    (event) => {
-      if (event.propertyName !== 'visibility') return;
-      if (hidden) onHide && onHide();
-      else onShow && onShow();
-    },
-    [hidden, onHide, onShow]
-  );
+  const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
+    if (event.propertyName !== 'visibility') return;
+    if (hidden) onHide && onHide();
+    else onShow && onShow();
+  });
 
   return (
     <HideableFlex

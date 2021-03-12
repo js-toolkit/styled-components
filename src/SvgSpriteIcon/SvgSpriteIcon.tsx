@@ -51,7 +51,7 @@ function SvgSpriteIcon<N extends string>({
   if (!name || !spriteId) return null;
 
   const w = width ?? size ?? rc?.SvgSpriteIcon?.defaultSize ?? 18;
-  const h = height ?? size ?? width;
+  const h = height ?? size ?? w;
 
   return (
     <svg width={w} height={h} className={css.root} {...rest}>

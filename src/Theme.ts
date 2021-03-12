@@ -192,5 +192,10 @@ export default interface Theme {
       default?: CSSProperties;
       random?: CSSProperties;
     };
+
+    SvgSpriteIcon?: {
+      spriteId?: string;
+      defaultSize?: number | string;
+    };
   };
 }

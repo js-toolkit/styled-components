@@ -1,4 +1,7 @@
 import type { BaseCSSProperties } from '@material-ui/styles/withStyles';
+import type { FlexComponentProps } from 'reflexy';
+import type { SvgSpriteIconProps } from './SvgSpriteIcon';
+import type { MenuListItemProps } from './Menu/MenuListItem';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -196,6 +199,49 @@ export default interface Theme {
     SvgSpriteIcon?: {
       spriteId?: string;
       defaultSize?: number | string;
+    };
+
+    MenuList?: {
+      header?: {
+        flex?: FlexComponentProps;
+        backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
+        closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
+        title?: {
+          root?: CSSProperties;
+          flex?: FlexComponentProps | ((options: { hasIcon: boolean }) => FlexComponentProps);
+        };
+        action?: {
+          root?: CSSProperties;
+          flex?: FlexComponentProps;
+        };
+      };
+      list?: {
+        flex?: FlexComponentProps | ((options: { hasHeader: boolean }) => FlexComponentProps);
+      };
+    };
+
+    MenuListItem?: {
+      root?: CSSProperties;
+      hover?: CSSProperties;
+      flex?: FlexComponentProps | ((options: { hasIcon: boolean }) => FlexComponentProps);
+      title?: {
+        root?: CSSProperties;
+        flex?:
+          | FlexComponentProps
+          | ((
+              options: { hasIcon: boolean } & Pick<MenuListItemProps<string, string>, 'shrinkTitle'>
+            ) => FlexComponentProps);
+      };
+      subtitle?: {
+        root?: CSSProperties;
+        flex?:
+          | FlexComponentProps
+          | ((
+              options: Pick<MenuListItemProps<string, string>, 'shrinkTitle'>
+            ) => FlexComponentProps);
+      };
+      checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
+      submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
     };
   };
 }

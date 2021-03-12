@@ -13,6 +13,12 @@ const useStyles = makeStyles({
     cursor: ({ scaleOnHover }: MakeStylesProps) => (scaleOnHover ? 'pointer' : ''),
 
     '&:hover': {
+      // transform: ({ scaleOnHover }: MakeStylesProps) => {
+      //   if (scaleOnHover == null || scaleOnHover === false) return '';
+      //   return typeof scaleOnHover === 'number'
+      //     ? `scale(${scaleOnHover})`
+      //     : `scale(${scaleOnHover && 1.2})`;
+      // },
       scale: ({ scaleOnHover }: MakeStylesProps) =>
         typeof scaleOnHover === 'number' ? scaleOnHover : (scaleOnHover && 1.2) || '',
     },
@@ -26,7 +32,8 @@ export interface SvgSpriteIconProps<N extends string> extends React.SVGAttribute
   useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'>;
 }
 
-export default function SvgSpriteIcon<N extends string>({
+/** Uses with svg-sprite-loader */
+function SvgSpriteIcon<N extends string>({
   name,
   size,
   width,
@@ -40,15 +47,20 @@ export default function SvgSpriteIcon<N extends string>({
   const css = useStyles({ classes: { root: className }, scaleOnHover });
   const { rc } = useTheme<Theme>();
 
-  if (!name || !rc?.SvgSpriteIcon?.spriteId) return null;
+  const spriteId = rc?.SvgSpriteIcon?.spriteId ?? SvgSpriteIcon.spriteId;
+  if (!name || !spriteId) return null;
 
-  const w = width ?? size ?? rc.SvgSpriteIcon.defaultSize ?? 18;
+  const w = width ?? size ?? rc?.SvgSpriteIcon?.defaultSize ?? 18;
   const h = height ?? size ?? width;
 
   return (
     <svg width={w} height={h} className={css.root} {...rest}>
-      <use xlinkHref={`#${rc.SvgSpriteIcon.spriteId}_${name}`} fill="currentColor" {...useProps} />
+      <use xlinkHref={`#${spriteId}_${name}`} fill="currentColor" {...useProps} />
       {children}
     </svg>
   );
 }
+
+SvgSpriteIcon.spriteId = 'svgsprite';
+
+export default SvgSpriteIcon;

@@ -3,7 +3,7 @@ import { create, JssOptions } from 'jss';
 import MuiStylesProvider, {
   StylesProviderProps as MuiStylesProviderProps,
 } from '@material-ui/styles/StylesProvider';
-import presetPlugins from '../presetPlugins';
+import createPlugins from './createPlugins';
 
 export interface StylesProviderProps
   extends MuiStylesProviderProps,
@@ -12,7 +12,7 @@ export interface StylesProviderProps
 }
 
 export default function StylesProvider({
-  plugins = presetPlugins,
+  plugins = createPlugins,
   Renderer,
   insertionPoint,
   id,

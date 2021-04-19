@@ -5,7 +5,7 @@ import { Flex, FlexComponentProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import type Theme from '../Theme';
 import TruncatedText from '../TruncatedText';
-import SvgSpriteIcon from '../SvgSpriteIcon';
+import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
 
 type MakeStylesProps = { clickable: boolean };
 
@@ -31,7 +31,8 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 }));
 
-export interface MenuListItemProps<V, I extends string> extends FlexComponentProps {
+export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<any>>
+  extends FlexComponentProps {
   icon?: I;
   title: React.ReactNode;
   subtitle?: React.ReactNode;
@@ -42,7 +43,7 @@ export interface MenuListItemProps<V, I extends string> extends FlexComponentPro
   onClick?: (value: this['value']) => void;
 }
 
-export default function MenuListItem<V, I extends string>({
+export default function MenuListItem<V, I extends string | SvgSpriteIconProps<any>>({
   icon,
   title,
   subtitle,
@@ -61,7 +62,8 @@ export default function MenuListItem<V, I extends string>({
 
   const theme = rc?.MenuListItem;
 
-  const iconProps = typeof icon === 'string' ? { name: icon, size: '1.5em' } : icon;
+  const iconProps =
+    typeof icon === 'string' ? { name: icon, size: '1.5em' } : (icon as SvgSpriteIconProps<any>);
 
   const rootFlex =
     typeof theme?.flex === 'function' ? theme.flex({ hasIcon: !!iconProps }) : theme?.flex;

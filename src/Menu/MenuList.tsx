@@ -23,17 +23,20 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 }));
 
-export type MenuItem<V extends React.Key | null, I extends string> = Omit<
+export type MenuItem<V extends React.Key | null, I extends string | SvgSpriteIconProps<any>> = Omit<
   MenuListItemProps<V, I>,
   'onClick'
 > &
   React.Attributes;
 
-export interface MenuListProps<V extends React.Key | null, I extends string>
-  extends React.PropsWithChildren<FlexComponentProps<'div'>> {
+export interface MenuListProps<
+  V extends React.Key | null,
+  I extends string | SvgSpriteIconProps<any>,
+  HI extends string | SvgSpriteIconProps<any>
+> extends React.PropsWithChildren<FlexComponentProps<'div'>> {
   hidden?: boolean;
   header?: string;
-  headerIcon?: I | SvgSpriteIconProps<I>;
+  headerIcon?: HI;
   headerAction?: string;
   items?: MenuItem<V, I>[];
   onItemClick?: MenuListItemProps<V, I>['onClick'];
@@ -43,7 +46,11 @@ export interface MenuListProps<V extends React.Key | null, I extends string>
   onHeaderAction?: () => void;
 }
 
-export default function MenuList<V extends React.Key | null, I extends string>({
+export default function MenuList<
+  V extends React.Key | null,
+  I extends string | SvgSpriteIconProps<any>,
+  HI extends string | SvgSpriteIconProps<any>
+>({
   header,
   headerIcon,
   onBack,
@@ -55,7 +62,7 @@ export default function MenuList<V extends React.Key | null, I extends string>({
   onHeaderAction,
   children,
   ...rest
-}: MenuListProps<V, I>): JSX.Element {
+}: MenuListProps<V, I, HI>): JSX.Element {
   const css = useStyles();
   const { rc } = useTheme<Theme>();
 
@@ -66,7 +73,8 @@ export default function MenuList<V extends React.Key | null, I extends string>({
   const backIconProps = onBack ? theme?.header?.backIcon : undefined;
   const closeIconProps = onClose ? theme?.header?.closeIcon : undefined;
 
-  const headerIconProps = typeof headerIcon === 'string' ? { name: headerIcon } : headerIcon;
+  const headerIconProps =
+    typeof headerIcon === 'string' ? { name: headerIcon } : (headerIcon as SvgSpriteIconProps<any>);
   const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
   const headerTitleFlex =

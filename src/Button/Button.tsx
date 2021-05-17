@@ -2,17 +2,45 @@ import React, { useMemo } from 'react';
 import { Flex, FlexAllProps } from 'reflexy/styled';
 import useStyles from './useStyles';
 
-export type ButtonSize = 'contain' | 'xs' | 's' | 'm' | 'l' | 'xl';
+export interface ButtonSizes {
+  contain: 'contain';
+  xs: 'xs';
+  s: 's';
+  m: 'm';
+  l: 'l';
+  xl: 'xl';
+}
 
-export type ButtonColor = 'none' | 'default' | 'primary' | 'secondary';
+export interface ButtonColors {
+  none: 'none';
+  default: 'default';
+  primary: 'primary';
+  secondary: 'secondary';
+}
 
-export type ButtonVariant = 'outlined' | 'filled' | 'text';
+export interface ButtonVariants {
+  outlined: 'outlined';
+  filled: 'filled';
+  text: 'text';
+}
 
-export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C, true> & {
-  size?: ButtonSize;
-  color?: ButtonColor;
-  variant?: ButtonVariant;
-};
+export type ButtonSize = keyof ButtonSizes;
+
+export type ButtonColor = keyof ButtonColors;
+
+export type ButtonVariant = keyof ButtonVariants;
+
+export interface ButtonStyleProps {
+  // size?: ButtonSize;
+  // color?: ButtonColor;
+  // variant?: ButtonVariant;
+  size?: ButtonSizes[ButtonSize];
+  color?: ButtonColors[ButtonColor];
+  variant?: ButtonVariants[ButtonVariant];
+}
+
+export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C, true> &
+  ButtonStyleProps;
 
 export default function Button<C extends React.ElementType = 'button'>({
   component = 'button',

@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 const useStyles = makeStyles({
   root: ({
@@ -63,15 +64,12 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   const { onTransitionEnd } = rest as React.HTMLAttributes<Element>;
 
-  const transitionEndHandler = useCallback<React.TransitionEventHandler>(
-    (event) => {
-      onTransitionEnd && onTransitionEnd(event);
-      if (!disposable || event.propertyName !== 'visibility') return;
-      if (hidden) setDisposed(true);
-      else setDisposed(false);
-    },
-    [disposable, hidden, onTransitionEnd]
-  );
+  const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
+    onTransitionEnd && onTransitionEnd(event);
+    if (!disposable || event.propertyName !== 'visibility') return;
+    if (hidden) setDisposed(true);
+    else setDisposed(false);
+  });
 
   if (hidden && disposed) return null;
 

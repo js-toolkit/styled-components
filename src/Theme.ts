@@ -85,8 +85,12 @@ export default interface Theme {
 
     Button?: ButtonThemeSizes & {
       root?: CSSProperties;
+    } & { [P in ButtonColor]?: { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ } };
+
+    LoadableButton?: {
+      root?: CSSProperties;
       spinner?: CSSProperties;
-    } & { [P in ButtonColor]?: { [K in ButtonVariant]?: CSSProperties & ButtonThemeSizes } };
+    };
 
     Checkbox?: {
       root?: CSSProperties;

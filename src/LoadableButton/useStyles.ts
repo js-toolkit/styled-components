@@ -6,10 +6,12 @@ type MakeStylesProps = Pick<LoadableButtonProps, 'loading' | 'spinnerPosition'>;
 
 const useStyles = makeStyles((theme: Theme) => {
   const spinnerSize = '1.5em';
-  const buttonTheme = theme.rc?.Button ?? {};
+  const buttonTheme = theme.rc?.LoadableButton ?? {};
 
   return {
     root: {
+      ...buttonTheme.root,
+
       // Space for spinner
       '&::after': {
         content: ({ loading, spinnerPosition }: MakeStylesProps) =>

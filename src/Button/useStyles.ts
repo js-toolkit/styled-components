@@ -1,14 +1,45 @@
 import makeStyles from '@material-ui/styles/makeStyles';
 import Theme, { CSSProperties } from '../Theme';
-import type { ButtonProps } from './Button';
+import type { ButtonColor, ButtonProps, ButtonSize, ButtonVariant } from './Button';
 
 type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 
 const useStyles = makeStyles((theme: Theme) => {
-  const buttonTheme = theme.rc?.Button ?? {};
-
   const getBorderWidth = (variant?: MakeStylesProps['variant']): string =>
     variant === 'outlined' ? '1px' : '0px';
+
+  const {
+    root,
+    // none: colorNone,
+    default: colorDefault,
+    primary: colorPrimary,
+    secondary: colorSecondary,
+    // 'size-contain': sizeContain,
+    'size-xs': sizeXS,
+    'size-s': sizeS,
+    'size-m': sizeM,
+    'size-l': sizeL,
+    'size-xl': sizeXL,
+    ...restTheme
+  } = theme.rc?.Button ?? {};
+
+  // Build futured classes from theme
+  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
+    (acc, p) => {
+      if (p.startsWith('size-')) acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
+      else {
+        const colorTheme = restTheme[p] as Record<ButtonVariant, CSSProperties>;
+        Object.getOwnPropertyNames(colorTheme).forEach((variant) => {
+          acc.colors[`${p}-${variant}`] = { ...(colorTheme[variant] as CSSProperties) };
+        });
+      }
+      return acc;
+    },
+    {
+      sizes: {} as Record<ButtonSize, CSSProperties>,
+      colors: {} as Record<`${ButtonColor}-${ButtonVariant}`, CSSProperties>,
+    }
+  );
 
   return {
     root: {
@@ -24,244 +55,263 @@ const useStyles = makeStyles((theme: Theme) => {
       backgroundColor: 'transparent',
       color: 'inherit',
       padding: 0,
-      ...buttonTheme.root,
+      ...root,
 
       '&:disabled': {
         cursor: 'not-allowed',
         opacity: 'var(--rc--disabled-opacity, 0.5)',
-        ...(buttonTheme.root?.['&:disabled'] as CSSProperties),
+        ...(root?.['&:disabled'] as CSSProperties),
       },
     },
 
     // Sizes
 
-    sizeContain: {
-      ...buttonTheme.sizeContain,
-    },
+    ...themeClasses.sizes,
+
     // 28
-    sizeXS: {
+    'size-xs': {
       fontSize: '0.75em',
       padding: ({ variant }: MakeStylesProps) => {
         const borderWidth = getBorderWidth(variant);
         return `calc((1.75rem - 1.5em) / 2 - ${borderWidth}) calc(0.75rem - ${borderWidth})`;
       },
-      ...buttonTheme.sizeXS,
+      ...sizeXS,
     },
     // 32
-    sizeS: {
+    'size-s': {
       fontSize: '0.875em',
       padding: ({ variant }: MakeStylesProps) => {
         const borderWidth = getBorderWidth(variant);
         return `calc((2rem - 1.5em) / 2 - ${borderWidth}) calc(1rem - ${borderWidth})`;
       },
-      ...buttonTheme.sizeS,
+      ...sizeS,
     },
     // 40
-    sizeM: {
+    'size-m': {
       fontSize: '1em',
       padding: ({ variant }: MakeStylesProps) => {
         const borderWidth = getBorderWidth(variant);
         return `calc((2.5rem - 1.5em) / 2 - ${borderWidth}) calc(1.25rem - ${borderWidth})`;
       },
-      ...buttonTheme.sizeM,
+      ...sizeM,
     },
     // 48
-    sizeL: {
+    'size-l': {
       fontSize: '1.125em',
       padding: ({ variant }: MakeStylesProps) => {
         const borderWidth = getBorderWidth(variant);
         return `calc((3rem - 1.5em) / 2 - ${borderWidth}) calc(1.25rem - ${borderWidth})`;
       },
-      ...buttonTheme.sizeL,
+      ...sizeL,
     },
     // 56
-    sizeXL: {
+    'size-xl': {
       fontSize: '1.25em',
       padding: ({ variant }: MakeStylesProps) => {
         const borderWidth = getBorderWidth(variant);
         return `calc((3.5rem - 1.5em) / 2 - ${borderWidth}) calc(1.25rem - ${borderWidth})`;
       },
-      ...buttonTheme.sizeXL,
+      ...sizeXL,
     },
 
-    // Colors
+    // Colors and variants
 
-    defaultFilled: {
+    ...themeClasses.colors,
+
+    'default-filled': {
       backgroundColor: 'rgb(210, 220, 220)',
       color: 'rgb(70, 80, 80)',
-      ...buttonTheme.default?.filled,
-      // ...(buttonTheme.default?.filled?.[sizeProp] as CSSProperties),
+      ...colorDefault?.filled,
+      // ...(colorDefault?.filled?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgb(195, 205, 205)',
-        color: 'rgb(50, 60, 60)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.default?.filled?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgb(195, 205, 205)',
+          color: 'rgb(50, 60, 60)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorDefault?.filled?.['&:hover'] as CSSProperties),
+        },
       },
 
       // https://github.com/cssinjs/jss/issues/1045
       '&&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.default?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorDefault?.filled?.['&&:active'] as CSSProperties),
       },
     },
 
-    defaultOutlined: {
+    'default-outlined': {
       border: ({ variant }: MakeStylesProps) =>
         `${getBorderWidth(variant)} solid rgb(195, 205, 205)`,
       color: 'rgb(70, 80, 80)',
-      ...buttonTheme.default?.outlined,
-      // ...(buttonTheme.default?.outlined?.[sizeProp] as CSSProperties),
+      ...colorDefault?.outlined,
+      // ...(colorDefault?.outlined?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgb(225, 235, 235)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.default?.outlined?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgb(225, 235, 235)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorDefault?.outlined?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.default?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorDefault?.outlined?.['&&:active'] as CSSProperties),
       },
     },
 
-    defaultText: {
+    'default-text': {
       color: 'rgb(70, 80, 80)',
-      ...buttonTheme.default?.text,
-      // ...(buttonTheme.default?.text?.[sizeProp] as CSSProperties),
+      ...colorDefault?.text,
+      // ...(colorDefault?.text?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgba(225, 235, 235, 0.2)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.default?.text?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgba(225, 235, 235, 0.2)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorDefault?.text?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgba(210, 220, 220, 0.7)',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.default?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorDefault?.text?.['&&:active'] as CSSProperties),
       },
     },
 
-    primaryFilled: {
+    'primary-filled': {
       backgroundColor: 'rgb(92, 184, 92)',
       color: '#fff',
-      ...buttonTheme.primary?.filled,
-      // ...(buttonTheme.primary?.filled?.[sizeProp] as CSSProperties),
+      ...colorPrimary?.filled,
+      // ...(colorPrimary?.filled?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgb(73, 167, 73)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.primary?.filled?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgb(73, 167, 73)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorPrimary?.filled?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.primary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorPrimary?.filled?.['&&:active'] as CSSProperties),
       },
     },
 
-    primaryOutlined: {
+    'primary-outlined': {
       border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid rgb(92, 184, 92)`,
       color: 'rgb(92, 184, 92)',
-      ...buttonTheme.primary?.outlined,
-      // ...(buttonTheme.primary?.outlined?.[sizeProp] as CSSProperties),
+      ...colorPrimary?.outlined,
+      // ...(colorPrimary?.outlined?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgba(73, 167, 73, 0.2)',
-        color: 'rgb(73, 167, 73)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.primary?.outlined?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgba(73, 167, 73, 0.2)',
+          color: 'rgb(73, 167, 73)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorPrimary?.outlined?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.primary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorPrimary?.outlined?.['&&:active'] as CSSProperties),
       },
     },
 
-    primaryText: {
+    'primary-text': {
       color: 'rgb(92, 184, 92)',
-      ...buttonTheme.primary?.text,
-      // ...(buttonTheme.primary?.text?.[sizeProp] as CSSProperties),
+      ...colorPrimary?.text,
+      // ...(colorPrimary?.text?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgba(73, 167, 73, 0.2)',
-        color: 'rgb(73, 167, 73)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.primary?.text?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgba(73, 167, 73, 0.2)',
+          color: 'rgb(73, 167, 73)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorPrimary?.text?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.primary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorPrimary?.text?.['&&:active'] as CSSProperties),
       },
     },
 
-    secondaryFilled: {
+    'secondary-filled': {
       backgroundColor: 'rgb(220, 0, 78)',
       color: '#fff',
-      ...buttonTheme.secondary?.filled,
-      // ...(buttonTheme.secondary?.filled?.[sizeProp] as CSSProperties),
+      ...colorSecondary?.filled,
+      // ...(colorSecondary?.filled?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgb(200, 0, 58)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.secondary?.filled?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgb(200, 0, 58)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorSecondary?.filled?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.secondary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorSecondary?.filled?.['&&:active'] as CSSProperties),
       },
     },
 
-    secondaryOutlined: {
+    'secondary-outlined': {
       border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid rgb(220, 0, 78)`,
       color: 'rgb(220, 0, 78)',
-      ...buttonTheme.secondary?.outlined,
-      // ...(buttonTheme.secondary?.outlined?.[sizeProp] as CSSProperties),
+      ...colorSecondary?.outlined,
+      // ...(colorSecondary?.outlined?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgba(200, 0, 58, 0.2)',
-        color: 'rgb(200, 0, 58)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.secondary?.outlined?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgba(200, 0, 58, 0.2)',
+          color: 'rgb(200, 0, 58)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorSecondary?.outlined?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.secondary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorSecondary?.outlined?.['&&:active'] as CSSProperties),
       },
     },
 
-    secondaryText: {
+    'secondary-text': {
       color: 'rgb(220, 0, 78)',
-      ...buttonTheme.secondary?.text,
-      // ...(buttonTheme.secondary?.text?.[sizeProp] as CSSProperties),
+      ...colorSecondary?.text,
+      // ...(colorSecondary?.text?.[sizeProp] as CSSProperties),
 
-      '&:hover': {
-        backgroundColor: 'rgba(200, 0, 58, 0.2)',
-        color: 'rgb(200, 0, 58)',
-        ...(buttonTheme.root?.['&:hover'] as CSSProperties),
-        ...(buttonTheme.secondary?.text?.['&:hover'] as CSSProperties),
+      '@media (hover: hover)': {
+        '&:hover': {
+          backgroundColor: 'rgba(200, 0, 58, 0.2)',
+          color: 'rgb(200, 0, 58)',
+          ...(root?.['&:hover'] as CSSProperties),
+          ...(colorSecondary?.text?.['&:hover'] as CSSProperties),
+        },
       },
 
       '&&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(buttonTheme.root?.['&&:active'] as CSSProperties),
-        ...(buttonTheme.secondary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&&:active'] as CSSProperties),
+        ...(colorSecondary?.text?.['&&:active'] as CSSProperties),
       },
     },
   };

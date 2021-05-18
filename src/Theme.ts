@@ -20,9 +20,7 @@ export interface CreateCSSProperties extends BaseCreateCSSProperties {
 export type CSSProperties = CSSPropertiesDeep | CreateCSSProperties;
 
 export type ButtonThemeSizes = {
-  [P in ButtonSize as P extends 'contain'
-    ? `size${Capitalize<P>}`
-    : `size${Uppercase<P>}`]?: CSSProperties;
+  [P in ButtonSize as `size-${P}`]?: CSSProperties;
 };
 
 export default interface Theme {

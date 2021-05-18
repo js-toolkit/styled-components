@@ -2,6 +2,7 @@ import type { BaseCSSProperties } from '@material-ui/styles/withStyles';
 import type { FlexComponentProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
+import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -18,14 +19,11 @@ export interface CreateCSSProperties extends BaseCreateCSSProperties {
 
 export type CSSProperties = CSSPropertiesDeep | CreateCSSProperties;
 
-export interface ButtonSizes {
-  sizeContain?: CSSProperties;
-  sizeXS?: CSSProperties;
-  sizeS?: CSSProperties;
-  sizeM?: CSSProperties;
-  sizeL?: CSSProperties;
-  sizeXL?: CSSProperties;
-}
+export type ButtonThemeSizes = {
+  [P in ButtonSize as P extends 'contain'
+    ? `size${Capitalize<P>}`
+    : `size${Uppercase<P>}`]?: CSSProperties;
+};
 
 export default interface Theme {
   rc?: {
@@ -85,27 +83,10 @@ export default interface Theme {
       ring?: CSSProperties;
     };
 
-    Button?: ButtonSizes & {
+    Button?: ButtonThemeSizes & {
       root?: CSSProperties;
-
-      default?: {
-        filled?: CSSProperties & ButtonSizes;
-        outlined?: CSSProperties & ButtonSizes;
-        text?: CSSProperties & ButtonSizes;
-      };
-      primary?: {
-        filled?: CSSProperties & ButtonSizes;
-        outlined?: CSSProperties & ButtonSizes;
-        text?: CSSProperties & ButtonSizes;
-      };
-      secondary?: {
-        filled?: CSSProperties & ButtonSizes;
-        outlined?: CSSProperties & ButtonSizes;
-        text?: CSSProperties & ButtonSizes;
-      };
-
       spinner?: CSSProperties;
-    };
+    } & { [P in ButtonColor]?: { [K in ButtonVariant]?: CSSProperties & ButtonThemeSizes } };
 
     Checkbox?: {
       root?: CSSProperties;

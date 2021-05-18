@@ -40,6 +40,8 @@ export type HideableFlexProps<C extends React.ElementType = DefaultComponentType
     disposable?: boolean;
     collapsable?: boolean;
     hiddenClassName?: string;
+    onHidden?: VoidFunction;
+    onShown?: VoidFunction;
   };
 
 export default function HideableFlex<C extends React.ElementType = DefaultComponentType>({
@@ -50,6 +52,8 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   hiddenClassName,
   transitionDuration,
   transitionTimingFunction,
+  onHidden,
+  onShown,
   ...rest
 }: HideableFlexProps<C>): JSX.Element | null {
   const css = useStyles({
@@ -66,6 +70,10 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
+    if (event.propertyName === 'opacity') {
+      if (hidden) onHidden && onHidden();
+      else onShown && onShown();
+    }
     if (!disposable || event.propertyName !== 'visibility') return;
     if (hidden) setDisposed(true);
     else setDisposed(false);

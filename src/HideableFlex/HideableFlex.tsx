@@ -19,14 +19,14 @@ const useStyles = makeStyles({
         visibility: 'hidden',
         opacity: 0,
         maxHeight: collapsable ? 0 : undefined,
-        transition: `visibility 0s ${transitionTimingFunction} ${transitionDuration}, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
+        transition: `visibility 0.01ms ${transitionTimingFunction} ${transitionDuration}, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
       };
     }
     return {
       visibility: 'visible',
       opacity: 1,
       maxHeight: collapsable ? '100vh' : undefined,
-      transition: `visibility 0s ${transitionTimingFunction} 0s, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
+      transition: `visibility 0.01ms ${transitionTimingFunction} 0s, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
     };
   },
 });
@@ -70,20 +70,13 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
-
-    if (event.propertyName === 'opacity') {
-      if (hidden) onHidden && onHidden();
-      else onShown && onShown();
-
-      if (disposable) {
-        if (hidden && !disposed) setDisposed(true);
-        else if (!hidden && disposed) setDisposed(false);
-      }
-    }
-
     if (disposable && event.propertyName === 'visibility') {
       if (hidden && !disposed) setDisposed(true);
       else if (!hidden && disposed) setDisposed(false);
+    }
+    if (event.propertyName === 'opacity') {
+      if (hidden) onHidden && onHidden();
+      else onShown && onShown();
     }
   });
 

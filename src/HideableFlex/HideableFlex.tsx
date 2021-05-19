@@ -64,22 +64,30 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     transitionTimingFunction,
   });
 
-  const [disposed, setDisposed] = useState(false);
+  const [disposed, setDisposed] = useState(disposable ? hidden : false);
 
   const { onTransitionEnd } = rest as React.HTMLAttributes<Element>;
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
+
     if (event.propertyName === 'opacity') {
       if (hidden) onHidden && onHidden();
       else onShown && onShown();
+
+      if (disposable) {
+        if (hidden && !disposed) setDisposed(true);
+        else if (!hidden && disposed) setDisposed(false);
+      }
     }
-    if (!disposable || event.propertyName !== 'visibility') return;
-    if (hidden) setDisposed(true);
-    else setDisposed(false);
+
+    if (disposable && event.propertyName === 'visibility') {
+      if (hidden && !disposed) setDisposed(true);
+      else if (!hidden && disposed) setDisposed(false);
+    }
   });
 
-  if (hidden && disposed) return null;
+  if (hidden && disposable && disposed) return null;
 
   return (
     <Flex

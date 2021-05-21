@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
-import Theme, { CSSProperties } from '../Theme';
+import type { Theme, CSSProperties } from '../Theme';
 import Ring from './Ring';
 
 export type SpinnerPosition = 'top' | 'right' | 'left' | 'bottom' | 'center';

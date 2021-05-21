@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef, useEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import Theme from '../../Theme';
+import type { Theme } from '../../Theme';
 import DropDownContext, { DropDownContextValue } from '../DropDownContext';
 
 /** Map of html tags and their selector */

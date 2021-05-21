@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
-import Theme from '../Theme';
+import type { Theme } from '../Theme';
 
 const useStyles = makeStyles((theme: Theme) => {
   const { light: lightTheme, ...defaultTheme } = theme.rc?.Divider ?? {};

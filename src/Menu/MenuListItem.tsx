@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import type Theme from '../Theme';
+import type { Theme } from '../Theme';
 import TruncatedText from '../TruncatedText';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@material-ui/styles/styled';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import Theme from '../../Theme';
+import type { Theme } from '../../Theme';
 
 export interface BadgeIconProps extends FlexComponentProps, Required<React.PropsWithChildren<{}>> {}
 

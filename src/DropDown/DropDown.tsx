@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import { OutsideClickListener, OutsideClickListenerProps } from 'react-outside-click-listener';
-import Theme from '../Theme';
+import type { Theme } from '../Theme';
 import DropDownContext, { DropDownContextValue } from './DropDownContext';
 
 export interface DropDownProps

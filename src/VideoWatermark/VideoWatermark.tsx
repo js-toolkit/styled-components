@@ -7,7 +7,7 @@ import toInt from '@js-toolkit/ts-utils/toInt';
 import noop from '@js-toolkit/ts-utils/noop';
 import WatermarkField from '../WatermarkField';
 import type { Size } from '../ResizeListener';
-import type Theme from '../Theme';
+import type { Theme } from '../Theme';
 
 const useStyles = makeStyles(({ rc }: Theme) => {
   const textStyles: React.CSSProperties = {

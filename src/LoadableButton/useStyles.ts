@@ -1,5 +1,5 @@
 import makeStyles from '@material-ui/styles/makeStyles';
-import Theme, { CSSProperties } from '../Theme';
+import type { Theme, CSSProperties } from '../Theme';
 import type { LoadableButtonProps } from './LoadableButton';
 
 type MakeStylesProps = Pick<LoadableButtonProps, 'loading' | 'spinnerPosition'>;

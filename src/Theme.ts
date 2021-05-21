@@ -23,7 +23,7 @@ export type ButtonThemeSizes = {
   [P in ButtonSize as `size-${P}`]?: CSSProperties;
 };
 
-export default interface Theme {
+export interface Theme {
   rc?: {
     colors?: {
       error?: string;

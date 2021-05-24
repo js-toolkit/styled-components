@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => {
   // Build futured classes from theme
   const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
     (acc, p) => {
-      if (p.startsWith('size-')) acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
+      if (p.indexOf('size-') === 0) acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
       else {
         const colorTheme = restTheme[p] as Record<ButtonVariant, CSSProperties>;
         Object.getOwnPropertyNames(colorTheme).forEach((variant) => {

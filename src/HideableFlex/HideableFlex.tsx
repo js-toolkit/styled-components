@@ -68,9 +68,6 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
-    if (rest['data-id'] === 'CTA') {
-      console.log('end', event.propertyName, disposable, getState().disposed, hidden);
-    }
     if (disposable && event.propertyName === 'visibility') {
       const { disposed } = getState();
       if (hidden && !disposed) setState({ disposed: true });

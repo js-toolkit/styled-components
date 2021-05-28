@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 export interface HideableState {
@@ -8,16 +8,14 @@ export interface HideableState {
 
 export type UseHideableStateProps = HideableState;
 
-export type UseHideableStateResult = [
-  state: HideableState,
-  hide: VoidFunction,
-  disable: VoidFunction
-];
+export type UseHideableStateResult = HideableState & { hide: VoidFunction; disable: VoidFunction };
 
 export default function useHideableState(
   initialState: HideableState | (() => HideableState)
 ): UseHideableStateResult {
   const [state, setState] = useState<HideableState>(initialState);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   const hide = useRefCallback(() => {
     if (!state.visible) return;
@@ -29,5 +27,17 @@ export default function useHideableState(
     setState((prev) => ({ ...prev, enabled: false, visible: false }));
   });
 
-  return [state, hide, disable];
+  return useMemo(
+    () => ({
+      get enabled() {
+        return stateRef.current.enabled;
+      },
+      get visible() {
+        return stateRef.current.visible;
+      },
+      hide,
+      disable,
+    }),
+    [disable, hide]
+  );
 }

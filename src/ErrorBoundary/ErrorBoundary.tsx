@@ -15,7 +15,7 @@ interface State {
 
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
   // eslint-disable-next-line react/state-in-constructor
-  state: State = {
+  override state: State = {
     error: undefined,
   };
 
@@ -33,12 +33,12 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, S
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     const { onError } = this.props;
     onError && onError(error, errorInfo);
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { renderer, children } = this.props;
     const { error } = this.state;
 

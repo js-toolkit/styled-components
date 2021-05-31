@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
-import useGetSetState from 'react-use/esm/useGetSetState';
 import getRandom from '@js-toolkit/ts-utils/getRandom';
 import toInt from '@js-toolkit/ts-utils/toInt';
 import noop from '@js-toolkit/ts-utils/noop';
+import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
 import WatermarkField from '../WatermarkField';
 import type { Size } from '../ResizeListener';
 import type { Theme } from '../Theme';
@@ -85,7 +85,7 @@ export default React.memo(function VideoWatermark({
   const css = useStyles({ classes: { root: className } });
   const rootRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const [getTextSize, setTextSize] = useGetSetState({ textWidth: 0, textHeight: 0 });
+  const [getTextSize, setTextSize] = useUpdateState({ textWidth: 0, textHeight: 0 });
   const [coord, setCoord] = useState<WebKitPoint | undefined>(undefined);
 
   const width = useMemo(() => widthProp && toInt(widthProp), [widthProp]);

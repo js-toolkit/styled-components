@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import useGetSetState from 'react-use/esm/useGetSetState';
+import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
 
 const useStyles = makeStyles({
   root: ({
@@ -61,7 +61,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 }: HideableFlexProps<C>): JSX.Element | null {
   const { onTransitionEnd, children: childrenProp } = rest as React.HTMLAttributes<Element>;
 
-  const [getState, setState] = useGetSetState({
+  const [getState, setState] = useUpdateState({
     disposed: disposable ? !!hidden : false,
     lastChildren: childrenProp,
   });
@@ -70,15 +70,15 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     onTransitionEnd && onTransitionEnd(event);
     if (disposable && event.propertyName === 'visibility') {
       const { disposed } = getState();
-      if (hidden && !disposed) setState({ disposed: true });
-      else if (!hidden && disposed) setState({ disposed: false });
+      if (hidden && !disposed) setState((prev) => ({ ...prev, disposed: true }));
+      else if (!hidden && disposed) setState((prev) => ({ ...prev, disposed: false }));
     }
     if (event.propertyName === 'opacity') {
       if (hidden) {
-        keepChildren && setState({ lastChildren: undefined });
+        keepChildren && setState((prev) => ({ ...prev, lastChildren: undefined }));
         onHidden && onHidden();
       } else {
-        keepChildren && setState({ lastChildren: childrenProp });
+        keepChildren && setState((prev) => ({ ...prev, lastChildren: childrenProp }));
         onShown && onShown();
       }
     }
@@ -86,7 +86,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   useEffect(() => {
     if (disposable && !hidden && getState().disposed) {
-      setState({ disposed: false });
+      setState((prev) => ({ ...prev, disposed: false }));
     }
   }, [disposable, getState, hidden, setState]);
 

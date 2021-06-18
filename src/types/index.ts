@@ -10,12 +10,10 @@ declare module '@material-ui/styles/makeStyles' {
   import type { Omit } from '@material-ui/types';
   import type { DefaultTheme } from '@material-ui/styles/defaultTheme';
 
-  export type MakeStylesHook<
-    Props extends {} = {},
-    ClassKey extends string = string
-  > = keyof Props extends never
-    ? (props?: { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>
-    : (props: Props & { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>;
+  export type MakeStylesHook<Props extends {} = {}, ClassKey extends string = string> =
+    keyof Props extends never
+      ? (props?: { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>
+      : (props: Props & { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>;
 
   /**
    * `makeStyles` where the passed `styles` do depend on props

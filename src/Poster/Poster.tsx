@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@js-toolkit/web-utils/loadImage';
 import takePicture from '@js-toolkit/web-utils/takePicture';
 // import blobToDataUrl from '@js-toolkit/web-utils/blobToDataUrl';
 import noop from '@js-toolkit/ts-utils/noop';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import HideableFlex, { HideableFlexProps } from '../HideableFlex';
 
 const useStyles = makeStyles({
@@ -19,13 +18,19 @@ const useStyles = makeStyles({
 
 export interface PosterProps
   extends FlexComponentProps,
-    Pick<HideableFlexProps, 'hidden' | 'disposable'> {
+    Pick<
+      HideableFlexProps,
+      | 'hidden'
+      | 'disposable'
+      | 'onShown'
+      | 'onHidden'
+      | 'transitionDuration'
+      | 'transitionTimingFunction'
+    > {
   url: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
-  showAfterLoad?: boolean;
+  showImmediately?: boolean;
   onLoaded?: VoidFunction;
-  onShow?: VoidFunction;
-  onHide?: VoidFunction;
   onError?: (error: unknown) => void;
 }
 
@@ -33,20 +38,20 @@ export default function Poster({
   hidden,
   url: urlProp,
   crossOrigin,
-  showAfterLoad = true,
+  showImmediately,
   onLoaded,
-  onShow,
-  onHide,
   onError,
   className,
   style,
   ...rest
 }: PosterProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-  const [url, setUrl] = useState(showAfterLoad ? '' : urlProp);
+  const [url, setUrl] = useState('');
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const loadImagePromise = useMemo(() => loadImage(urlProp, crossOrigin), [urlProp]);
+  const loadImagePromise = useMemo(
+    () => (showImmediately ? undefined : loadImage(urlProp, crossOrigin)),
+    [crossOrigin, showImmediately, urlProp]
+  );
   // const loadImagePromise = useMemo(
   //   () =>
   //     // With `mode: 'no-cors'` can't access to response body so blob length will 0.
@@ -66,37 +71,36 @@ export default function Poster({
   //   [urlProp]
   // );
 
+  useLayoutEffect(() => {
+    if (showImmediately) {
+      setUrl(urlProp);
+    }
+  }, [showImmediately, urlProp]);
+
   useEffect(() => {
-    if (!showAfterLoad) return noop;
-    let unmount = false;
+    if (!loadImagePromise) return noop;
+    let unmounted = false;
 
     void loadImagePromise
       .then((img) => {
-        if (unmount) return;
+        if (unmounted) return;
         const dataUrl = takePicture(img, { quality: 1 });
         setUrl(dataUrl);
       })
-      .catch(onError ?? ((ex) => console.error(ex)))
-      .finally(() => !unmount && onLoaded && onLoaded());
+      .catch((ex) => !unmounted && (onError ? onError(ex) : console.error(ex)))
+      .finally(() => !unmounted && onLoaded && onLoaded());
 
     return () => {
-      unmount = true;
+      unmounted = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadImagePromise]);
-
-  const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
-    if (event.propertyName !== 'visibility') return;
-    if (hidden) onHide && onHide();
-    else onShow && onShow();
-  });
 
   return (
     <HideableFlex
       hidden={hidden || !url}
       transitionTimingFunction={hidden ? 'ease-out' : 'ease-in'}
       transitionDuration="0.25s"
-      onTransitionEnd={transitionEndHandler}
       className={css.root}
       style={url ? { ...style, backgroundImage: `url('${url}')` } : style}
       {...rest}

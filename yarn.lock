@@ -68,10 +68,10 @@
   resolved "https://npm.pkg.github.com/download/@js-toolkit/react-hooks/1.27.0/df0005f9cc1622a18f3f17424ed7150ba64fca19a0a0f609f4b8fb05d8185ea2#9635f792802342a6a17771be23b27362b0e168be"
   integrity sha512-w6XYvQudivEpICTwqVTAY5HokjsxGnZe8LNn48F2Fl+84YnAfrhXyFJcSS5iccXRniSaMbnj2E6CiXANCrixMw==
 
-"@js-toolkit/ts-utils@^1.33.0":
-  version "1.33.0"
-  resolved "https://npm.pkg.github.com/download/@js-toolkit/ts-utils/1.33.0/9e62639d5ca3c0d6944edea3f3d296fc7c7f9e7201245f5f1c4878ec5e0e4e9c#e78759ab2b8d42e7f0977a5ff481f8c0fcc87338"
-  integrity sha512-v1UXwTlMhHGhS4OZazCbNEbiklrM5rCENjD+ROQ5/L0xmOnJ+mt4bIpN/HPNEFmGWJ5pPE8QMV0vGgPFqkKdDw==
+"@js-toolkit/ts-utils@^1.33.1":
+  version "1.33.1"
+  resolved "https://npm.pkg.github.com/download/@js-toolkit/ts-utils/1.33.1/7224a46cb3b80d66ea606eceb77a52304ffc84abb44331cdb04bbe3195bc2c9e#4c6edbb5b212ebe21cd39976ad626e33ebe8ecb1"
+  integrity sha512-lmX16enrQYpLflNAtT8D/FTKzerMirjSMoMJLAWaxvc3VFOjbwHKnROrv0AhoKNFKPeonJ/YFpg7JXEWrl3cHg==
 
 "@js-toolkit/web-utils@^1.22.1":
   version "1.22.1"
@@ -830,10 +830,10 @@ eslint-visitor-keys@^2.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.1.0.tgz#f65328259305927392c938ed44eb0a5c9b2bd303"
   integrity sha512-0rSmRBzXgDzIsD6mGdJgevzgezI534Cer5L/vyMX0kHzT/jiB43jRhd9YUlMGYLQy2zprNmoT8qasCGtY+QaKw==
 
-eslint@^7.28.0:
-  version "7.28.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.28.0.tgz#435aa17a0b82c13bb2be9d51408b617e49c1e820"
-  integrity sha512-UMfH0VSjP0G4p3EWirscJEQ/cHqnT/iuH6oNZOB94nBjWbMnhGEPxsZm1eyIW0C/9jLI0Fow4W5DXLjEI7mn1g==
+eslint@^7.29.0:
+  version "7.29.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.29.0.tgz#ee2a7648f2e729485e4d0bd6383ec1deabc8b3c0"
+  integrity sha512-82G/JToB9qIy/ArBzIWG9xvvwL3R86AlCjtGw+A29OMZDqhTybz/MByORSukGxeI+YPCR4coYyITKk8BFH9nDA==
   dependencies:
     "@babel/code-frame" "7.12.11"
     "@eslint/eslintrc" "^0.4.2"

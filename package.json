@@ -27,7 +27,7 @@
   "devDependencies": {
     "@js-toolkit/configs": "^3.77.5",
     "@js-toolkit/react-hooks": "^1.27.0",
-    "@js-toolkit/ts-utils": "^1.33.0",
+    "@js-toolkit/ts-utils": "^1.33.1",
     "@js-toolkit/web-utils": "^1.22.1",
     "@material-ui/styles": "^4.11.4",
     "@types/react": "17.0.11",
@@ -35,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "copyfiles": "^2.4.1",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",

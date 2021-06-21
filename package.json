@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@js-toolkit/configs": "^3.77.5",
-    "@js-toolkit/react-hooks": "^1.27.0",
+    "@js-toolkit/react-hooks": "^1.28.0",
     "@js-toolkit/ts-utils": "^1.33.1",
     "@js-toolkit/web-utils": "^1.22.1",
     "@material-ui/styles": "^4.11.4",

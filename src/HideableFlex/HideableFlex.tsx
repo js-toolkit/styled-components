@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
+import useIsFirstMount from '@js-toolkit/react-hooks/useIsFirstMount';
 
 const useStyles = makeStyles({
   root: ({
@@ -41,16 +42,18 @@ export type HideableFlexProps<C extends React.ElementType = DefaultComponentType
     disposable?: boolean;
     collapsable?: boolean;
     keepChildren?: boolean;
+    mountWithTransition?: boolean;
     hiddenClassName?: string;
     onHidden?: VoidFunction;
     onShown?: VoidFunction;
   };
 
 export default function HideableFlex<C extends React.ElementType = DefaultComponentType>({
-  hidden,
+  hidden: hiddenProp,
   disposable,
   collapsable,
   keepChildren,
+  mountWithTransition = true,
   className,
   hiddenClassName,
   transitionDuration,
@@ -61,20 +64,42 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 }: HideableFlexProps<C>): JSX.Element | null {
   const { onTransitionEnd, children: childrenProp } = rest as React.HTMLAttributes<Element>;
 
+  const isFirstMount = useIsFirstMount();
+
   const [getState, setState] = useUpdateState({
-    disposed: disposable ? !!hidden : false,
+    hidden: mountWithTransition ? true : hiddenProp,
+    disposed: disposable ? !!hiddenProp || mountWithTransition : false,
     lastChildren: childrenProp,
   });
+
+  // Sync state with prop
+  useLayoutEffect(() => {
+    if (isFirstMount()) return;
+    setState((prev) => ({
+      ...prev,
+      hidden: hiddenProp,
+      // Restore if not hidden
+      disposed: disposable && !hiddenProp ? false : prev.disposed,
+    }));
+  }, [disposable, hiddenProp, isFirstMount, setState]);
+
+  // Immediatly show after first render to activate transition
+  useEffect(() => {
+    if (mountWithTransition && !hiddenProp) {
+      setState((prev) => ({ ...prev, hidden: false }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
     if (disposable && event.propertyName === 'visibility') {
-      const { disposed } = getState();
+      const { hidden, disposed } = getState();
       if (hidden && !disposed) setState((prev) => ({ ...prev, disposed: true }));
       else if (!hidden && disposed) setState((prev) => ({ ...prev, disposed: false }));
     }
     if (event.propertyName === 'opacity') {
-      if (hidden) {
+      if (getState().hidden) {
         keepChildren && setState((prev) => ({ ...prev, lastChildren: undefined }));
         onHidden && onHidden();
       } else {
@@ -84,13 +109,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     }
   });
 
-  useEffect(() => {
-    if (disposable && !hidden && getState().disposed) {
-      setState((prev) => ({ ...prev, disposed: false }));
-    }
-  }, [disposable, getState, hidden, setState]);
-
-  const { disposed, lastChildren } = getState();
+  const { hidden, disposed, lastChildren } = getState();
   const children = keepChildren ? childrenProp || lastChildren : childrenProp;
 
   const css = useStyles({

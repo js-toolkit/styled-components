@@ -9,11 +9,13 @@ const useStyles = makeStyles({
   root: ({
     hidden,
     collapsable,
-    transitionDuration = '0.2s',
-    transitionTimingFunction = 'ease',
-  }: Pick<
-    HideableFlexProps,
-    'hidden' | 'collapsable' | 'transitionDuration' | 'transitionTimingFunction'
+    transitionDuration,
+    transitionTimingFunction,
+  }: Required<
+    Pick<
+      HideableFlexProps,
+      'hidden' | 'collapsable' | 'transitionDuration' | 'transitionTimingFunction'
+    >
   >) => {
     if (hidden) {
       return {
@@ -56,8 +58,8 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   mountWithTransition = true,
   className,
   hiddenClassName,
-  transitionDuration,
-  transitionTimingFunction,
+  transitionDuration = '0.2s',
+  transitionTimingFunction = 'ease',
   onHidden,
   onShown,
   ...rest
@@ -67,7 +69,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   const isFirstMount = useIsFirstMount();
 
   const [getState, setState] = useUpdateState({
-    hidden: mountWithTransition ? true : hiddenProp,
+    hidden: mountWithTransition ? true : !!hiddenProp,
     disposed: disposable ? !!hiddenProp || mountWithTransition : false,
     lastChildren: childrenProp,
   });
@@ -77,7 +79,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     if (isFirstMount()) return;
     setState((prev) => ({
       ...prev,
-      hidden: hiddenProp,
+      hidden: !!hiddenProp,
       // Restore if not hidden
       disposed: disposable && !hiddenProp ? false : prev.disposed,
     }));
@@ -115,7 +117,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   const css = useStyles({
     classes: { root: className },
     hidden: disposable ? hidden || disposed : hidden,
-    collapsable,
+    collapsable: !!collapsable,
     transitionDuration,
     transitionTimingFunction,
   });

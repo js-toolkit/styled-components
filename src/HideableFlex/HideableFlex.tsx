@@ -88,7 +88,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   // Immediatly show after first render to activate transition
   useEffect(() => {
     if (mountWithTransition && !hiddenProp) {
-      setState((prev) => ({ ...prev, hidden: false }));
+      setState((prev) => ({ ...prev, hidden: false, disposed: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

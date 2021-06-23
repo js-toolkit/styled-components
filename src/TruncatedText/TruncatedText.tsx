@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllProps<C, true>;
 
 export default function TruncatedText<C extends React.ElementType = 'span'>({
-  component = 'span',
+  component = 'span' as C,
   className,
   ...rest
 }: TruncatedTextProps<C>): JSX.Element {

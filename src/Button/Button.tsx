@@ -40,7 +40,7 @@ export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C
   ButtonStyleProps;
 
 export default function Button<C extends React.ElementType = 'button'>({
-  component = 'button',
+  component = 'button' as C,
   size = 'm',
   color = 'default',
   variant = 'filled',

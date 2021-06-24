@@ -30,6 +30,8 @@ export interface PosterProps
   url: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
   showImmediately?: boolean;
+  timeout?: number;
+  onLoadTimeout?: VoidFunction;
   onLoaded?: VoidFunction;
   onError?: (error: unknown) => void;
 }
@@ -39,6 +41,8 @@ export default function Poster({
   url: urlProp,
   crossOrigin,
   showImmediately,
+  timeout,
+  onLoadTimeout,
   onLoaded,
   onError,
   className,
@@ -81,9 +85,13 @@ export default function Poster({
     if (!loadImagePromise) return noop;
     let unmounted = false;
 
+    const timer =
+      timeout != null && timeout > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
+
     void loadImagePromise
       .then((img) => {
         if (unmounted) return;
+        clearTimeout(timer);
         const dataUrl = takePicture(img, { quality: 1 });
         setUrl(dataUrl);
       })
@@ -92,6 +100,7 @@ export default function Poster({
 
     return () => {
       unmounted = true;
+      clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadImagePromise]);

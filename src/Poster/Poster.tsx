@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@js-toolkit/web-utils/loadImage';
 import takePicture from '@js-toolkit/web-utils/takePicture';
 // import blobToDataUrl from '@js-toolkit/web-utils/blobToDataUrl';
 import noop from '@js-toolkit/ts-utils/noop';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import HideableFlex, { HideableFlexProps } from '../HideableFlex';
 
 const useStyles = makeStyles({
@@ -50,7 +51,11 @@ export default function Poster({
   ...rest
 }: PosterProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-  const [url, setUrl] = useState('');
+
+  const [getUrl, setUrl] = useUpdatedRefState(showImmediately ? urlProp : '', [
+    showImmediately,
+    urlProp,
+  ]);
 
   const loadImagePromise = useMemo(
     () => (showImmediately ? undefined : loadImage(urlProp, crossOrigin)),
@@ -75,12 +80,6 @@ export default function Poster({
   //   [urlProp]
   // );
 
-  useLayoutEffect(() => {
-    if (showImmediately) {
-      setUrl(urlProp);
-    }
-  }, [showImmediately, urlProp]);
-
   useEffect(() => {
     if (!loadImagePromise) return noop;
     let unmounted = false;
@@ -104,6 +103,8 @@ export default function Poster({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadImagePromise]);
+
+  const url = getUrl();
 
   return (
     <HideableFlex

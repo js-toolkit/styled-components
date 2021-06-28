@@ -1,9 +1,8 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
-import useIsFirstMount from '@js-toolkit/react-hooks/useIsFirstMount';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 
 const useStyles = makeStyles({
   root: ({
@@ -50,6 +49,12 @@ export type HideableFlexProps<C extends React.ElementType = DefaultComponentType
     onShown?: VoidFunction;
   };
 
+interface State {
+  hidden: boolean;
+  disposed: boolean;
+  lastChildren: React.ReactNode;
+}
+
 export default function HideableFlex<C extends React.ElementType = DefaultComponentType>({
   hidden: hiddenProp,
   disposable,
@@ -66,24 +71,26 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 }: HideableFlexProps<C>): JSX.Element | null {
   const { onTransitionEnd, children: childrenProp } = rest as React.HTMLAttributes<Element>;
 
-  const isFirstMount = useIsFirstMount();
-
-  const [getState, setState] = useUpdateState({
-    hidden: mountWithTransition ? true : !!hiddenProp,
-    disposed: disposable ? !!hiddenProp || mountWithTransition : false,
-    lastChildren: childrenProp,
-  });
-
-  // Sync state with prop
-  useLayoutEffect(() => {
-    if (isFirstMount()) return;
-    setState((prev) => ({
-      ...prev,
-      hidden: !!hiddenProp,
-      // Restore if not hidden
-      disposed: disposable && !hiddenProp ? false : prev.disposed,
-    }));
-  }, [disposable, hiddenProp, isFirstMount, setState]);
+  const [getState, setState] = useUpdatedRefState<State>(
+    (prev) => {
+      // Initial state
+      if (!prev) {
+        return {
+          hidden: mountWithTransition ? true : !!hiddenProp,
+          disposed: disposable ? !!hiddenProp || mountWithTransition : false,
+          lastChildren: childrenProp,
+        };
+      }
+      // Sync state with prop
+      return {
+        ...prev,
+        hidden: !!hiddenProp,
+        // Restore if not hidden
+        disposed: disposable && !hiddenProp ? false : prev.disposed,
+      };
+    },
+    [disposable, hiddenProp]
+  );
 
   // Immediatly show after first render to activate transition
   useEffect(() => {

@@ -19,15 +19,14 @@ interface LoadableStyleProps {
   animation?: boolean;
 }
 
-export type LoadableFlexProps<
-  C extends React.ElementType = DefaultComponentType
-> = React.PropsWithChildren<
-  FlexAllProps<C, true> &
-    LoadableStyleProps & {
-      spinner?: boolean | React.ReactElement;
-      spinnerClassName?: string;
-    }
->;
+export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType> =
+  React.PropsWithChildren<
+    FlexAllProps<C, true> &
+      LoadableStyleProps & {
+        spinner?: boolean | React.ReactElement;
+        spinnerClassName?: string;
+      }
+  >;
 
 type MakeStylesProps = LoadableStyleProps & { keepShowing: boolean };
 

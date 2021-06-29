@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps, FlexAllProps } from 'reflexy';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 import InvalidIcon from './InvalidIcon';
 
 export interface InputGroupProps<C extends React.ElementType = 'input'> extends FlexComponentProps {

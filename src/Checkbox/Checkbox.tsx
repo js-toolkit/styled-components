@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef, useContext } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 import CheckboxContext, { CheckboxContextValue } from './CheckboxContext';
 
 export type CheckboxType = 'checkbox' | 'radio' | 'switch';

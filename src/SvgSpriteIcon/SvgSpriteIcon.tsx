@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 
 type MakeStylesProps = Pick<SvgSpriteIconProps<string>, 'scaleOnHover'>;
 

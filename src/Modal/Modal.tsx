@@ -10,7 +10,7 @@ import {
   StylesTransformersProps,
 } from 'reflexy/styled';
 import CloseIcon from './CloseIcon';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 
 ReactModal.defaultStyles.content = {};
 ReactModal.defaultStyles.overlay = {};

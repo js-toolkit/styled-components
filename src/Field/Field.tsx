@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 
 export interface FieldProps extends FlexComponentProps {
   label?: string | (FlexComponentProps<'label'> & { content?: React.ReactNode });

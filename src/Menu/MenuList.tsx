@@ -4,7 +4,7 @@ import useTheme from '@material-ui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 import Button from '../Button';
 import MenuListItem, { MenuListItemProps } from './MenuListItem';
 

@@ -7,7 +7,7 @@ import noop from '@js-toolkit/ts-utils/noop';
 import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
 import WatermarkField from '../WatermarkField';
 import type { Size } from '../ResizeListener';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 
 const useStyles = makeStyles(({ rc }: Theme) => {
   const textStyles: React.CSSProperties = {

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import type { Theme } from '../../Theme';
+import type { Theme } from '../../theme';
 import UserIcon from './UserIcon';
 
 export interface AvatarProps extends FlexComponentProps<'div'> {

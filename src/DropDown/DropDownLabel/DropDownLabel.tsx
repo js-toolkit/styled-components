@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
-import type { Theme } from '../../Theme';
+import type { Theme } from '../../theme';
 import DropDownContext from '../DropDownContext';
 import ExpandIcon from './ExpandIcon';
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
-import type { Theme } from '../Theme';
+import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: theme.rc?.HighlightedText?.root ?? {},

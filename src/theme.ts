@@ -226,5 +226,12 @@ export interface Theme {
       checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
       submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
     };
+
+    Tooltip?: {
+      style?: CSSProperties;
+      title?: CSSProperties;
+      subtitle?: CSSProperties;
+      arrowColor?: string;
+    };
   };
 }

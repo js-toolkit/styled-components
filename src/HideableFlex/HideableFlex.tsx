@@ -34,20 +34,23 @@ const useStyles = makeStyles({
   },
 });
 
+export interface HideableProps
+  extends Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'> {
+  readonly hidden?: boolean;
+  readonly disposable?: boolean;
+  readonly collapsable?: boolean;
+  readonly keepChildren?: boolean;
+  readonly mountWithTransition?: boolean;
+  readonly hiddenClassName?: string;
+  readonly onHidden?: VoidFunction;
+  readonly onShown?: VoidFunction;
+}
+
 export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
   C,
   true
 > &
-  Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'> & {
-    readonly hidden?: boolean;
-    readonly disposable?: boolean;
-    readonly collapsable?: boolean;
-    readonly keepChildren?: boolean;
-    readonly mountWithTransition?: boolean;
-    readonly hiddenClassName?: string;
-    readonly onHidden?: VoidFunction;
-    readonly onShown?: VoidFunction;
-  };
+  HideableProps;
 
 interface State {
   readonly hidden: boolean;

@@ -39,20 +39,20 @@ export type HideableFlexProps<C extends React.ElementType = DefaultComponentType
   true
 > &
   Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'> & {
-    hidden?: boolean;
-    disposable?: boolean;
-    collapsable?: boolean;
-    keepChildren?: boolean;
-    mountWithTransition?: boolean;
-    hiddenClassName?: string;
-    onHidden?: VoidFunction;
-    onShown?: VoidFunction;
+    readonly hidden?: boolean;
+    readonly disposable?: boolean;
+    readonly collapsable?: boolean;
+    readonly keepChildren?: boolean;
+    readonly mountWithTransition?: boolean;
+    readonly hiddenClassName?: string;
+    readonly onHidden?: VoidFunction;
+    readonly onShown?: VoidFunction;
   };
 
 interface State {
-  hidden: boolean;
-  disposed: boolean;
-  lastChildren: React.ReactNode;
+  readonly hidden: boolean;
+  readonly disposed: boolean;
+  readonly lastChildren: React.ReactNode;
 }
 
 export default function HideableFlex<C extends React.ElementType = DefaultComponentType>({

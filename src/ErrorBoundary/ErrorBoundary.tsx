@@ -1,23 +1,20 @@
 import React from 'react';
-import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
+import DefaultRenderer from './DefaultRenderer';
 
-export type ErrorBoundaryProps = {
+export interface ErrorBoundaryProps {
   error?: unknown;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-} & (
-  | ({ renderer?: undefined } & Partial<DefaultRendererProps>)
-  | { renderer: (error: unknown) => React.ReactNode }
-);
+  renderer: (error: unknown) => React.ReactNode;
+}
 
 interface State {
   error: unknown;
 }
 
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
-  // eslint-disable-next-line react/state-in-constructor
-  override state: State = {
-    error: undefined,
-  };
+  static defaultRenderer: ErrorBoundaryProps['renderer'] = (error) => (
+    <DefaultRenderer error={error} />
+  );
 
   static getDerivedStateFromProps(
     nextProps: ErrorBoundaryProps,
@@ -32,6 +29,11 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, S
   static getDerivedStateFromError(error: unknown): State {
     return { error };
   }
+
+  // eslint-disable-next-line react/state-in-constructor
+  override state: State = {
+    error: undefined,
+  };
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     const { onError } = this.props;
@@ -50,6 +52,6 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, S
       return renderer(error);
     }
 
-    return <DefaultRenderer error={error} />;
+    return null;
   }
 }

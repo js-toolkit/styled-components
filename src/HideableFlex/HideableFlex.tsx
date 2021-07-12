@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     >
   >) => {
     const duration =
-      typeof transitionDuration === 'number' ? `${transitionDuration}s` : transitionDuration;
+      typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
     if (hidden) {
       return {
         pointerEvents: 'none',

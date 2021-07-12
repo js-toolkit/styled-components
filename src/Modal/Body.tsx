@@ -29,7 +29,7 @@ export function getBodyStyles() {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     ...getBodyStyles().root,
-    ...theme.rc?.Modal?.Content,
+    ...theme.rc?.Modal?.Body,
   },
 }));
 

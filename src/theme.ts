@@ -3,6 +3,7 @@ import type { FlexComponentProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
+import type { ModalProps } from './Modal';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -52,13 +53,10 @@ export interface Theme {
       overlay?: CSSProperties;
 
       Header?: CSSProperties & { closeIcon?: CSSProperties };
-      Content?: CSSProperties;
+      Body?: CSSProperties;
       Footer?: CSSProperties;
-
-      widthXS?: string | number;
-      widthS?: string | number;
-      widthM?: string | number;
-      widthL?: string | number;
+    } & {
+      [P in NonNullable<ModalProps['size']> as `size-${P}`]?: CSSProperties;
     };
 
     LoadableFlex?: {

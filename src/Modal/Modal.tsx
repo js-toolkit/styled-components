@@ -1,8 +1,10 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
+import '@js-toolkit/ts-utils/types';
 import ReactModal from 'react-modal';
-import { Flex, FlexComponentProps, StylesTransformersProps } from 'reflexy/styled';
-import type { Theme } from '../theme';
+import { Flex, FlexComponentProps, GetStylesTransformers } from 'reflexy/styled';
+import type { CSSProperties, Theme } from '../theme';
+import HideableFlex, { HideableProps } from '../HideableFlex';
 import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
@@ -10,86 +12,108 @@ import Footer from './Footer';
 ReactModal.defaultStyles.content = {};
 ReactModal.defaultStyles.overlay = {};
 
+type ModalSize = 'auto' | 'xs' | 's' | 'm' | 'l';
+
 export interface ModalProps
-  extends Omit<ReactModal.Props, 'className' | 'overlayClassName' | 'style'>,
-    FlexComponentProps {
-  overlayClassName?: string;
-  overlayStyle?: FlexComponentProps['style'];
-  transitionDuration?: number;
-  blurBackdrop?: boolean;
-  lockBodyScroll?: boolean;
-  size?: 'auto' | 'xs' | 's' | 'm' | 'l';
+  extends ExcludeTypes<
+      RequiredSome<HideableProps, 'hidden'>,
+      string,
+      { pick: 'transitionDuration' }
+    >,
+    Omit<
+      FlexComponentProps<typeof ReactModal, { defaultStyles: true }>,
+      'isOpen' | 'overlayClassName'
+    > {
+  readonly overlayClassName?: this['className'];
+  readonly overlayStyle?: this['style'];
+  readonly blurBackdrop?: boolean;
+  readonly lockBodyScroll?: boolean;
+  readonly size?: ModalSize;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    outline: 'none',
-    borderRadius: 'var(--rc--modal-border-radius, 5px)',
-    boxShadow:
-      'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
-    maxWidth: '100vw',
+type UseStylesProps = Pick<ModalProps, 'blurBackdrop' | 'lockBodyScroll'>;
 
-    width: ({ size = 'auto' }: Partial<ModalProps>) =>
-      size === 'auto'
-        ? 'auto'
-        : (theme.rc?.Modal?.[`width${size.toUpperCase()}`] as string | number) ||
-          `var(--rc--modal-width-${size})` ||
-          undefined,
+const useStyles = makeStyles((theme: Theme) => {
+  const modal = theme.rc?.Modal ?? {};
 
-    ...theme.rc?.Modal?.root,
-  },
+  // Build futured classes from theme
+  const sizeClasses = Object.getOwnPropertyNames(modal).reduce((acc, p) => {
+    if (p.indexOf('size-') === 0) acc[p] = { ...(modal[p] as CSSProperties) };
+    return acc;
+  }, {} as Record<ModalSize, CSSProperties>);
 
-  overlay: ({ transitionDuration, blurBackdrop }: Partial<ModalProps>) => ({
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
-    zIndex: 1,
-    overflowX: 'hidden',
-    overflowY: 'auto',
+  return {
+    root: {
+      outline: 'none',
+      borderRadius: 'var(--rc--modal-border-radius, 5px)',
+      boxShadow:
+        'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
+      maxWidth: '100vw',
 
-    ...(transitionDuration
-      ? {
-          opacity: 0,
-          transition: `all ${transitionDuration}ms`,
-          backdropFilter: blurBackdrop ? 'blur(3px)' : undefined,
+      // width: ({ size = 'auto' }: Partial<ModalProps>) =>
+      //   (size === 'auto'
+      //     ? modal[`width-${size}`] || 'auto'
+      //     : modal[`width-${size}`] || `var(--rc--modal-width-${size})`) as string | number,
 
-          '& $root': {
-            transition: `all ${transitionDuration}ms`,
-            transform: 'scale(0.7)',
-            opacity: 0,
-          },
+      ...modal.root,
+    },
 
-          '&.open': {
-            opacity: 1,
+    ...sizeClasses,
 
-            '&:not(.close) $root': {
-              transform: 'scale(1)',
-              opacity: 1,
-            },
-          },
+    overlay: ({ /* transitionDuration, */ blurBackdrop }: UseStylesProps) => ({
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
+      zIndex: 1,
+      overflowX: 'hidden',
+      overflowY: 'auto',
 
-          '&.close': {
-            opacity: 0,
-          },
-        }
-      : undefined),
+      backdropFilter: blurBackdrop ? 'blur(3px)' : undefined,
 
-    ...theme.rc?.Modal?.overlay,
-  }),
+      // ...(transitionDuration
+      //   ? {
+      //       opacity: 0,
+      //       transition: `all ${transitionDuration}`,
+      //       backdropFilter: blurBackdrop ? 'blur(3px)' : undefined,
 
-  body: {
-    /* hide scrollbar of body */
-    overflow: ({ lockBodyScroll }: Partial<ModalProps>) => (lockBodyScroll ? 'hidden' : undefined),
-  },
-}));
+      //       '& $root': {
+      //         transition: `all ${transitionDuration}`,
+      //         transform: 'scale(0.7)',
+      //         opacity: 0,
+      //       },
 
-const classNameTransformer: StylesTransformersProps<ReactModal.Props>['classNameTransformer'] = (
+      //       '&.open': {
+      //         opacity: 1,
+
+      //         '&:not(.close) $root': {
+      //           transform: 'scale(1)',
+      //           opacity: 1,
+      //         },
+      //       },
+
+      //       '&.close': {
+      //         opacity: 0,
+      //       },
+      //     }
+      //   : undefined),
+
+      ...modal.overlay,
+    }),
+
+    body: {
+      /* hide scrollbar of body */
+      overflow: ({ lockBodyScroll }: UseStylesProps) => (lockBodyScroll ? 'hidden' : undefined),
+    },
+  };
+});
+
+const classNameTransformer: GetStylesTransformers<ReactModal.Props>['classNameTransformer'] = (
   calcClassName,
   userClassName
 ) => {
@@ -102,19 +126,19 @@ const classNameTransformer: StylesTransformersProps<ReactModal.Props>['className
   return `${calcClassName} ${userClassName}`;
 };
 
-const styleTransformer: StylesTransformersProps<ReactModal.Props>['styleTransformer'] = (
+const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransformer'] = (
   calcStyle,
   userStyle
 ) => {
   return userStyle
     ? { content: { ...calcStyle, ...userStyle.content }, overlay: userStyle.overlay }
-    : { content: { ...calcStyle } };
+    : { content: calcStyle };
 };
 
 function Modal({
   size = 'auto',
   lockBodyScroll,
-  transitionDuration = 200,
+  transitionDuration = 0.2,
   blurBackdrop,
   className,
   overlayClassName,
@@ -129,8 +153,8 @@ function Modal({
       overlay: overlayClassName,
       body: bodyOpenClassName || undefined,
     },
-    size,
-    transitionDuration: transitionDuration ?? 200,
+    // size,
+    // transitionDuration,
     blurBackdrop,
     lockBodyScroll,
   });
@@ -141,11 +165,15 @@ function Modal({
     beforeClose: 'close',
   };
 
+  const sizeClassName = (css[`size-${size}`] as string) ?? '';
+
   return (
-    <Flex
-      column
+    <HideableFlex
       component={ReactModal}
-      className={css.root}
+      column
+      transitionDuration={transitionDuration}
+      isOpen={!rest.hidden}
+      className={`${css.root} ${sizeClassName}`}
       overlayClassName={calcOverlayClassName}
       style={{ content: style, overlay: overlayStyle }}
       classNameTransformer={classNameTransformer}
@@ -159,12 +187,13 @@ function Modal({
 }
 
 function AsChild({
-  size,
+  size = 'auto',
   className,
   ...rest
 }: Pick<ModalProps, 'size'> & FlexComponentProps<'div'>): JSX.Element {
-  const css = useStyles({ classes: { root: className }, size });
-  return <Flex column className={css.root} {...rest} />;
+  const css = useStyles({ classes: { root: className } });
+  const sizeClassName = (css[`size-${size}`] as string) ?? '';
+  return <Flex column className={`${css.root} ${sizeClassName}`} {...rest} />;
 }
 
 Modal.Header = Header;

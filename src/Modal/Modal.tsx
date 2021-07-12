@@ -138,13 +138,15 @@ const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransforme
 function Modal({
   size = 'auto',
   lockBodyScroll,
-  transitionDuration = 0.2,
+  transitionDuration = 200,
   blurBackdrop,
   className,
   overlayClassName,
   bodyOpenClassName,
   style,
   overlayStyle,
+  onShown,
+  onHidden,
   ...rest
 }: React.PropsWithChildren<ModalProps>): JSX.Element {
   const css = useStyles({
@@ -181,6 +183,8 @@ function Modal({
       closeTimeoutMS={transitionDuration}
       parentSelector={Modal.defaultParentSelector}
       bodyOpenClassName={css.body}
+      onAfterOpen={onShown}
+      onAfterClose={onHidden}
       {...rest}
     />
   );

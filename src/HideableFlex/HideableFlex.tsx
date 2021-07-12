@@ -46,11 +46,8 @@ export interface HideableProps
   readonly onShown?: VoidFunction;
 }
 
-export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
-  C,
-  true
-> &
-  HideableProps;
+export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> =
+  FlexAllProps<C> & HideableProps;
 
 interface State {
   readonly hidden: boolean;

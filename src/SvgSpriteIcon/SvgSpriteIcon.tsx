@@ -3,6 +3,13 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import type { Theme } from '../theme';
 
+/** Uses in '*.svg' imports which processed by svg-sprite-loader. */
+export interface SvgSymbolInfo {
+  id: string;
+  viewBox: string;
+  content: string;
+}
+
 type MakeStylesProps = Pick<SvgSpriteIconProps<string>, 'scaleOnHover'>;
 
 const useStyles = makeStyles({

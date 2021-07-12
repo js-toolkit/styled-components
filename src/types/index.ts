@@ -1,26 +1,25 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-duplicates */
+/*
+ * todo: remove after fixed in original source
+ */
 
-// todo: remove after fixed in original source
 declare module '@material-ui/styles/makeStyles' {
   import type { ClassNameMap, Styles, WithStylesOptions } from '@material-ui/styles/withStyles';
   import type { Omit } from '@material-ui/types';
   import type { DefaultTheme } from '@material-ui/styles/defaultTheme';
 
-  export type MakeStylesHook<Props extends {} = {}, ClassKey extends string = string> =
-    keyof Props extends never
-      ? (props?: { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>
-      : (props: Props & { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>;
+  export type MakeStylesHook<
+    Props extends AnyObject = EmptyObject,
+    ClassKey extends string = string
+  > = keyof Props extends never
+    ? (props?: { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>
+    : (props: Props & { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>;
 
   /**
    * `makeStyles` where the passed `styles` do depend on props
    */
   export default function makeStyles<
     Theme = DefaultTheme,
-    Props extends {} = {},
+    Props extends AnyObject = EmptyObject,
     ClassKey extends string = string
   >(
     styles: Styles<Theme, Props, ClassKey>,
@@ -31,13 +30,13 @@ declare module '@material-ui/styles/makeStyles' {
    * `makeStyles` where the passed `styles` do not depend on props
    */
   export default function makeStyles<Theme = DefaultTheme, ClassKey extends string = string>(
-    styles: Styles<Theme, {}, ClassKey>,
+    styles: Styles<Theme, EmptyObject, ClassKey>,
     options?: Omit<WithStylesOptions<Theme>, 'withTheme'>
-  ): MakeStylesHook<{}, ClassKey>;
+  ): MakeStylesHook<EmptyObject, ClassKey>;
 }
 
-// todo: remove after fixed in original source
 declare module '@material-ui/styles/styled' {
+  // eslint-disable-next-line import/no-extraneous-dependencies
   import { Omit, Overwrite } from '@material-ui/types';
   import {
     CreateCSSProperties,
@@ -47,14 +46,11 @@ declare module '@material-ui/styles/styled' {
   import * as React from 'react';
   import { DefaultTheme } from '@material-ui/styles/defaultTheme';
 
-  export type StyledComponent<P extends {}> = (props: P) => React.ReactElement<P, any> | null;
+  export type StyledComponent<P extends AnyObject> = (props: P) => React.ReactElement<P> | null;
 
-  /**
-   * @internal
-   */
   export type ComponentCreator<Component extends React.ElementType> = <
     Theme = DefaultTheme,
-    Props extends {} = React.ComponentPropsWithoutRef<Component>
+    Props extends AnyObject = React.ComponentPropsWithoutRef<Component>
   >(
     styles:
       | CreateCSSProperties<Props>
@@ -74,6 +70,6 @@ declare module '@material-ui/styles/styled' {
   }
 
   export default function styled<Component extends React.ElementType>(
-    Component: Component
+    component: Component
   ): ComponentCreator<Component>;
 }

@@ -2009,10 +2009,10 @@ readable-stream@~2.3.6:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-reflexy@^3.36.1:
-  version "3.36.1"
-  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.36.1.tgz#51580028dca0dc4b1bf8850ccbe2b5be45af6863"
-  integrity sha512-mfNwl00J4mp2UkWWAHN0d8WOciA3ZnGZ9LiKtOUP4E6QSdepEfFNDoZ38W/cUQR5YifooTKf+wr3MelkXlr2Cw==
+reflexy@^3.37.0:
+  version "3.37.0"
+  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.37.0.tgz#571e2e5215fe9ec48df1a2884393f576f72a72a8"
+  integrity sha512-9IumZKMV+TQpl//debRTqyXJut263fWYq79ZXdpMxImzvioTZ0g7a9E8HzMb7EjaRtQl4fv+GGCBqG2/4Tps+g==
 
 regenerator-runtime@^0.13.4:
   version "0.13.7"

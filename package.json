@@ -60,7 +60,7 @@
     "react-modal": "^3.14.3",
     "react-outside-click-listener": "^1.4.1",
     "react-use": "^17.2.4",
-    "reflexy": "^3.36.1",
+    "reflexy": "^3.37.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.3.5"
   },

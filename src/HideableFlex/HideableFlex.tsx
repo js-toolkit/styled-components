@@ -16,26 +16,31 @@ const useStyles = makeStyles({
       'hidden' | 'collapsable' | 'transitionDuration' | 'transitionTimingFunction'
     >
   >) => {
+    const duration =
+      typeof transitionDuration === 'number' ? `${transitionDuration}s` : transitionDuration;
     if (hidden) {
       return {
         pointerEvents: 'none',
         visibility: 'hidden',
         opacity: 0,
         maxHeight: collapsable ? 0 : undefined,
-        transition: `visibility 0.1ms ${transitionTimingFunction} ${transitionDuration}, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
+        transition: `visibility 0.1ms ${transitionTimingFunction} ${duration}, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`,
       };
     }
     return {
       visibility: 'visible',
       opacity: 1,
       maxHeight: collapsable ? '100vh' : undefined,
-      transition: `visibility 0.1ms ${transitionTimingFunction} 0s, max-height ${transitionDuration} ${transitionTimingFunction}, opacity ${transitionDuration} ${transitionTimingFunction}`,
+      transition: `visibility 0.1ms ${transitionTimingFunction} 0s, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`,
     };
   },
 });
 
 export interface HideableProps
-  extends Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'> {
+  extends Override<
+    Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'>,
+    { transitionDuration?: number | string }
+  > {
   readonly hidden?: boolean;
   readonly disposable?: boolean;
   readonly collapsable?: boolean;
@@ -46,8 +51,11 @@ export interface HideableProps
   readonly onShown?: VoidFunction;
 }
 
-export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> =
-  FlexAllProps<C> & HideableProps;
+export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
+  C,
+  { defaultStyles: { className: true } }
+> &
+  HideableProps;
 
 interface State {
   readonly hidden: boolean;

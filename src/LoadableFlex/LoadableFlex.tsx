@@ -14,14 +14,14 @@ interface LoadableStyleProps {
   blur?: boolean;
   spinnerSize?: SpinnerSize;
   spinnerPosition?: SpinnerPosition;
-  /** @deprecated */
+  /** @deprecated Use `animation` */
   transition?: boolean;
   animation?: boolean;
 }
 
 export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType> =
   React.PropsWithChildren<
-    FlexAllProps<C, true> &
+    FlexAllProps<C, { defaultStyles: true }> &
       LoadableStyleProps & {
         spinner?: boolean | React.ReactElement;
         spinnerClassName?: string;

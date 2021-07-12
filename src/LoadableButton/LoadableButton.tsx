@@ -9,13 +9,13 @@ import useStyles from './useStyles';
 export type SpinnerPosition = Extract<LoadableSpinnerPosition, 'right' | 'left' | 'center'>;
 
 export type LoadableButtonProps<C extends React.ElementType = 'button'> = Omit<
-  LoadableFlexProps<C>,
+  LoadableFlexProps<any>,
   'size' | 'color' | 'variant' | 'spinnerPosition' | 'spinnerSize'
 > &
   ButtonProps<C> & { spinnerPosition?: SpinnerPosition };
 
 export default function LoadableButton<C extends React.ElementType = 'button'>({
-  // component = 'button',
+  component = Button as C,
   loading,
   spinnerPosition = 'center',
   spinnerClassName,
@@ -33,7 +33,7 @@ export default function LoadableButton<C extends React.ElementType = 'button'>({
       center
       shrink={false}
       className={css.root}
-      component={Button}
+      component={component}
       loading={loading}
       spinnerPosition={spinnerPosition}
       spinnerClassName={css.spinner}

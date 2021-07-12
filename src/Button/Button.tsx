@@ -36,7 +36,10 @@ export interface ButtonStyleProps {
   variant?: ButtonVariants[ButtonVariant];
 }
 
-export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C, true> &
+export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<
+  C,
+  { defaultStyles: true }
+> &
   ButtonStyleProps;
 
 export default function Button<C extends React.ElementType = 'button'>({

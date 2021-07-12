@@ -5,14 +5,13 @@ import type { Theme } from '../../theme';
 import DropDownContext from '../DropDownContext';
 import ExpandIcon from './ExpandIcon';
 
-export type DropDownLabelProps<
-  C extends React.ElementType = DefaultComponentType
-> = React.PropsWithChildren<{
-  toggleOnClick?: boolean;
-  expandedClassName?: string;
-  expandIcon?: boolean | React.ReactElement;
-}> &
-  FlexAllProps<C, true>;
+export type DropDownLabelProps<C extends React.ElementType = DefaultComponentType> =
+  React.PropsWithChildren<{
+    toggleOnClick?: boolean;
+    expandedClassName?: string;
+    expandIcon?: boolean | React.ReactElement;
+  }> &
+    FlexAllProps<C, { defaultStyles: true }>;
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: theme.rc?.DropDownLabel?.root ?? {},

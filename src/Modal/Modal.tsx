@@ -31,7 +31,7 @@ export interface ModalProps
   readonly size?: ModalSize;
 }
 
-type UseStylesProps = Pick<ModalProps, 'blurBackdrop' | 'lockBodyScroll'>;
+type MakeStylesProps = Pick<ModalProps, 'blurBackdrop' | 'lockBodyScroll'>;
 
 const useStyles = makeStyles((theme: Theme) => {
   const modal = theme.rc?.Modal ?? {};
@@ -49,18 +49,12 @@ const useStyles = makeStyles((theme: Theme) => {
       boxShadow:
         'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
       maxWidth: '100vw',
-
-      // width: ({ size = 'auto' }: Partial<ModalProps>) =>
-      //   (size === 'auto'
-      //     ? modal[`width-${size}`] || 'auto'
-      //     : modal[`width-${size}`] || `var(--rc--modal-width-${size})`) as string | number,
-
       ...modal.root,
     },
 
     ...sizeClasses,
 
-    overlay: ({ /* transitionDuration, */ blurBackdrop }: UseStylesProps) => ({
+    overlay: {
       position: 'fixed',
       top: 0,
       left: 0,
@@ -74,41 +68,14 @@ const useStyles = makeStyles((theme: Theme) => {
       overflowX: 'hidden',
       overflowY: 'auto',
 
-      backdropFilter: blurBackdrop ? 'blur(3px)' : undefined,
-
-      // ...(transitionDuration
-      //   ? {
-      //       opacity: 0,
-      //       transition: `all ${transitionDuration}`,
-      //       backdropFilter: blurBackdrop ? 'blur(3px)' : undefined,
-
-      //       '& $root': {
-      //         transition: `all ${transitionDuration}`,
-      //         transform: 'scale(0.7)',
-      //         opacity: 0,
-      //       },
-
-      //       '&.open': {
-      //         opacity: 1,
-
-      //         '&:not(.close) $root': {
-      //           transform: 'scale(1)',
-      //           opacity: 1,
-      //         },
-      //       },
-
-      //       '&.close': {
-      //         opacity: 0,
-      //       },
-      //     }
-      //   : undefined),
+      backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
 
       ...modal.overlay,
-    }),
+    },
 
-    body: {
-      /* hide scrollbar of body */
-      overflow: ({ lockBodyScroll }: UseStylesProps) => (lockBodyScroll ? 'hidden' : undefined),
+    /* hide scrollbar of body */
+    lockScroll: {
+      overflow: 'hidden',
     },
   };
 });
@@ -117,13 +84,14 @@ const classNameTransformer: GetStylesTransformers<ReactModal.Props>['classNameTr
   calcClassName,
   userClassName
 ) => {
-  if (!userClassName) {
-    return calcClassName;
-  }
-  if (typeof userClassName !== 'string') {
+  if (userClassName && typeof userClassName !== 'string') {
     throw new Error('Expected string.');
   }
-  return `${calcClassName} ${userClassName}`;
+  return {
+    base: userClassName ? `${calcClassName} ${userClassName}` : calcClassName,
+    afterOpen: 'open',
+    beforeClose: 'close',
+  };
 };
 
 const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransformer'] = (
@@ -153,18 +121,20 @@ function Modal({
     classes: {
       root: className,
       overlay: overlayClassName,
-      body: bodyOpenClassName || undefined,
     },
-    // size,
-    // transitionDuration,
     blurBackdrop,
     lockBodyScroll,
   });
 
-  const calcOverlayClassName = {
+  const overlayClasses: ReactModal.Classes = {
     base: css.overlay,
     afterOpen: 'open',
     beforeClose: 'close',
+  };
+
+  const contentStyles: ReactModal.Styles = {
+    content: style,
+    overlay: overlayStyle,
   };
 
   const sizeClassName = (css[`size-${size}`] as string) ?? '';
@@ -176,13 +146,17 @@ function Modal({
       transitionDuration={transitionDuration}
       isOpen={!rest.hidden}
       className={`${css.root} ${sizeClassName}`}
-      overlayClassName={calcOverlayClassName}
-      style={{ content: style, overlay: overlayStyle }}
+      overlayClassName={overlayClasses}
+      style={contentStyles}
       classNameTransformer={classNameTransformer}
       styleTransformer={styleTransformer}
       closeTimeoutMS={transitionDuration}
       parentSelector={Modal.defaultParentSelector}
-      bodyOpenClassName={css.body}
+      bodyOpenClassName={
+        lockBodyScroll && bodyOpenClassName
+          ? `${css.lockScroll} ${bodyOpenClassName}`
+          : (lockBodyScroll && css.lockScroll) || bodyOpenClassName || null
+      }
       onAfterOpen={onShown}
       onAfterClose={onHidden}
       {...rest}

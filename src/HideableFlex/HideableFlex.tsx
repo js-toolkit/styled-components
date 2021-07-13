@@ -4,41 +4,67 @@ import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 
+type MakeStylesProps = RequiredBut<
+  Pick<
+    HideableFlexProps,
+    | 'hidden'
+    | 'collapsable'
+    | 'transitionDuration'
+    | 'transitionTimingFunction'
+    | 'transitionProperty'
+  >,
+  'transitionProperty'
+>;
+
+export function getTransition({
+  hidden,
+  transitionDuration,
+  transitionTimingFunction,
+  transitionProperty,
+}: OmitStrict<MakeStylesProps, 'collapsable'>): string {
+  const duration =
+    typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
+
+  const transition = hidden
+    ? `visibility 0.1ms ${transitionTimingFunction} ${duration}, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`
+    : `visibility 0.1ms ${transitionTimingFunction} 0ms, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`;
+
+  if (transitionProperty) {
+    return transitionProperty.split(',').reduce((acc, prop) => {
+      return `${acc}, ${prop} ${duration} ${transitionTimingFunction}`;
+    }, transition);
+  }
+
+  return transition;
+}
+
 const useStyles = makeStyles({
-  root: ({
-    hidden,
-    collapsable,
-    transitionDuration,
-    transitionTimingFunction,
-  }: Required<
-    Pick<
-      HideableFlexProps,
-      'hidden' | 'collapsable' | 'transitionDuration' | 'transitionTimingFunction'
-    >
-  >) => {
-    const duration =
-      typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
-    if (hidden) {
+  root: (props: MakeStylesProps) => {
+    const transition = getTransition(props);
+    if (props.hidden) {
       return {
         pointerEvents: 'none',
         visibility: 'hidden',
         opacity: 0,
-        maxHeight: collapsable ? 0 : undefined,
-        transition: `visibility 0.1ms ${transitionTimingFunction} ${duration}, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`,
+        maxHeight: props.collapsable ? 0 : undefined,
+        transition,
       };
     }
     return {
       visibility: 'visible',
       opacity: 1,
-      maxHeight: collapsable ? '100vh' : undefined,
-      transition: `visibility 0.1ms ${transitionTimingFunction} 0s, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`,
+      maxHeight: props.collapsable ? '100vh' : undefined,
+      transition,
     };
   },
 });
 
 export interface HideableProps
   extends Override<
-    Pick<React.CSSProperties, 'transitionDuration' | 'transitionTimingFunction'>,
+    Pick<
+      React.CSSProperties,
+      'transitionDuration' | 'transitionTimingFunction' | 'transitionProperty'
+    >,
     { transitionDuration?: number | string }
   > {
   readonly hidden?: boolean;
@@ -73,6 +99,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   hiddenClassName,
   transitionDuration = '0.2s',
   transitionTimingFunction = 'ease',
+  transitionProperty,
   onHidden,
   onShown,
   ...rest
@@ -135,6 +162,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     collapsable: !!collapsable,
     transitionDuration,
     transitionTimingFunction,
+    transitionProperty,
   });
 
   if (hidden && disposable && disposed) return null;

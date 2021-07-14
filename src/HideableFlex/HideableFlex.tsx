@@ -29,10 +29,10 @@ export function getTransition({
     ? `visibility 0s ${transitionTimingFunction} ${duration}`
     : `visibility 0s ${transitionTimingFunction} 0s`;
 
-  const properties = `opacity, max-height${transitionProperty ? `, ${transitionProperty}` : ''}`;
+  const properties = `opacity,max-height${transitionProperty ? `,${transitionProperty}` : ''}`;
 
   return properties.split(',').reduce((acc, prop) => {
-    return `${acc}, ${prop} ${duration} ${transitionTimingFunction}`;
+    return `${acc},${prop} ${duration} ${transitionTimingFunction}`;
   }, transition);
 }
 

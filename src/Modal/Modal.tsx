@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import '@js-toolkit/ts-utils/types';
 import ReactModal from 'react-modal';
 import { Flex, FlexComponentProps, GetStylesTransformers } from 'reflexy/styled';
-import type { CSSProperties, Theme } from '../theme';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import HideableFlex, { HideableProps } from '../HideableFlex';
+import type { CSSProperties, Theme } from '../theme';
 import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
@@ -16,13 +17,13 @@ type ModalSize = 'auto' | 'xs' | 's' | 'm' | 'l';
 
 export interface ModalProps
   extends ExcludeTypes<
-      RequiredSome<HideableProps, 'hidden'>,
+      RequiredSome<OmitStrict<HideableProps, 'disposable'>, 'hidden'>,
       string,
       { pick: 'transitionDuration' }
     >,
-    Omit<
+    OmitStrict<
       FlexComponentProps<typeof ReactModal, { defaultStyles: true }>,
-      'isOpen' | 'overlayClassName'
+      'isOpen' | 'overlayClassName' | 'contentElement' | 'closeTimeoutMS'
     > {
   readonly overlayClassName?: this['className'];
   readonly overlayStyle?: this['style'];
@@ -60,13 +61,8 @@ const useStyles = makeStyles((theme: Theme) => {
       left: 0,
       right: 0,
       bottom: 0,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
       backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
       zIndex: 1,
-      overflowX: 'hidden',
-      overflowY: 'auto',
 
       backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
 
@@ -106,15 +102,24 @@ const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransforme
 function Modal({
   size = 'auto',
   lockBodyScroll,
-  transitionDuration = 200,
   blurBackdrop,
   className,
   overlayClassName,
   bodyOpenClassName,
   style,
   overlayStyle,
+
+  hidden,
+  collapsable,
+  keepChildren,
+  mountWithTransition,
+  transitionDuration = 250,
+  transitionTimingFunction,
+  transitionProperty,
+  hiddenClassName,
   onShown,
   onHidden,
+
   ...rest
 }: React.PropsWithChildren<ModalProps>): JSX.Element {
   const css = useStyles({
@@ -125,6 +130,54 @@ function Modal({
     blurBackdrop,
     lockBodyScroll,
   });
+
+  const [isVisible, setVisible] = useUpdatedRefState<boolean>(
+    // Hide only by call update state method.
+    (prev) => !hidden || !!prev,
+    [hidden]
+  );
+
+  const hideHandler = useCallback(() => {
+    setVisible(false);
+    onHidden && onHidden();
+  }, [onHidden, setVisible]);
+
+  const contentElement: NonNullable<ReactModal.Props['contentElement']> = (
+    { ref, ...contentProps },
+    children
+  ) => {
+    console.log(contentProps.className);
+
+    return (
+      <HideableFlex
+        componentRef={ref}
+        column
+        hidden={hidden}
+        collapsable={collapsable}
+        keepChildren={keepChildren}
+        mountWithTransition={mountWithTransition}
+        transitionDuration={transitionDuration}
+        transitionTimingFunction={transitionTimingFunction}
+        transitionProperty={transitionProperty}
+        hiddenClassName={hiddenClassName}
+        onShown={onShown}
+        onHidden={hideHandler}
+        {...contentProps}
+      >
+        {children}
+      </HideableFlex>
+    );
+  };
+
+  const overlayElement: NonNullable<ReactModal.Props['overlayElement']> =
+    rest.overlayElement ??
+    (({ ref, ...overlayProps }, contentEl) => {
+      return (
+        <Flex componentRef={ref} center overflowX="hidden" overflowY="auto" {...overlayProps}>
+          {contentEl}
+        </Flex>
+      );
+    });
 
   const overlayClasses: ReactModal.Classes = {
     base: css.overlay,
@@ -140,26 +193,24 @@ function Modal({
   const sizeClassName = (css[`size-${size}`] as string) ?? '';
 
   return (
-    <HideableFlex
+    <Flex
       component={ReactModal}
-      column
-      transitionDuration={transitionDuration}
-      isOpen={!rest.hidden}
+      isOpen={isVisible()}
       className={`${css.root} ${sizeClassName}`}
       overlayClassName={overlayClasses}
       style={contentStyles}
       classNameTransformer={classNameTransformer}
       styleTransformer={styleTransformer}
-      closeTimeoutMS={transitionDuration}
+      closeTimeoutMS={0}
       parentSelector={Modal.defaultParentSelector}
       bodyOpenClassName={
         lockBodyScroll && bodyOpenClassName
           ? `${css.lockScroll} ${bodyOpenClassName}`
           : (lockBodyScroll && css.lockScroll) || bodyOpenClassName || null
       }
-      onAfterOpen={onShown}
-      onAfterClose={onHidden}
       {...rest}
+      overlayElement={overlayElement}
+      contentElement={contentElement}
     />
   );
 }

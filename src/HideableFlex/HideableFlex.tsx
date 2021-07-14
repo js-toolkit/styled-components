@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
@@ -26,16 +26,14 @@ export function getTransition({
     typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
 
   const transition = hidden
-    ? `visibility 0.1ms ${transitionTimingFunction} ${duration}, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`
-    : `visibility 0.1ms ${transitionTimingFunction} 0ms, max-height ${duration} ${transitionTimingFunction}, opacity ${duration} ${transitionTimingFunction}`;
+    ? `visibility 0s ${transitionTimingFunction} ${duration}`
+    : `visibility 0s ${transitionTimingFunction} 0s`;
 
-  if (transitionProperty) {
-    return transitionProperty.split(',').reduce((acc, prop) => {
-      return `${acc}, ${prop} ${duration} ${transitionTimingFunction}`;
-    }, transition);
-  }
+  const properties = `opacity, max-height${transitionProperty ? `, ${transitionProperty}` : ''}`;
 
-  return transition;
+  return properties.split(',').reduce((acc, prop) => {
+    return `${acc}, ${prop} ${duration} ${transitionTimingFunction}`;
+  }, transition);
 }
 
 const useStyles = makeStyles({
@@ -128,7 +126,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   );
 
   // Immediatly show after first render to activate transition
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (mountWithTransition && !hiddenProp) {
       setState((prev) => ({ ...prev, hidden: false, disposed: false }));
     }
@@ -137,19 +135,26 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   const transitionEndHandler = useRefCallback<React.TransitionEventHandler>((event) => {
     onTransitionEnd && onTransitionEnd(event);
-    if (disposable && event.propertyName === 'visibility') {
-      const { hidden, disposed } = getState();
-      if (hidden && !disposed) setState((prev) => ({ ...prev, disposed: true }));
-      else if (!hidden && disposed) setState((prev) => ({ ...prev, disposed: false }));
-    }
-    if (event.propertyName === 'opacity') {
-      if (getState().hidden) {
-        keepChildren && setState((prev) => ({ ...prev, lastChildren: undefined }));
-        onHidden && onHidden();
-      } else {
-        keepChildren && setState((prev) => ({ ...prev, lastChildren: childrenProp }));
-        onShown && onShown();
+
+    // Ignore bubbling events from children elements
+    if (event.target !== event.currentTarget) return;
+    // Listen only `opacity` changes.
+    if (event.propertyName !== 'opacity') return;
+
+    const { hidden, disposed } = getState();
+    if (hidden) {
+      if ((disposable && !disposed) || keepChildren) {
+        setState((prev) => ({
+          ...prev,
+          // Dispose after animation ends. It will be reverted by state sync.
+          disposed: disposable ? true : prev.disposed,
+          lastChildren: undefined,
+        }));
       }
+      onHidden && onHidden();
+    } else {
+      keepChildren && setState((prev) => ({ ...prev, lastChildren: childrenProp }));
+      onShown && onShown();
     }
   });
 

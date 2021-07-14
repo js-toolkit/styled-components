@@ -146,8 +146,6 @@ function Modal({
     { ref, ...contentProps },
     children
   ) => {
-    console.log(contentProps.className);
-
     return (
       <HideableFlex
         componentRef={ref}

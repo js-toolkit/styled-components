@@ -50,7 +50,7 @@ export interface Theme {
 
     Modal?: {
       root?: CSSProperties;
-      overlay?: CSSProperties;
+      backdrop?: CSSProperties;
 
       Header?: CSSProperties & { closeIcon?: CSSProperties };
       Body?: CSSProperties;

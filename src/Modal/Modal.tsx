@@ -23,16 +23,25 @@ export interface ModalProps
     >,
     OmitStrict<
       FlexComponentProps<typeof ReactModal, { defaultStyles: true }>,
-      'isOpen' | 'overlayClassName' | 'contentElement' | 'closeTimeoutMS'
+      | 'isOpen'
+      | 'overlayElement'
+      | 'overlayRef'
+      | 'shouldCloseOnOverlayClick'
+      | 'overlayClassName'
+      | 'contentElement'
+      | 'closeTimeoutMS'
     > {
-  readonly overlayClassName?: this['className'];
-  readonly overlayStyle?: this['style'];
-  readonly blurBackdrop?: boolean;
+  readonly backdropElement?: ReactModal.Props['overlayElement'];
+  readonly backdropRef?: ReactModal.Props['overlayRef'];
+  readonly shouldCloseOnBackdropClick?: ReactModal.Props['shouldCloseOnOverlayClick'];
+  readonly backdropClassName?: this['className'];
+  readonly backdropStyle?: this['style'];
+  readonly disableBackdrop?: boolean;
   readonly lockBodyScroll?: boolean;
   readonly size?: ModalSize;
 }
 
-type MakeStylesProps = Pick<ModalProps, 'blurBackdrop' | 'lockBodyScroll'>;
+// type MakeStylesProps = Pick<ModalProps, 'blurBackdrop'>;
 
 const useStyles = makeStyles((theme: Theme) => {
   const modal = theme.rc?.Modal ?? {};
@@ -55,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
     ...sizeClasses,
 
-    overlay: {
+    backdrop: {
       position: 'fixed',
       top: 0,
       left: 0,
@@ -64,9 +73,9 @@ const useStyles = makeStyles((theme: Theme) => {
       backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
       zIndex: 1,
 
-      backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
+      // backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
 
-      ...modal.overlay,
+      ...modal.backdrop,
     },
 
     /* hide scrollbar of body */
@@ -102,12 +111,15 @@ const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransforme
 function Modal({
   size = 'auto',
   lockBodyScroll,
-  blurBackdrop,
-  className,
-  overlayClassName,
   bodyOpenClassName,
+  className,
   style,
-  overlayStyle,
+
+  backdropRef,
+  backdropClassName,
+  backdropStyle,
+  disableBackdrop,
+  shouldCloseOnBackdropClick,
 
   hidden,
   collapsable,
@@ -125,10 +137,8 @@ function Modal({
   const css = useStyles({
     classes: {
       root: className,
-      overlay: overlayClassName,
+      backdrop: backdropClassName,
     },
-    blurBackdrop,
-    lockBodyScroll,
   });
 
   const [isVisible, setVisible] = useUpdatedRefState<boolean>(
@@ -167,25 +177,29 @@ function Modal({
     );
   };
 
-  const overlayElement: NonNullable<ReactModal.Props['overlayElement']> =
-    rest.overlayElement ??
-    (({ ref, ...overlayProps }, contentEl) => {
-      return (
-        <Flex componentRef={ref} center overflowX="hidden" overflowY="auto" {...overlayProps}>
-          {contentEl}
-        </Flex>
-      );
-    });
+  const backdropElement: NonNullable<ModalProps['backdropElement']> =
+    rest.backdropElement && !disableBackdrop
+      ? rest.backdropElement
+      : ({ ref, ...backdropProps }, contentEl) => {
+          if (disableBackdrop) {
+            return contentEl;
+          }
+          return (
+            <Flex componentRef={ref} center overflowX="hidden" overflowY="auto" {...backdropProps}>
+              {contentEl}
+            </Flex>
+          );
+        };
 
-  const overlayClasses: ReactModal.Classes = {
-    base: css.overlay,
+  const backdropClasses: ReactModal.Classes = {
+    base: css.backdrop,
     afterOpen: 'open',
     beforeClose: 'close',
   };
 
   const contentStyles: ReactModal.Styles = {
     content: style,
-    overlay: overlayStyle,
+    overlay: backdropStyle,
   };
 
   const sizeClassName = (css[`size-${size}`] as string) ?? '';
@@ -193,22 +207,25 @@ function Modal({
   return (
     <Flex
       component={ReactModal}
-      isOpen={isVisible()}
       className={`${css.root} ${sizeClassName}`}
-      overlayClassName={overlayClasses}
       style={contentStyles}
       classNameTransformer={classNameTransformer}
       styleTransformer={styleTransformer}
-      closeTimeoutMS={0}
       parentSelector={Modal.defaultParentSelector}
+      portalClassName="sc-modal-portal"
+      {...rest}
+      isOpen={isVisible()}
+      closeTimeoutMS={0}
+      overlayClassName={backdropClasses}
       bodyOpenClassName={
         lockBodyScroll && bodyOpenClassName
           ? `${css.lockScroll} ${bodyOpenClassName}`
           : (lockBodyScroll && css.lockScroll) || bodyOpenClassName || null
       }
-      {...rest}
-      overlayElement={overlayElement}
       contentElement={contentElement}
+      overlayElement={backdropElement}
+      overlayRef={backdropRef}
+      shouldCloseOnOverlayClick={shouldCloseOnBackdropClick}
     />
   );
 }

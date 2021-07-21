@@ -1,6 +1,7 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
+import clsx from 'clsx';
 import type { Theme } from '../theme';
 
 /** Uses in '*.svg' imports which processed by svg-sprite-loader. */
@@ -10,24 +11,25 @@ export interface SvgSymbolInfo {
   content: string;
 }
 
-type MakeStylesProps = Pick<SvgSpriteIconProps<string>, 'scaleOnHover'>;
+type MakeStylesProps = ExcludeTypes<
+  Required<Pick<SvgSpriteIconProps<string>, 'scaleOnHover'>>,
+  false
+>;
 
 const useStyles = makeStyles({
   root: {
     display: 'inline-block',
     verticalAlign: 'middle',
-    transition: ({ scaleOnHover }: MakeStylesProps) => (scaleOnHover ? 'scale 0.1s' : ''),
-    cursor: ({ scaleOnHover }: MakeStylesProps) => (scaleOnHover ? 'pointer' : ''),
+  },
+
+  scalable: {
+    transition: 'transform 0.1s',
+    cursor: 'pointer',
 
     '&:hover': {
-      // transform: ({ scaleOnHover }: MakeStylesProps) => {
-      //   if (scaleOnHover == null || scaleOnHover === false) return '';
-      //   return typeof scaleOnHover === 'number'
-      //     ? `scale(${scaleOnHover})`
-      //     : `scale(${scaleOnHover && 1.2})`;
-      // },
-      scale: ({ scaleOnHover }: MakeStylesProps) =>
-        typeof scaleOnHover === 'number' ? scaleOnHover : (scaleOnHover && 1.2) || '',
+      transform: ({ scaleOnHover }: MakeStylesProps) => {
+        return typeof scaleOnHover === 'number' ? `scale(${scaleOnHover})` : `scale(1.2)`;
+      },
     },
   },
 });
@@ -51,7 +53,7 @@ function SvgSpriteIcon<N extends string>({
   children,
   ...rest
 }: SvgSpriteIconProps<N>): JSX.Element | null {
-  const css = useStyles({ classes: { root: className }, scaleOnHover });
+  const css = useStyles({ scaleOnHover: scaleOnHover || 1 });
   const { rc } = useTheme<Theme>();
 
   const spriteId = rc?.SvgSpriteIcon?.spriteId ?? SvgSpriteIcon.spriteId;
@@ -61,7 +63,12 @@ function SvgSpriteIcon<N extends string>({
   const h = height ?? size ?? w;
 
   return (
-    <svg width={w} height={h} className={css.root} {...rest}>
+    <svg
+      width={w}
+      height={h}
+      className={clsx(css.root, scaleOnHover && css.scalable, className)}
+      {...rest}
+    >
       <use xlinkHref={`#${spriteId}_${name}`} fill="currentColor" {...useProps} />
       {children}
     </svg>

@@ -21,7 +21,8 @@ export function getTransition({
   transitionDuration,
   transitionTimingFunction,
   transitionProperty,
-}: OmitStrict<MakeStylesProps, 'collapsable'>): string {
+  collapsable,
+}: MakeStylesProps): string {
   const duration =
     typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
 
@@ -29,9 +30,11 @@ export function getTransition({
     ? `visibility 0s ${transitionTimingFunction} ${duration}`
     : `visibility 0s ${transitionTimingFunction} 0s`;
 
-  const properties = `opacity,max-height${transitionProperty ? `,${transitionProperty}` : ''}`;
+  const restProperties = `opacity${collapsable ? ',max-height' : ''}${
+    transitionProperty ? `,${transitionProperty}` : ''
+  }`;
 
-  return properties.split(',').reduce((acc, prop) => {
+  return restProperties.split(',').reduce((acc, prop) => {
     return `${acc},${prop} ${duration} ${transitionTimingFunction}`;
   }, transition);
 }

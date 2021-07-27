@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flex, FlexAllProps } from 'reflexy/styled';
+import clsx from 'clsx';
 import useStyles from './useStyles';
 
 export interface ButtonSizes {
@@ -59,7 +60,7 @@ export default function Button<C extends React.ElementType = 'button'>({
     <Flex
       center
       shrink={false}
-      className={`${css.root} ${sizeClassName} ${colorClassName}`}
+      className={clsx(css.root, sizeClassName, colorClassName)}
       component={component}
       {...(rest as any)}
     />

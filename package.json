@@ -1,6 +1,6 @@
 {
   "name": "@js-toolkit/styled-components",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "Styled react components powered by JSS via @material-ui/styles",
   "author": "VZH",
   "license": "MIT",

@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme: Theme) => {
   return {
     root: {
       borderRadius: 'var(--rc--border-radius-xs, 3px)',
-      border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
+      // border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
+      border: 'none',
       outline: 'none',
       WebkitTapHighlightColor: 'transparent',
       fontFamily: 'inherit',

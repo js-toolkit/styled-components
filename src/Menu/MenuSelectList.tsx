@@ -5,17 +5,17 @@ import MenuList, { MenuItem, MenuListProps } from './MenuList';
 
 export interface MenuSelectListProps<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<any>,
-  HI extends string | SvgSpriteIconProps<any>
-> extends Omit<MenuListProps<V, I, HI>, 'onItemClick'> {
+  I extends string | SvgSpriteIconProps<string>,
+  HI extends string | SvgSpriteIconProps<string>
+> extends OmitStrict<MenuListProps<V, I, HI>, 'onItemSelect'> {
   selectedValue: MenuItem<V, I>['value'];
-  onSelectValue: NonNullable<MenuListProps<V, I, HI>['onItemClick']>;
+  onSelectValue: NonNullable<MenuListProps<V, I, HI>['onItemSelect']>;
 }
 
 export default function MenuSelectList<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<any>,
-  HI extends string | SvgSpriteIconProps<any>
+  I extends string | SvgSpriteIconProps<string>,
+  HI extends string | SvgSpriteIconProps<string>
 >({
   selectedValue,
   onSelectValue,
@@ -31,5 +31,5 @@ export default function MenuSelectList<
     }
   );
 
-  return <MenuList onItemProps={itemPropsHandler} onItemClick={onSelectValue} {...rest} />;
+  return <MenuList onItemProps={itemPropsHandler} onItemSelect={onSelectValue} {...rest} />;
 }

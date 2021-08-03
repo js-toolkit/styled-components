@@ -23,23 +23,24 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 }));
 
-export type MenuItem<V extends React.Key | null, I extends string | SvgSpriteIconProps<any>> = Omit<
-  MenuListItemProps<V, I>,
-  'onClick'
-> &
-  React.Attributes;
+export type MenuItem<
+  V extends React.Key | null,
+  I extends string | SvgSpriteIconProps<string>
+> = Omit<MenuListItemProps<V, I>, 'onClick'> & React.Attributes;
 
 export interface MenuListProps<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<any>,
-  HI extends string | SvgSpriteIconProps<any>
+  I extends string | SvgSpriteIconProps<string>,
+  HI extends string | SvgSpriteIconProps<string>
 > extends React.PropsWithChildren<FlexComponentProps<'div'>> {
   hidden?: boolean;
   header?: string;
   headerIcon?: HI;
   headerAction?: string;
   items?: MenuItem<V, I>[];
-  onItemClick?: MenuListItemProps<V, I>['onClick'];
+  onItemSelect?: MenuListItemProps<V, I>['onSelect'];
+  onItemMouseEnter?: MenuListItemProps<V, I>['onMouseEnter'];
+  onItemMouseLeave?: MenuListItemProps<V, I>['onMouseLeave'];
   onItemProps?: (itemProps: MenuListItemProps<V, I>) => MenuListItemProps<V, I>;
   onClose?: () => void;
   onBack?: () => void;
@@ -48,15 +49,17 @@ export interface MenuListProps<
 
 export default function MenuList<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<any>,
-  HI extends string | SvgSpriteIconProps<any>
+  I extends string | SvgSpriteIconProps<string>,
+  HI extends string | SvgSpriteIconProps<string>
 >({
   header,
   headerIcon,
   onBack,
   onClose,
   items,
-  onItemClick,
+  onItemSelect,
+  onItemMouseEnter,
+  onItemMouseLeave,
   onItemProps,
   headerAction,
   onHeaderAction,
@@ -74,7 +77,9 @@ export default function MenuList<
   const closeIconProps = onClose ? theme?.header?.closeIcon : undefined;
 
   const headerIconProps =
-    typeof headerIcon === 'string' ? { name: headerIcon } : (headerIcon as SvgSpriteIconProps<any>);
+    typeof headerIcon === 'string'
+      ? { name: headerIcon }
+      : (headerIcon as SvgSpriteIconProps<string>);
   const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
   const headerTitleFlex =
@@ -137,7 +142,14 @@ export default function MenuList<
             items.map((itemProps) => {
               const { value, ...restProps } = onItemProps ? onItemProps(itemProps) : itemProps;
               return (
-                <MenuListItem key={value} value={value} onClick={onItemClick} {...restProps} />
+                <MenuListItem
+                  key={value}
+                  value={value}
+                  onSelect={onItemSelect}
+                  onMouseEnter={onItemMouseEnter}
+                  onMouseLeave={onItemMouseLeave}
+                  {...restProps}
+                />
               );
             })}
 

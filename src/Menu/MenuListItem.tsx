@@ -31,7 +31,7 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 }));
 
-export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<any>>
+export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
   extends FlexComponentProps {
   icon?: I;
   title: React.ReactNode;
@@ -40,10 +40,12 @@ export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<any>
   value: V;
   submenu?: boolean;
   checked?: boolean;
-  onClick?: (value: this['value']) => void;
+  onSelect?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseEnter?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function MenuListItem<V, I extends string | SvgSpriteIconProps<any>>({
+export default function MenuListItem<V, I extends string | SvgSpriteIconProps<string>>({
   icon,
   title,
   subtitle,
@@ -52,18 +54,30 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<an
   checked,
   shrinkTitle = !subtitle && !!(checked || submenu),
   className,
-  onClick,
+  onSelect,
+  onMouseEnter,
+  onMouseLeave,
   ...rest
 }: MenuListItemProps<V, I>): JSX.Element {
-  const css = useStyles({ classes: { root: className }, clickable: !!onClick });
+  const css = useStyles({ classes: { root: className }, clickable: !!onSelect });
   const { rc } = useTheme<Theme>();
 
-  const clickHandler = useRefCallback(() => onClick && onClick(value));
+  const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
+    (event) => onSelect && onSelect(value, event)
+  );
+
+  const mouseEnterHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
+    (event) => onMouseEnter && onMouseEnter(value, event)
+  );
+
+  const mouseLeaveHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
+    (event) => onMouseLeave && onMouseLeave(value, event)
+  );
 
   const theme = rc?.MenuListItem;
 
   const iconProps =
-    typeof icon === 'string' ? { name: icon, size: '1.5em' } : (icon as SvgSpriteIconProps<any>);
+    typeof icon === 'string' ? { name: icon, size: '1.5em' } : (icon as SvgSpriteIconProps<string>);
 
   const rootFlex =
     typeof theme?.flex === 'function' ? theme.flex({ hasIcon: !!iconProps }) : theme?.flex;
@@ -88,6 +102,8 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<an
       {...rootFlex}
       className={css.root}
       onClick={clickHandler}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
       {...rest}
     >
       {!!iconProps && <SvgSpriteIcon {...iconProps} />}

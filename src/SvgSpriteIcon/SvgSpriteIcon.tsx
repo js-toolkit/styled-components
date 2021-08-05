@@ -39,6 +39,7 @@ export interface SvgSpriteIconProps<N extends string> extends React.SVGAttribute
   size?: number | string;
   scaleOnHover?: boolean | number;
   useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'>;
+  htmlRef?: React.Ref<SVGSVGElement>;
 }
 
 /** Uses with svg-sprite-loader */
@@ -49,6 +50,7 @@ function SvgSpriteIcon<N extends string>({
   height,
   scaleOnHover,
   useProps,
+  htmlRef,
   className,
   children,
   ...rest
@@ -64,6 +66,7 @@ function SvgSpriteIcon<N extends string>({
 
   return (
     <svg
+      ref={htmlRef}
       width={w}
       height={h}
       className={clsx(css.root, scaleOnHover && css.scalable, className)}

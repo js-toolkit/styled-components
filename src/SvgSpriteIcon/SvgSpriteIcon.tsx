@@ -3,6 +3,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import clsx from 'clsx';
 import type { Theme } from '../theme';
+import useSvgSpriteIconHref from './useSvgSpriteIconHref';
 
 /** Uses in '*.svg' imports which processed by svg-sprite-loader. */
 export interface SvgSymbolInfo {
@@ -58,8 +59,8 @@ function SvgSpriteIcon<N extends string>({
   const css = useStyles({ scaleOnHover: scaleOnHover || 1 });
   const { rc } = useTheme<Theme>();
 
-  const spriteId = rc?.SvgSpriteIcon?.spriteId ?? SvgSpriteIcon.spriteId;
-  if (!name || !spriteId) return null;
+  const href = useSvgSpriteIconHref(name);
+  if (!href) return null;
 
   const w = width ?? size ?? rc?.SvgSpriteIcon?.defaultSize ?? 18;
   const h = height ?? size ?? w;
@@ -72,7 +73,7 @@ function SvgSpriteIcon<N extends string>({
       className={clsx(css.root, scaleOnHover && css.scalable, className)}
       {...rest}
     >
-      <use xlinkHref={`#${spriteId}_${name}`} fill="currentColor" {...useProps} />
+      <use xlinkHref={href} fill="currentColor" {...useProps} />
       {children}
     </svg>
   );

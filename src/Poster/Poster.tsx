@@ -21,12 +21,7 @@ export interface PosterProps
   extends FlexComponentProps,
     Pick<
       HideableFlexProps,
-      | 'hidden'
-      | 'disposable'
-      | 'onShown'
-      | 'onHidden'
-      | 'transitionDuration'
-      | 'transitionTimingFunction'
+      'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionFunction'
     > {
   url: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
@@ -109,7 +104,7 @@ export default function Poster({
   return (
     <HideableFlex
       hidden={hidden || !url}
-      transitionTimingFunction={hidden ? 'ease-out' : 'ease-in'}
+      transitionFunction={hidden ? 'ease-out' : 'ease-in'}
       transitionDuration="0.25s"
       className={css.root}
       style={url ? { ...style, backgroundImage: `url('${url}')` } : style}

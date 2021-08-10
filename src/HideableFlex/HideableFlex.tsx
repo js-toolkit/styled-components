@@ -1,42 +1,61 @@
 import React, { useLayoutEffect } from 'react';
+import type { Property } from 'csstype';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 
-type MakeStylesProps = RequiredBut<
-  Pick<
-    HideableFlexProps,
-    | 'hidden'
-    | 'collapsable'
-    | 'transitionDuration'
-    | 'transitionTimingFunction'
-    | 'transitionProperty'
-  >,
-  'transitionProperty'
->;
+export interface Transition {
+  readonly duration?: Property.TransitionDuration<number>;
+  readonly func?: Property.TransitionTimingFunction;
+  readonly property?: Property.TransitionProperty;
+}
+
+export interface HideableProps {
+  readonly transitionDuration?: Transition['duration'];
+  readonly transitionFunction?: Transition['func'];
+  readonly transitionProperty?: Transition['property'];
+  readonly transition?: Transition;
+
+  readonly hidden?: boolean;
+  readonly disposable?: boolean;
+  readonly collapsable?: boolean;
+  readonly keepChildren?: boolean;
+  readonly appear?: boolean;
+  readonly hiddenClassName?: string;
+  readonly onHidden?: VoidFunction;
+  readonly onShown?: VoidFunction;
+}
+
+export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
+  C,
+  { defaultStyles: { className: true } }
+> &
+  HideableProps;
+
+interface State {
+  readonly hidden: boolean;
+  readonly disposed: boolean;
+  readonly lastChildren: React.ReactNode;
+}
+
+type MakeStylesProps = Pick<HideableFlexProps, 'hidden' | 'collapsable'> &
+  RequiredBut<Transition, 'property'>;
 
 export function getTransition({
   hidden,
-  transitionDuration,
-  transitionTimingFunction,
-  transitionProperty,
   collapsable,
+  duration,
+  func,
+  property: prop,
 }: MakeStylesProps): string {
-  const duration =
-    typeof transitionDuration === 'number' ? `${transitionDuration}ms` : transitionDuration;
+  const dur = typeof duration === 'number' ? `${duration}ms` : duration;
+  const transition = hidden ? `visibility 0s ${func} ${dur}` : `visibility 0s ${func} 0s`;
+  const restProperties = `opacity${collapsable ? ',max-height' : ''}${prop ? `,${prop}` : ''}`;
 
-  const transition = hidden
-    ? `visibility 0s ${transitionTimingFunction} ${duration}`
-    : `visibility 0s ${transitionTimingFunction} 0s`;
-
-  const restProperties = `opacity${collapsable ? ',max-height' : ''}${
-    transitionProperty ? `,${transitionProperty}` : ''
-  }`;
-
-  return restProperties.split(',').reduce((acc, prop) => {
-    return `${acc},${prop} ${duration} ${transitionTimingFunction}`;
-  }, transition);
+  return restProperties
+    .split(',')
+    .reduce((acc, tprop) => `${acc},${tprop} ${dur} ${func}`, transition);
 }
 
 const useStyles = makeStyles({
@@ -60,47 +79,22 @@ const useStyles = makeStyles({
   },
 });
 
-export interface HideableProps
-  extends Override<
-    Pick<
-      React.CSSProperties,
-      'transitionDuration' | 'transitionTimingFunction' | 'transitionProperty'
-    >,
-    { transitionDuration?: number | string }
-  > {
-  readonly hidden?: boolean;
-  readonly disposable?: boolean;
-  readonly collapsable?: boolean;
-  readonly keepChildren?: boolean;
-  readonly mountWithTransition?: boolean;
-  readonly hiddenClassName?: string;
-  readonly onHidden?: VoidFunction;
-  readonly onShown?: VoidFunction;
-}
-
-export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
-  C,
-  { defaultStyles: { className: true } }
-> &
-  HideableProps;
-
-interface State {
-  readonly hidden: boolean;
-  readonly disposed: boolean;
-  readonly lastChildren: React.ReactNode;
-}
-
 export default function HideableFlex<C extends React.ElementType = DefaultComponentType>({
   hidden: hiddenProp,
   disposable,
   collapsable,
   keepChildren,
-  mountWithTransition = true,
+  appear = true,
   className,
   hiddenClassName,
   transitionDuration = '0.2s',
-  transitionTimingFunction = 'ease',
+  transitionFunction = 'ease',
   transitionProperty,
+  transition: {
+    duration = transitionDuration,
+    func = transitionFunction,
+    property = transitionProperty,
+  } = {},
   onHidden,
   onShown,
   ...rest
@@ -112,8 +106,8 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
       // Initial state
       if (!prev) {
         return {
-          hidden: mountWithTransition ? true : !!hiddenProp,
-          disposed: disposable ? !!hiddenProp || mountWithTransition : false,
+          hidden: appear ? true : !!hiddenProp,
+          disposed: disposable ? !!hiddenProp || appear : false,
           lastChildren: childrenProp,
         };
       }
@@ -130,7 +124,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
 
   // Immediatly show after first render to activate transition
   useLayoutEffect(() => {
-    if (mountWithTransition && !hiddenProp) {
+    if (appear && !hiddenProp) {
       setState((prev) => ({ ...prev, hidden: false, disposed: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,9 +162,9 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
     classes: { root: className },
     hidden: disposable ? hidden || disposed : hidden,
     collapsable: !!collapsable,
-    transitionDuration,
-    transitionTimingFunction,
-    transitionProperty,
+    duration,
+    func,
+    property,
   });
 
   if (hidden && disposable && disposed) return null;

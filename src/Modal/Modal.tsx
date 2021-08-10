@@ -124,9 +124,9 @@ function Modal({
   hidden,
   collapsable,
   keepChildren,
-  mountWithTransition,
+  appear,
   transitionDuration = 250,
-  transitionTimingFunction,
+  transitionFunction,
   transitionProperty,
   hiddenClassName,
   onShown,
@@ -163,9 +163,9 @@ function Modal({
         hidden={hidden}
         collapsable={collapsable}
         keepChildren={keepChildren}
-        mountWithTransition={mountWithTransition}
+        appear={appear}
         transitionDuration={transitionDuration}
-        transitionTimingFunction={transitionTimingFunction}
+        transitionFunction={transitionFunction}
         transitionProperty={transitionProperty}
         hiddenClassName={hiddenClassName}
         onShown={onShown}

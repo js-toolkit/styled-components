@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy';
 import clsx from 'clsx';
 import type { Theme } from '../theme';
-import NotificationBar, { NotificationBarProps, NotificationType } from './NotificationBar';
+import NotificationBar, { NotificationBarProps } from './NotificationBar';
 
 const useStyles = makeStyles(({ rc }: Theme) => {
   const {
@@ -114,13 +114,16 @@ export type NotificationPosition = keyof NotificationPositions;
 export interface Notification<
   TID extends React.ReactText = React.ReactText,
   TContent = JSX.Element | string
-> {
-  readonly id: TID;
-  readonly type: NotificationType;
+> extends RequiredSome<
+    Pick<NotificationBarProps<TID>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
+    'variant'
+  > {
+  // readonly id: TID;
+  // readonly type: NotificationVariant;
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly permanent?: boolean;
-  readonly contentProps?: NotificationBarProps['contentProps'];
+  // readonly contentProps?: NotificationBarProps['contentProps'];
 }
 
 export type NotificationsProps<
@@ -129,10 +132,13 @@ export type NotificationsProps<
 > = FlexAllProps<C, { defaultStyles: true }> & {
   readonly list: readonly N[];
   readonly defaultPosition?: NotificationPosition;
-  readonly defaultCloseIcon?: NotificationBarProps['closeIcon'];
-  readonly onClose?: NotificationBarProps<
+  readonly defaultAction?: NotificationBarProps<
     N extends Notification<infer TID> ? TID : React.ReactText
-  >['onClose'];
+  >['action'];
+  // readonly defaultCloseIcon?: NotificationBarProps['closeIcon'];
+  readonly onAction?: NotificationBarProps<
+    N extends Notification<infer TID> ? TID : React.ReactText
+  >['onAction'];
 };
 
 export default function Notifications<
@@ -141,8 +147,10 @@ export default function Notifications<
 >({
   list,
   defaultPosition = 'window-top',
-  defaultCloseIcon,
-  onClose,
+  defaultAction,
+  onAction,
+  // defaultCloseIcon,
+  // onClose,
   className,
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
@@ -158,13 +166,15 @@ export default function Notifications<
       <NotificationBar
         key={n.id}
         id={n.id}
-        type={n.type}
+        variant={n.variant}
         shrink={false}
         justifyContent="center"
         className={css.item}
-        onClose={n.permanent ? undefined : onClose}
-        closeIcon={defaultCloseIcon}
+        action={defaultAction}
+        onAction={n.permanent ? undefined : onAction}
+        // closeIcon={defaultCloseIcon}
         contentProps={n.contentProps}
+        actionProps={n.actionProps}
       >
         {n.content}
       </NotificationBar>

@@ -32,7 +32,8 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
 }));
 
 export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
-  extends FlexComponentProps {
+  extends FlexComponentProps,
+    Pick<React.HTMLAttributes<HTMLDivElement>, keyof React.AriaAttributes | 'tabIndex' | 'role'> {
   icon?: I;
   title: React.ReactNode;
   subtitle?: React.ReactNode;

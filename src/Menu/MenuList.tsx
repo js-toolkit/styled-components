@@ -32,7 +32,7 @@ export interface MenuListProps<
   V extends React.Key | null,
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
-> extends React.PropsWithChildren<FlexComponentProps<'div'>> {
+> extends FlexComponentProps<'div'> {
   hidden?: boolean;
   header?: string;
   headerIcon?: HI;

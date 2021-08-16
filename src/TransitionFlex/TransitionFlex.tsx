@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { TransitionProps } from '@material-ui/core/transitions/transition';
 import Fade from '@material-ui/core/Fade';
 import clsx from 'clsx';
 import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useUpdatedValue from '@js-toolkit/react-hooks/useUpdatedValue';
 
 type TransitionComponent = React.JSXElementConstructor<
   TransitionProps & { children?: React.ReactElement<any, any> }
@@ -47,19 +48,21 @@ export default function TransitionFlex<
 }: TransitionFlexProps<T, C>): JSX.Element {
   const { children: childrenProp } = rest as React.HTMLAttributes<Element>;
 
-  const [lastChildren, setLastChildren] = useState(keepChildren ? childrenProp : undefined);
+  const lastChildren = useUpdatedValue<typeof childrenProp>(
+    // Update value on show
+    (prev) => (keepChildren && hidden ? prev || childrenProp : childrenProp),
+    [keepChildren, hidden]
+  );
 
   const children = keepChildren ? childrenProp || lastChildren : childrenProp;
 
   const enteredHandler = useRefCallback(() => {
-    keepChildren && setLastChildren(childrenProp);
+    // keepChildren && setLastChildren(childrenProp);
     onShown && onShown();
   });
 
   const exitedHandler = useRefCallback(() => {
-    if (keepChildren) {
-      setLastChildren(undefined);
-    }
+    // keepChildren && setLastChildren(undefined);
     onHidden && onHidden();
   });
 

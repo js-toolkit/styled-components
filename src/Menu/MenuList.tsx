@@ -33,7 +33,6 @@ export interface MenuListProps<
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
 > extends FlexComponentProps<'div'> {
-  hidden?: boolean;
   header?: string;
   headerIcon?: HI;
   headerAction?: string;

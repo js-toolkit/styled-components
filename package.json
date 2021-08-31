@@ -19,7 +19,7 @@
     "minify": "node-utils-minify --replace ./dist",
     "build": "npm run clean && tsc --build ./tsconfig.json && npm run minify",
     "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/styled-components'",
-    "build-to-player": "tsc --build ./tsconfig.json && npm run minify && copyfiles -u 1 './dist/**/*' '/home/vladimir/dev/sources/player/modules/styled-components'",
+    "build-to-player": "tsc --build ./tsconfig.json && npm run minify && copyfiles -e './dist/*(package.json|README.md|LICENSE)' -u 1 './dist/**/*' '/home/vladimir/dev/sources/player/modules/styled-components'",
     "patch-publish": "yarn run build && yarn version --patch && yarn run copy:configs && npm publish ./dist/ && git push origin master --follow-tags",
     "minor-publish": "yarn run build && yarn version --minor && yarn run copy:configs && npm publish ./dist/ && git push origin master --follow-tags"
   },

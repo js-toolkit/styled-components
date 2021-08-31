@@ -1,6 +1,8 @@
-# Styled react components powered by JSS via @material-ui/styles
+# Styled React Components
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/js-toolkit/styled-components)
+
+Powered by [JSS](https://github.com/cssinjs/jss) via [@material-ui/styles](https://github.com/mui-org/material-ui/tree/next/packages/material-ui-styles).
 
 ## Installation
 

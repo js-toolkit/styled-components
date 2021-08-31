@@ -61,7 +61,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 });
 
 export type VideoWatermarkProps = FlexComponentProps &
-  Partial<WebKitPoint> &
+  Partial<Point> &
   Partial<Size> & {
     text: string;
     baseFontSize?: number;
@@ -86,7 +86,7 @@ export default React.memo(function VideoWatermark({
   const rootRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [getTextSize, setTextSize] = useUpdateState({ textWidth: 0, textHeight: 0 });
-  const [coord, setCoord] = useState<WebKitPoint | undefined>(undefined);
+  const [coord, setCoord] = useState<Point | undefined>(undefined);
 
   const width = useMemo(() => widthProp && toInt(widthProp), [widthProp]);
   const height = useMemo(() => heightProp && toInt(heightProp), [heightProp]);

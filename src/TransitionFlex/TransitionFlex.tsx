@@ -2,7 +2,7 @@ import React from 'react';
 import type { TransitionProps } from '@material-ui/core/transitions/transition';
 import Fade from '@material-ui/core/Fade';
 import clsx from 'clsx';
-import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
+import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useUpdatedValue from '@js-toolkit/react-hooks/useUpdatedValue';
 
@@ -19,7 +19,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
   readonly onHidden?: VoidFunction;
   readonly onShown?: VoidFunction;
   readonly transition?: T;
-  readonly transitionProps?: React.ComponentPropsWithoutRef<T>;
+  readonly transitionProps?: React.ComponentProps<T>;
   readonly transitionDuration?: TransitionProps['timeout'];
 }
 
@@ -76,9 +76,9 @@ export default function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
       ...transitionProps,
-    },
-    <Flex className={clsx(className, hidden && hiddenClassName)} {...rest}>
+    } as React.ComponentPropsWithoutRef<T>,
+    <FlexWithRef component="div" className={clsx(className, hidden && hiddenClassName)} {...rest}>
       {children}
-    </Flex>
+    </FlexWithRef>
   );
 }

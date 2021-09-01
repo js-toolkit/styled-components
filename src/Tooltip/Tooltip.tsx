@@ -54,6 +54,7 @@ export const useStyles = makeStyles(({ rc }: Theme) => ({
 
   subtitle: {
     composes: '$style',
+    maxWidth: 'inherit',
     ...rc?.Tooltip?.subtitle,
   },
 }));

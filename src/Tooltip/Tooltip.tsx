@@ -2,7 +2,8 @@ import React, { useLayoutEffect, useRef } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import { Flex, FlexSimpleProps, SpaceProps } from 'reflexy';
-import HideableFlex, { HideableFlexProps } from '../HideableFlex';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
+import TransitionFlex, { TransitionFlexProps } from '../TransitionFlex';
 import TruncatedText from '../TruncatedText';
 import type { Theme } from '../theme';
 import { calcXInside, calcX, calcY, calcArrowCss } from './utils';
@@ -19,9 +20,6 @@ export const useStyles = makeStyles(({ rc }: Theme) => ({
 
   arrow: {
     position: 'absolute',
-    borderWidth: 0,
-    borderStyle: 'solid',
-    borderColor: `transparent`,
   },
 
   style: {
@@ -82,11 +80,12 @@ export interface TooltipData {
   readonly maxWidth?: number;
   readonly space?: SpaceProps;
   readonly innerSpace?: SpaceProps;
+  readonly fastUpdate?: boolean;
 }
 
 export interface TooltipProps
   extends FlexSimpleProps,
-    Pick<HideableFlexProps, 'onShown' | 'onHidden'> {
+    Pick<TransitionFlexProps, 'onShown' | 'onHidden'> {
   readonly tooltip: TooltipData | undefined;
 }
 
@@ -104,10 +103,26 @@ export default function Tooltip({
   const titleRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
+  // Set hidden on new tooltip in order to wait until render content and correct positioning.
+  const [isHidden, setHidden] = useUpdatedRefState<boolean>(
+    (prev) => {
+      if (prev == null) return true;
+      if (tooltip?.fastUpdate) return prev;
+      return true;
+    },
+    [tooltip]
+  );
+
   useLayoutEffect(() => {
     const { current: root } = rootRef;
     const { current: container } = containerRef;
-    if (!root || !container || !tooltip) return;
+    // if (!(tooltip && (tooltip.title || tooltip.subtitle))) return;
+    if (!root || !container) return;
+
+    if (!(tooltip && (tooltip.title || tooltip.subtitle))) {
+      if (!isHidden()) setHidden(true);
+      return;
+    }
 
     const { x, y, alignX, alignY, minX, maxX, minY, maxY } = tooltip;
 
@@ -126,14 +141,25 @@ export default function Tooltip({
     // arrow
     const { current: arrow } = arrowRef;
     if (arrow) {
-      arrow.style.borderWidth = `${container.clientHeight / 4}px`;
+      Object.assign(
+        arrow.style,
+        calcArrowCss(
+          tooltip.alignX,
+          tooltip.alignY,
+          rc?.Tooltip?.arrowColor || rc?.Tooltip?.style?.backgroundColor || 'rgba(50, 50, 50, 0.8)',
+          `${container.clientHeight / 4}px`
+        )
+      );
     }
-  }, [tooltip]);
 
-  const hidden = !tooltip || (!tooltip.title && !tooltip.subtitle);
+    if (isHidden()) setHidden(false);
+  }, [isHidden, rc?.Tooltip?.arrowColor, rc?.Tooltip?.style?.backgroundColor, setHidden, tooltip]);
+
+  // const hidden = !(tooltip && (tooltip.title || tooltip.subtitle));
+  const hidden = isHidden();
 
   return (
-    <HideableFlex
+    <TransitionFlex
       hidden={hidden}
       keepChildren
       componentRef={rootRef}
@@ -173,27 +199,17 @@ export default function Tooltip({
               mt={tooltip.title ? 'xs' : undefined}
               p="xs"
               {...tooltip.innerSpace}
-              className={css.style}
+              className={css.subtitle}
             >
               {tooltip.subtitle}
             </TruncatedText>
           )}
 
           {tooltip.arrow && (!tooltip.title || !tooltip.subtitle) && (
-            <div
-              ref={arrowRef}
-              className={css.arrow}
-              style={calcArrowCss(
-                tooltip.alignX,
-                tooltip.alignY,
-                rc?.Tooltip?.arrowColor ||
-                  rc?.Tooltip?.style?.backgroundColor ||
-                  'rgba(50, 50, 50, 0.8)'
-              )}
-            />
+            <div ref={arrowRef} className={css.arrow} />
           )}
         </Flex>
       )}
-    </HideableFlex>
+    </TransitionFlex>
   );
 }

@@ -63,21 +63,48 @@ export function calcXInside(
 export function calcArrowCss(
   alignX: TooltipData['alignX'],
   alignY: TooltipData['alignY'],
-  color: NonNullable<React.CSSProperties['color']>
+  color: NonNullable<React.CSSProperties['color']>,
+  size: string
 ): React.CSSProperties | undefined {
+  const reset: React.CSSProperties = {
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderLeftColor: 'transparent',
+    top: 'auto',
+    bottom: 'auto',
+    right: 'auto',
+    left: 'auto',
+    borderStyle: 'solid',
+    borderWidth: size,
+  };
+
   if (alignY === 'middle') {
     // right
     if (alignX === 'right') {
-      return { borderLeftColor: color, left: '100%', top: '50%', transform: 'translateY(-50%)' };
+      return {
+        ...reset,
+        borderLeftColor: color,
+        left: '100%',
+        top: '50%',
+        transform: 'translateY(-50%)',
+      };
     }
     // left
-    return { borderRightColor: color, right: '100%', top: '50%', transform: 'translateY(-50%)' };
+    return {
+      ...reset,
+      borderRightColor: color,
+      right: '100%',
+      top: '50%',
+      transform: 'translateY(-50%)',
+    };
   }
 
   if (alignX === 'middle') {
     // top
     if (alignY === 'top') {
       return {
+        ...reset,
         borderBottomColor: color,
         bottom: '100%',
         left: '50%',
@@ -85,7 +112,13 @@ export function calcArrowCss(
       };
     }
     // bottom
-    return { borderTopColor: color, top: '100%', left: '50%', transform: 'translateX(-50%)' };
+    return {
+      ...reset,
+      borderTopColor: color,
+      top: '100%',
+      left: '50%',
+      transform: 'translateX(-50%)',
+    };
   }
 
   return undefined;

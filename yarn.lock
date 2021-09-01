@@ -79,20 +79,20 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==
 
-"@js-toolkit/configs@^3.78.5":
-  version "3.78.5"
-  resolved "https://npm.pkg.github.com/download/@js-toolkit/configs/3.78.5/0ddbe7405b038d7a523ba34efd04ac80b25271e08b2e38238d3a5cb9ff8a44fd#5277ec7c8dbe916123dd6a64ac0e048b02562e1d"
-  integrity sha512-w5Z+WtwC42zXwK2SdsCU7Gp94Gzf5Xr9BVLH2QAOm2Cy1KSuHky6wXp01h302+NpMgvZXvD0IyHpYpeX2DODHQ==
+"@js-toolkit/configs@^3.79.0":
+  version "3.79.0"
+  resolved "https://npm.pkg.github.com/download/@js-toolkit/configs/3.79.0/fab3d4d54974993fc595f45ccc12785c043c81b0269c4391a19bfa6f13da229e#0e738fd8c7ba1207bb626a8d10a89df7a87c2678"
+  integrity sha512-1ZPvf92AEx6fsxOGGOEsOEIyJgW/RWP1grXlv4MWyYv0u/ol4GM6/zMTHSfXYPB1qreKJPjRtV09CmdykFzeKQ==
 
 "@js-toolkit/node-utils@^1.1.4":
   version "1.1.4"
   resolved "https://npm.pkg.github.com/download/@js-toolkit/node-utils/1.1.4/fdfcc14760794cade62184d5b3ffb3da7cb847b3609aab82db6c9e14f68970d9#088981e18ac92a9aee05e4232cfff5047238413a"
   integrity sha512-qqSI80Pa/9I06DA3RZRXVXYm/5XG/NWULROPxEQc3R4uytVVF6xdIm4+doFKQ7dcD+gwIrME6qhyjCudsnkojg==
 
-"@js-toolkit/react-hooks@^1.36.7":
-  version "1.36.7"
-  resolved "https://npm.pkg.github.com/download/@js-toolkit/react-hooks/1.36.7/da3a729993dd6d84c465f99cf59533de2172a5da2578e9c02669f0f69928158e#ca1c9c51dcbf2b66eb579eaf6819e7404f207d1a"
-  integrity sha512-Lm/Z/Nttwg3IzFUTN/2J6jSNYDD+3rkMoiPnmvcrv38xFE+VujExonciTalNwxnBDQlF7hTEw3koO4FEReNjJA==
+"@js-toolkit/react-hooks@^1.37.0":
+  version "1.37.0"
+  resolved "https://npm.pkg.github.com/download/@js-toolkit/react-hooks/1.37.0/75ba14b07cc4f13a6f77d8de6d3ab6bbba1bb0a875c303eb2e2d4acdc0229c0c#dd8a2d3e942f048b8d15ed6e04d6ce3bc0eb711e"
+  integrity sha512-qPI1FQ3m4cWC85Hq3GktAPL01kR60XuACS+JKwcL+pVVFg6mXz2RZWQ5gn3Qa80fNgWzWef/dRH5gtKQ07tzJg==
 
 "@js-toolkit/ts-utils@^1.37.4":
   version "1.37.4"
@@ -2029,10 +2029,10 @@ react-universal-interface@^0.6.2:
   resolved "https://registry.yarnpkg.com/react-universal-interface/-/react-universal-interface-0.6.2.tgz#5e8d438a01729a4dbbcbeeceb0b86be146fe2b3b"
   integrity sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==
 
-react-use@^17.2.4:
-  version "17.2.4"
-  resolved "https://registry.yarnpkg.com/react-use/-/react-use-17.2.4.tgz#1f89be3db0a8237c79253db0a15e12bbe3cfeff1"
-  integrity sha512-vQGpsAM0F5UIlshw5UI8ULGPS4yn5rm7/qvn3T1Gnkrz7YRMEEMh+ynKcmRloOyiIeLvKWiQjMiwRGtdbgs5qQ==
+react-use@^17.3.1:
+  version "17.3.1"
+  resolved "https://registry.yarnpkg.com/react-use/-/react-use-17.3.1.tgz#12b248555775519aa2b900b22f1928d029bf99d1"
+  integrity sha512-hs7+tS4rRm1QLHPfanLCqXIi632tP4V7Sai1ENUP2WTufU6am++tU9uSw9YrNCFqbABiEv0ndKU1XCUcfu2tXA==
   dependencies:
     "@types/js-cookie" "^2.2.6"
     "@xobotyi/scrollbar-width" "^1.9.5"
@@ -2097,10 +2097,10 @@ readable-stream@~2.3.6:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-reflexy@^3.37.0:
-  version "3.37.0"
-  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.37.0.tgz#571e2e5215fe9ec48df1a2884393f576f72a72a8"
-  integrity sha512-9IumZKMV+TQpl//debRTqyXJut263fWYq79ZXdpMxImzvioTZ0g7a9E8HzMb7EjaRtQl4fv+GGCBqG2/4Tps+g==
+reflexy@^3.37.4:
+  version "3.37.4"
+  resolved "https://registry.yarnpkg.com/reflexy/-/reflexy-3.37.4.tgz#0ecfde82c20d3b8a71536c521b531d80f070feae"
+  integrity sha512-qrHgbE+XpELMhXB5NLLv9ZYedm0Lpf/Zdbvw5yWpV+1nTBWstTg5Npe690sakDOi9WqM0Gu2Fls+e/dgKtgD7Q==
 
 regenerator-runtime@^0.13.4:
   version "0.13.7"

@@ -24,9 +24,9 @@
     "minor-publish": "yarn run build && yarn version --minor && yarn run copy:configs && npm publish ./dist/ && git push origin master --follow-tags"
   },
   "devDependencies": {
-    "@js-toolkit/configs": "^3.78.5",
+    "@js-toolkit/configs": "^3.79.0",
     "@js-toolkit/node-utils": "^1.1.4",
-    "@js-toolkit/react-hooks": "^1.36.7",
+    "@js-toolkit/react-hooks": "^1.37.0",
     "@js-toolkit/ts-utils": "^1.37.4",
     "@js-toolkit/web-utils": "^1.26.0",
     "@material-ui/core": "^4.12.3",
@@ -61,8 +61,8 @@
     "react": "^17.0.2",
     "react-modal": "^3.14.3",
     "react-outside-click-listener": "^1.4.1",
-    "react-use": "^17.2.4",
-    "reflexy": "^3.37.0",
+    "react-use": "^17.3.1",
+    "reflexy": "^3.37.4",
     "rimraf": "^3.0.2",
     "terser": "^5.7.2",
     "typescript": "^4.4.2",

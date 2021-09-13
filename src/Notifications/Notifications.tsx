@@ -197,7 +197,7 @@ export default function Notifications<
 
         // It needs an extra container for correct positioning by center
         const containerClassName =
-          (pos.startsWith('window') && css.fixedContainer) ||
+          (pos.indexOf('window') === 0 && css.fixedContainer) ||
           ((pos === 'top' || pos === 'bottom') && `${css.absoluteContainer} ${css[pos]}`) ||
           css[pos];
 

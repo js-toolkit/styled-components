@@ -1,7 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
-import useRafState from 'react-use/esm/useRafState';
-import noop from '@js-toolkit/ts-utils/noop';
+import useRefState from '@js-toolkit/react-hooks/useRefState';
 import EventTargetListener from '@js-toolkit/web-utils/EventTargetListener';
 
 const useStyles = makeStyles({
@@ -27,39 +26,43 @@ export default function ViewableListener({
   style,
 }: ViewableListenerProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-  const [isViewable, setViewable] = useState(false);
-  const [y, setY] = useRafState(window.pageYOffset);
   const rootRef = useRef<HTMLDivElement>(null);
+  const raf = useRef(0);
+  const [isViewable, setViewable] = useRefState(false);
 
-  // Subscribe to window scroll
-  useEffect(() => {
-    if (!isViewable) return noop;
-
-    const handler = (): void => {
-      setY(window.pageYOffset);
-    };
-
-    const listener = new EventTargetListener(window);
-    listener.on('scroll', handler, { capture: false, passive: true });
-
-    return () => {
-      listener.removeAllListeners();
-    };
-  }, [isViewable, setY]);
-
-  // Detect is viewable
-  useEffect(() => {
+  const check = useCallback(() => {
     const { current: root } = rootRef;
     if (!root) return;
 
-    const { top } = root.getBoundingClientRect();
-    const startPoint = (window.innerHeight * 2) / 3;
+    window.cancelAnimationFrame(raf.current);
 
-    if (top <= startPoint) {
-      setViewable(true);
-      onViewable();
-    }
-  }, [onViewable, y]);
+    raf.current = window.requestAnimationFrame(() => {
+      const { top } = root.getBoundingClientRect();
+      const startPoint = (window.innerHeight * 2) / 3;
+
+      const viewable = top <= startPoint;
+      if (!isViewable() && viewable) {
+        onViewable();
+      }
+      if (isViewable() !== viewable) {
+        setViewable(viewable);
+      }
+    });
+  }, [isViewable, onViewable, setViewable]);
+
+  useEffect(() => {
+    // Subscribe to window scroll
+    const listener = new EventTargetListener(window);
+    listener.on('scroll', check, { capture: false, passive: true });
+
+    // Detect is viewable
+    check();
+
+    return () => {
+      window.cancelAnimationFrame(raf.current);
+      listener.removeAllListeners();
+    };
+  }, [check]);
 
   return <div ref={rootRef} className={css.root} style={style} />;
 }

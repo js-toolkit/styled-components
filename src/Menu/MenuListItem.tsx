@@ -2,6 +2,7 @@ import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
+import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import type { Theme } from '../theme';
 import TruncatedText from '../TruncatedText';
@@ -63,9 +64,12 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   const css = useStyles({ classes: { root: className }, clickable: !!onSelect });
   const { rc } = useTheme<Theme>();
 
-  const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
-    (event) => onSelect && onSelect(value, event)
-  );
+  const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
+    if (onSelect) {
+      stopPropagation(event);
+      onSelect(value, event);
+    }
+  });
 
   const mouseEnterHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
     (event) => onMouseEnter && onMouseEnter(value, event)

@@ -2,7 +2,8 @@ import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import useTheme from '@material-ui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
+import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
 import type { Theme } from '../theme';
 import Button from '../Button';
@@ -68,8 +69,20 @@ export default function MenuList<
   const css = useStyles();
   const { rc } = useTheme<Theme>();
 
-  const backHandler = useRefCallback(() => onBack && onBack());
-  const closeHandler = useRefCallback(() => onClose && onClose());
+  const backHandler = useChainRefCallback<React.MouseEventHandler>(
+    onBack && stopPropagation,
+    onBack
+  );
+
+  const closeHandler = useChainRefCallback<React.MouseEventHandler>(
+    onClose && stopPropagation,
+    onClose
+  );
+
+  const headerActionHandler = useChainRefCallback<React.MouseEventHandler>(
+    onHeaderAction && stopPropagation,
+    onHeaderAction
+  );
 
   const theme = rc?.MenuList;
   const backIconProps = onBack ? theme?.header?.backIcon : undefined;
@@ -121,7 +134,7 @@ export default function MenuList<
               color="none"
               {...headerActionFlex}
               className={css.headerAction}
-              onClick={onHeaderAction}
+              onClick={headerActionHandler}
             >
               {headerAction}
             </Button>

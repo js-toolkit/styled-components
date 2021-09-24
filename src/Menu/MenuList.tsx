@@ -71,17 +71,17 @@ export default function MenuList<
 
   const backHandler = useChainRefCallback<React.MouseEventHandler>(
     onBack && stopPropagation,
-    onBack
+    onBack && (() => onBack())
   );
 
   const closeHandler = useChainRefCallback<React.MouseEventHandler>(
     onClose && stopPropagation,
-    onClose
+    onClose && (() => onClose())
   );
 
   const headerActionHandler = useChainRefCallback<React.MouseEventHandler>(
     onHeaderAction && stopPropagation,
-    onHeaderAction
+    onHeaderAction && (() => onHeaderAction())
   );
 
   const theme = rc?.MenuList;

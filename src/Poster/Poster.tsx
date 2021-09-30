@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@js-toolkit/web-utils/loadImage';
-import takePicture from '@js-toolkit/web-utils/takePicture';
+import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';
 // import blobToDataUrl from '@js-toolkit/web-utils/blobToDataUrl';
 import noop from '@js-toolkit/ts-utils/noop';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
@@ -86,7 +86,7 @@ export default function Poster({
       .then((img) => {
         if (unmounted) return;
         clearTimeout(timer);
-        const dataUrl = takePicture(img, { quality: 1 });
+        const dataUrl = takeSnapshot(img, { quality: 1 });
         setUrl(dataUrl);
       })
       .catch((ex) => !unmounted && (onError ? onError(ex) : console.error(ex)))

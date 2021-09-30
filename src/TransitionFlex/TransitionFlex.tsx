@@ -6,7 +6,7 @@ import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 type TransitionComponent = React.JSXElementConstructor<
-  TransitionProps & { children?: React.ReactElement<any, any> }
+  TransitionProps & { children?: React.ReactNode }
 >;
 
 export interface HideableProps<T extends TransitionComponent = TransitionComponent> {
@@ -73,7 +73,7 @@ export default function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
       ...transitionProps,
-    } as React.ComponentPropsWithoutRef<T>,
+    },
     <FlexWithRef component="div" className={clsx(className, hidden && hiddenClassName)} {...rest}>
       {children}
     </FlexWithRef>

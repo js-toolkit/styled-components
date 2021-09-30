@@ -27,7 +27,7 @@
     "@js-toolkit/configs": "^3.80.0",
     "@js-toolkit/node-utils": "^1.1.4",
     "@js-toolkit/react-hooks": "^1.39.0",
-    "@js-toolkit/ts-utils": "^1.37.4",
+    "@js-toolkit/utils": "^1.38.0",
     "@js-toolkit/web-utils": "^1.27.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/styles": "^4.11.4",

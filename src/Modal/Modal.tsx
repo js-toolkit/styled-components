@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
-import '@js-toolkit/ts-utils/types';
+import '@js-toolkit/utils/types';
 import ReactModal from 'react-modal';
 import { Flex, FlexComponentProps, GetStylesTransformers } from 'reflexy/styled';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';

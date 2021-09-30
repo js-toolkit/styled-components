@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
-import getRandom from '@js-toolkit/ts-utils/getRandom';
-import toInt from '@js-toolkit/ts-utils/toInt';
-import noop from '@js-toolkit/ts-utils/noop';
+import getRandom from '@js-toolkit/utils/getRandom';
+import toInt from '@js-toolkit/utils/toInt';
+import noop from '@js-toolkit/utils/noop';
 import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
 import WatermarkField from '../WatermarkField';
 import type { Size } from '../ResizeListener';

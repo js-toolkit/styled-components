@@ -87,10 +87,10 @@
   resolved "https://npm.pkg.github.com/download/@js-toolkit/react-hooks/1.39.0/831400247a8f2e2e5035508bcc344e8b1e62d7fbe06b682184c12b58b82e3970#29d51a0605f23dff079004194882131bb73f1064"
   integrity sha512-NS/yHyE4LSAJc189/I3kbyPPQatr9sUsW+ZfxL2KHLvimDhRNeDEigCCRyWq3+odKMiwousZRGThGzJm3EWZ0A==
 
-"@js-toolkit/ts-utils@^1.37.4":
-  version "1.37.4"
-  resolved "https://npm.pkg.github.com/download/@js-toolkit/ts-utils/1.37.4/2031b9990db0d2d54a97b84774a20c970d8e75f947bda223aedd5007db3e5f08#48243603e390274265251914a034fe9490663cc4"
-  integrity sha512-iXe+w1JESlFJjvjH02gMkbMjqH3dPwKl9DD5NfN/XwDxTBKvcuOytso5MFC1T8Kw5y/EM2QQA+gYYsbKXyqz2Q==
+"@js-toolkit/utils@^1.38.0":
+  version "1.38.0"
+  resolved "https://npm.pkg.github.com/download/@js-toolkit/utils/1.38.0/365cdb89b9f6e83c14eae3c3cbdf96cd3ced4cdfb6f5aaaf277bfbd65d78e221#4554e26cb5c63a3c00bf53ea344c902703a0d923"
+  integrity sha512-sIp5ky3UEUim1LPJaseEG/phfYdEIAZgIeXZ6leiLDIQ3wtFVTlhKH/rwgVtpYH6auOjolDj3VwyC0SMHzbFog==
 
 "@js-toolkit/web-utils@^1.27.0":
   version "1.27.0"

@@ -52,10 +52,10 @@ export const useStyles = makeStyles(({ rc }: Theme) => ({
     ...rc?.Tooltip?.title,
   },
 
-  subtitle: {
+  text: {
     composes: '$style',
     maxWidth: 'inherit',
-    ...rc?.Tooltip?.subtitle,
+    ...rc?.Tooltip?.text,
   },
 }));
 
@@ -66,7 +66,7 @@ export interface TooltipData {
   readonly target: HTMLElement;
 
   readonly title?: React.ReactNode;
-  readonly subtitle?: React.ReactNode;
+  readonly text?: React.ReactNode;
   readonly arrow?: boolean;
 
   readonly x: number;
@@ -117,10 +117,10 @@ export default function Tooltip({
   useLayoutEffect(() => {
     const { current: root } = rootRef;
     const { current: container } = containerRef;
-    // if (!(tooltip && (tooltip.title || tooltip.subtitle))) return;
+    // if (!(tooltip && (tooltip.title || tooltip.text))) return;
     if (!root || !container) return;
 
-    if (!(tooltip && (tooltip.title || tooltip.subtitle))) {
+    if (!(tooltip && (tooltip.title || tooltip.text))) {
       if (!isHidden()) setHidden(true);
       return;
     }
@@ -156,7 +156,7 @@ export default function Tooltip({
     if (isHidden()) setHidden(false);
   }, [isHidden, rc?.Tooltip?.arrowColor, rc?.Tooltip?.style?.backgroundColor, setHidden, tooltip]);
 
-  // const hidden = !(tooltip && (tooltip.title || tooltip.subtitle));
+  // const hidden = !(tooltip && (tooltip.title || tooltip.text));
   const hidden = isHidden();
 
   return (
@@ -195,18 +195,18 @@ export default function Tooltip({
               </TruncatedText>
             </Flex>
           )}
-          {tooltip.subtitle && (
+          {tooltip.text && (
             <TruncatedText
               mt={tooltip.title ? 'xs' : undefined}
               p="xs"
               {...tooltip.innerSpace}
-              className={css.subtitle}
+              className={css.text}
             >
-              {tooltip.subtitle}
+              {tooltip.text}
             </TruncatedText>
           )}
 
-          {tooltip.arrow && (!tooltip.title || !tooltip.subtitle) && (
+          {tooltip.arrow && (!tooltip.title || !tooltip.text) && (
             <div ref={arrowRef} className={css.arrow} />
           )}
         </Flex>

@@ -4,7 +4,7 @@ import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
-import type { NotificationPosition, NotificationVariant as NotificationVariant } from './Notifications';
+import type { NotificationPosition, NotificationVariant } from './Notifications';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -229,7 +229,7 @@ export interface Theme {
     Tooltip?: {
       style?: CSSProperties;
       title?: CSSProperties;
-      subtitle?: CSSProperties;
+      text?: CSSProperties;
       arrowColor?: string;
     };
 

@@ -6,7 +6,7 @@ import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { TransitionFlexProps } from '../TransitionFlex';
 import TruncatedText from '../TruncatedText';
 import type { Theme } from '../theme';
-import { calcXInside, calcX, calcY, calcArrowCss } from './utils';
+import { calcX, calcY, calcArrowCss, calcXInside } from './utils';
 
 export const useStyles = makeStyles(({ rc }: Theme) => ({
   root: {
@@ -16,6 +16,14 @@ export const useStyles = makeStyles(({ rc }: Theme) => ({
     transformOrigin: '0 0',
     left: 0,
     top: 0,
+  },
+
+  container: {
+    position: 'relative',
+  },
+
+  rowContainer: {
+    maxWidth: 'inherit',
   },
 
   arrow: {
@@ -30,24 +38,8 @@ export const useStyles = makeStyles(({ rc }: Theme) => ({
     ...rc?.Tooltip?.style,
   },
 
-  titleContainer: {
-    position: 'relative',
-    maxWidth: 'inherit',
-
-    '&::before': {
-      content: '" "',
-      fontSize: rc?.Tooltip?.title?.fontSize || rc?.Tooltip?.style?.fontSize,
-      whiteSpace: 'pre',
-    },
-  },
-
   title: {
     composes: '$style',
-    position: 'absolute',
-    transformOrigin: '0 0',
-    top: 0,
-    left: 0,
-    height: '100%',
     maxWidth: 'inherit',
     ...rc?.Tooltip?.title,
   },
@@ -65,8 +57,9 @@ type TooltipAlignY = 'top' | 'middle' | 'bottom';
 export interface TooltipData {
   readonly target: HTMLElement;
 
+  readonly preview?: React.ReactElement | React.CSSProperties;
   readonly title?: React.ReactNode;
-  readonly text?: React.ReactNode;
+  readonly text: React.ReactNode;
   readonly arrow?: boolean;
 
   readonly x: number;
@@ -81,7 +74,8 @@ export interface TooltipData {
   readonly maxWidth?: number;
   readonly space?: SpaceProps;
   readonly innerSpace?: SpaceProps;
-  readonly fastUpdate?: boolean;
+
+  readonly sequence?: boolean;
 }
 
 export interface TooltipProps
@@ -101,42 +95,57 @@ export default function Tooltip({
   const { rc } = useTheme<Theme>();
   const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
   // Set hidden on new tooltip in order to wait until render content and correct positioning.
   const [isHidden, setHidden] = useUpdatedRefState<boolean>(
     (prev) => {
       if (prev == null) return true;
-      if (tooltip?.fastUpdate) return prev;
+      if (tooltip?.sequence) return prev;
       return true;
     },
     [tooltip]
   );
 
   useLayoutEffect(() => {
-    const { current: root } = rootRef;
-    const { current: container } = containerRef;
-    // if (!(tooltip && (tooltip.title || tooltip.text))) return;
-    if (!root || !container) return;
-
-    if (!(tooltip && (tooltip.title || tooltip.text))) {
+    if (!(tooltip && (tooltip.title || tooltip.text || tooltip.preview))) {
       if (!isHidden()) setHidden(true);
       return;
     }
 
+    const { current: root } = rootRef;
+    const { current: container } = containerRef;
+    if (!root || !container) return;
+
     const { x, y, alignX, alignY, minX, maxX, minY, maxY } = tooltip;
 
     // root
-    const rootLeft = x == null ? 0 : calcX(x, alignX, container.offsetWidth, minX, maxX);
-    const rootTop = y == null ? 0 : calcY(y, alignY, container.offsetHeight, minY, maxY);
+    const rootLeft = calcX(x, alignX, container.offsetWidth, minX, maxX);
+    const rootTop = calcY(y, alignY, container.offsetHeight, minY, maxY);
     root.style.transform = `translate(${rootLeft}px, ${rootTop}px)`;
+
+    // preview
+    const { current: preview } = previewRef;
+    if (preview) {
+      const previewLeft = calcXInside(x - rootLeft, preview.offsetWidth, 0, container.offsetWidth);
+      preview.style.transform = `translateX(${previewLeft}px)`;
+    }
 
     // title
     const { current: title } = titleRef;
     if (title) {
-      const titleLeft = calcXInside(title.offsetWidth, container.offsetWidth, rootLeft, minX, maxX);
+      const titleLeft = calcXInside(x - rootLeft, title.offsetWidth, 0, container.offsetWidth);
       title.style.transform = `translateX(${titleLeft}px)`;
+    }
+
+    // text
+    const { current: text } = textRef;
+    if (text) {
+      const textLeft = calcXInside(x - rootLeft, text.offsetWidth, 0, container.offsetWidth);
+      text.style.transform = `translateX(${textLeft}px)`;
     }
 
     // arrow
@@ -156,7 +165,6 @@ export default function Tooltip({
     if (isHidden()) setHidden(false);
   }, [isHidden, rc?.Tooltip?.arrowColor, rc?.Tooltip?.style?.backgroundColor, setHidden, tooltip]);
 
-  // const hidden = !(tooltip && (tooltip.title || tooltip.text));
   const hidden = isHidden();
 
   return (
@@ -168,43 +176,47 @@ export default function Tooltip({
       onShown={onShown}
       onHidden={onHidden}
     >
-      {tooltip && (
+      {tooltip && !!(tooltip.title || tooltip.text) && (
         <Flex
           componentRef={containerRef}
-          center
           column
+          alignItems="flex-start"
           {...rest}
           {...tooltip.space}
+          className={css.container}
           style={tooltip.maxWidth != null ? { maxWidth: tooltip.maxWidth } : undefined}
         >
-          {tooltip.title && (
-            <Flex
-              p="xs"
-              {...tooltip.innerSpace}
-              alignItems="flex-start"
-              hfill
-              className={css.titleContainer}
-            >
-              <TruncatedText
-                p="xs"
-                {...tooltip.innerSpace}
-                componentRef={titleRef}
-                className={css.title}
-              >
-                {tooltip.title}
-              </TruncatedText>
+          {tooltip.preview && (
+            <Flex componentRef={previewRef} className={css.rowContainer}>
+              {React.isValidElement(tooltip.preview) ? (
+                tooltip.preview
+              ) : (
+                <div style={tooltip.preview} />
+              )}
             </Flex>
           )}
-          {tooltip.text && (
-            <TruncatedText
-              mt={tooltip.title ? 'xs' : undefined}
-              p="xs"
-              {...tooltip.innerSpace}
-              className={css.text}
-            >
-              {tooltip.text}
-            </TruncatedText>
+
+          {tooltip.title && (
+            <Flex componentRef={titleRef} className={css.rowContainer}>
+              {React.isValidElement(tooltip.title) ? (
+                tooltip.title
+              ) : (
+                <TruncatedText mb="xs" p="xs" {...tooltip.innerSpace} className={css.title}>
+                  {tooltip.title}
+                </TruncatedText>
+              )}
+            </Flex>
           )}
+
+          <Flex componentRef={textRef} className={css.rowContainer}>
+            {tooltip.text && React.isValidElement(tooltip.text) ? (
+              tooltip.text
+            ) : (
+              <TruncatedText p="xs" {...tooltip.innerSpace} className={css.text}>
+                {tooltip.text}
+              </TruncatedText>
+            )}
+          </Flex>
 
           {tooltip.arrow && (!tooltip.title || !tooltip.text) && (
             <div ref={arrowRef} className={css.arrow} />

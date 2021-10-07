@@ -5,17 +5,17 @@ import type { TooltipData } from './Tooltip';
 export function calcX(
   x: number,
   alignX: TooltipData['alignX'],
-  width: number,
+  contentWidth: number,
   minX?: number,
   maxX?: number
 ): number {
-  if (width <= 0) return -9999;
-  const x1 = x - (alignX === 'middle' ? width / 2 : alignX === 'right' ? width : 0);
+  if (contentWidth <= 0) return -9999;
+  const x1 = x - (alignX === 'middle' ? contentWidth / 2 : alignX === 'right' ? contentWidth : 0);
   if (minX != null) {
     if (x1 < minX) return minX;
   }
   if (maxX != null) {
-    const x2 = x1 + width;
+    const x2 = x1 + contentWidth;
     if (x2 > maxX) return x1 - (x2 - maxX);
   }
   return x1;
@@ -24,40 +24,48 @@ export function calcX(
 export function calcY(
   y: number,
   alignY: TooltipData['alignY'],
-  height: number,
+  contentHeight: number,
   minY?: number,
   maxY?: number
 ): number {
-  if (height <= 0) return -9999;
-  const y1 = y - (alignY === 'middle' ? height / 2 : alignY === 'bottom' ? height : 0);
+  if (contentHeight <= 0) return -9999;
+  const y1 =
+    y - (alignY === 'middle' ? contentHeight / 2 : alignY === 'bottom' ? contentHeight : 0);
   if (minY != null) {
     if (y1 < minY) return minY;
   }
   if (maxY != null) {
-    const y2 = y1 + height;
+    const y2 = y1 + contentHeight;
     if (y2 > maxY) return y1 - (y2 - maxY);
   }
   return y1;
 }
 
-export function calcXInside(
-  width: number,
-  parentWidth: number,
-  parentLeft: number,
-  minX?: number,
-  maxX?: number
-): number {
-  if (width <= 0 || parentWidth <= 0) return -9999;
-  const left = (parentWidth - width) / 2;
-  const x1 = parentLeft + left;
-  if (minX != null) {
-    if (x1 < minX) return left - (x1 - minX);
-  }
-  if (maxX != null) {
-    const x2 = x1 + width;
-    if (x2 > maxX) return left - (x2 - maxX);
-  }
-  return left;
+// export function calcXInside(
+//   width: number,
+//   parentWidth: number,
+//   parentLeft: number,
+//   minX?: number,
+//   maxX?: number
+// ): number {
+//   if (width <= 0 || parentWidth <= 0) return -9999;
+//   const left = (parentWidth - width) / 2;
+//   const x1 = parentLeft + left;
+//   if (minX != null) {
+//     if (x1 < minX) return left - (x1 - minX);
+//   }
+//   if (maxX != null) {
+//     const x2 = x1 + width;
+//     if (x2 > maxX) return left - (x2 - maxX);
+//   }
+//   return left;
+// }
+
+export function calcXInside(x: number, width: number, min: number, max: number): number {
+  const x1 = Math.max(x - width / 2, min);
+  const x2 = x1 + width;
+  if (x2 > max) return x1 - (x2 - max);
+  return x1;
 }
 
 export function calcArrowCss(

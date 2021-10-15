@@ -54,7 +54,7 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   value,
   submenu,
   checked,
-  shrinkTitle = !subtitle && !!(checked || submenu),
+  shrinkTitle = (!subtitle && !!(checked || submenu)) || (!subtitle && !checked && !submenu),
   className,
   onSelect,
   onMouseEnter,

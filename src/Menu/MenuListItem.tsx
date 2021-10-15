@@ -133,10 +133,12 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
         </TruncatedText>
       )}
 
-      {!!checkIconProps && <Flex ml component={SvgSpriteIcon} size="0.75em" {...checkIconProps} />}
+      {!!checkIconProps && (
+        <Flex ml shrink={0} component={SvgSpriteIcon} size="0.75em" {...checkIconProps} />
+      )}
 
       {!!submenuIconProps && (
-        <Flex ml component={SvgSpriteIcon} size="0.6em" {...submenuIconProps} />
+        <Flex ml shrink={0} component={SvgSpriteIcon} size="0.6em" {...submenuIconProps} />
       )}
     </Flex>
   );

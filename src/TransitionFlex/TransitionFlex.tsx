@@ -6,7 +6,7 @@ import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 type TransitionComponent = React.JSXElementConstructor<
-  TransitionProps & { children?: React.ReactNode }
+  TransitionProps & { children?: React.ReactElement<any, any> }
 >;
 
 export interface HideableProps<T extends TransitionComponent = TransitionComponent> {
@@ -18,7 +18,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
   readonly onHidden?: VoidFunction;
   readonly onShown?: VoidFunction;
   readonly transition?: T;
-  readonly transitionProps?: React.ComponentProps<T>;
+  readonly transitionProps?: OmitStrict<React.ComponentProps<T>, 'children'>;
   readonly transitionDuration?: TransitionProps['timeout'];
 }
 

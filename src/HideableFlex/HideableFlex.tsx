@@ -29,7 +29,7 @@ export interface HideableProps {
 
 export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
   C,
-  { defaultStyles: { className: true } }
+  { inferStyleProps: { style: true } }
 > &
   HideableProps;
 

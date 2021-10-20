@@ -129,7 +129,7 @@ export interface Notification<
 export type NotificationsProps<
   C extends React.ElementType = DefaultComponentType,
   N extends Notification<any, any> = Notification
-> = FlexAllProps<C, { defaultStyles: true }> & {
+> = FlexAllProps<C> & {
   readonly list: readonly N[];
   readonly defaultPosition?: NotificationPosition;
   readonly defaultAction?: NotificationBarProps<

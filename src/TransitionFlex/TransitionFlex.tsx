@@ -25,7 +25,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
 export type TransitionFlexProps<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType
-> = FlexAllProps<C, { defaultStyles: { className: true } }> & HideableProps<T>;
+> = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
 
 /** Default transition is `Fade`. */
 export default function TransitionFlex<

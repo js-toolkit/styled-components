@@ -22,7 +22,7 @@ export interface ModalProps
       { pick: 'transitionDuration' }
     >,
     OmitStrict<
-      FlexComponentProps<typeof ReactModal, { defaultStyles: true }>,
+      FlexComponentProps<typeof ReactModal>,
       | 'isOpen'
       | 'overlayElement'
       | 'overlayRef'

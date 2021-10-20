@@ -11,7 +11,7 @@ export type DropDownLabelProps<C extends React.ElementType = DefaultComponentTyp
     expandedClassName?: string;
     expandIcon?: boolean | React.ReactElement;
   }> &
-    FlexAllProps<C, { defaultStyles: true }>;
+    FlexAllProps<C>;
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: theme.rc?.DropDownLabel?.root ?? {},

@@ -21,7 +21,7 @@ interface LoadableStyleProps {
 
 export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType> =
   React.PropsWithChildren<
-    FlexAllProps<C, { defaultStyles: true }> &
+    FlexAllProps<C> &
       LoadableStyleProps & {
         spinner?: boolean | React.ReactElement;
         spinnerClassName?: string;

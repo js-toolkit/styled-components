@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 export type DividerProps<C extends React.ElementType = DefaultComponentType> = {
   light?: boolean;
-} & FlexAllProps<C, { defaultStyles: true }>;
+} & FlexAllProps<C>;
 
 export default function Divider<C extends React.ElementType = DefaultComponentType>({
   light,

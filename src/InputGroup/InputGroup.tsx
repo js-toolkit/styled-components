@@ -95,7 +95,7 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
   const inputComponent = React.isValidElement(input) ? (
     React.cloneElement(input, { ...stateAttrs, 'data-input': '' } as any)
   ) : (
-    <Flex {...(input as FlexAllProps<C>)} data-input="" />
+    <Flex {...(input as FlexAllProps<'input'>)} data-input="" />
   );
 
   return (

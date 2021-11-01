@@ -3,7 +3,7 @@ import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 import clsx from 'clsx';
 import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
 type TransitionComponent = React.JSXElementConstructor<
   TransitionProps & { children?: React.ReactElement<any, any> }
@@ -45,7 +45,8 @@ export default function TransitionFlex<
   hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
-  const { children: childrenProp } = rest as React.HTMLAttributes<Element>;
+  const trCompProps = transitionProps as TransitionProps | undefined;
+  const { children: childrenProp } = rest as React.PropsWithChildren<EmptyObject>;
 
   const lastChildrenRef = useRef(childrenProp);
   if (keepChildren && !hidden) {
@@ -53,26 +54,20 @@ export default function TransitionFlex<
   }
   const children = keepChildren ? childrenProp || lastChildrenRef.current : childrenProp;
 
-  const enteredHandler = useRefCallback(() => {
-    // keepChildren && setLastChildren(childrenProp);
-    onShown && onShown();
-  });
+  const enteredHandler = useChainRefCallback(onShown && (() => onShown()), trCompProps?.onEntered);
 
-  const exitedHandler = useRefCallback(() => {
-    // keepChildren && setLastChildren(undefined);
-    onHidden && onHidden();
-  });
+  const exitedHandler = useChainRefCallback(onHidden && (() => onHidden()), trCompProps?.onExited);
 
   return React.createElement(
     transition,
     {
-      in: !hidden,
+      ...transitionProps,
+      in: (hidden == null ? trCompProps?.in : undefined) ?? !hidden,
       appear,
-      unmountOnExit: disposable,
-      timeout: transitionDuration,
+      unmountOnExit: disposable ?? trCompProps?.unmountOnExit,
+      timeout: transitionDuration ?? trCompProps?.timeout,
       onEntered: enteredHandler,
       onExited: exitedHandler,
-      ...transitionProps,
     },
     <FlexWithRef component="div" className={clsx(className, hidden && hiddenClassName)} {...rest}>
       {children}

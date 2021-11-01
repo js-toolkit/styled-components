@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps, FlexAllProps } from 'reflexy';
 import type { Theme } from '../theme';
 import InvalidIcon from './InvalidIcon';

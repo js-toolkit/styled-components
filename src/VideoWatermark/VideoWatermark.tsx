@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
 import getRandom from '@js-toolkit/utils/getRandom';
 import toInt from '@js-toolkit/utils/toInt';

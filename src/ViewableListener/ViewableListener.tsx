@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
 import EventTargetListener from '@js-toolkit/web-utils/EventTargetListener';
 

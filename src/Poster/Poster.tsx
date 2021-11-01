@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@js-toolkit/web-utils/loadImage';
 import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';

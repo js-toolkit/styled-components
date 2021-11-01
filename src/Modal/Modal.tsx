@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import '@js-toolkit/utils/types';
 import ReactModal from 'react-modal';
 import { Flex, FlexComponentProps, GetStylesTransformers } from 'reflexy/styled';

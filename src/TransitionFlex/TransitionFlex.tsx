@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import type { TransitionProps } from '@material-ui/core/transitions/transition';
-import Fade from '@material-ui/core/Fade';
+import type { TransitionProps } from '@mui/material/transitions/transition';
+import Fade from '@mui/material/Fade';
 import clsx from 'clsx';
 import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';

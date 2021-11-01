@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@material-ui/styles/styled';
+import styled from '@mui/styles/styled';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
 import type { Theme } from '../../theme';
 

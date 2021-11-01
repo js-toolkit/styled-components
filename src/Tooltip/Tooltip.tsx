@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
-import useTheme from '@material-ui/styles/useTheme';
+import makeStyles from '@mui/styles/makeStyles';
+import useTheme from '@mui/styles/useTheme';
 import { Flex, FlexSimpleProps, SpaceProps } from 'reflexy';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { TransitionFlexProps } from '../TransitionFlex';

@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, useMemo } from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import { OutsideClickListener, OutsideClickListenerProps } from 'react-outside-click-listener';

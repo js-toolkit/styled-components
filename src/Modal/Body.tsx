@@ -1,6 +1,6 @@
 import React from 'react';
-import makeStyles from '@material-ui/styles/makeStyles';
-import createStyles from '@material-ui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
 import type { Theme } from '../theme';
 

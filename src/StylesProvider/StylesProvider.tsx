@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { create, JssOptions } from 'jss';
 import MuiStylesProvider, {
   StylesProviderProps as MuiStylesProviderProps,
-} from '@material-ui/styles/StylesProvider';
+} from '@mui/styles/StylesProvider';
 import createPlugins from './createPlugins';
 
 export interface StylesProviderProps

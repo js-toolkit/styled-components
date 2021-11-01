@@ -1,4 +1,4 @@
-import type { BaseCSSProperties } from '@material-ui/styles/withStyles';
+import type { BaseCSSProperties } from '@mui/styles/withStyles';
 import type { FlexComponentProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';

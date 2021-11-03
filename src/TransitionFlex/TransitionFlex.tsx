@@ -6,7 +6,7 @@ import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
 type TransitionComponent = React.JSXElementConstructor<
-  TransitionProps & { children?: React.ReactElement<any, any> }
+  TransitionProps & { children: React.ReactElement<any, any> }
 >;
 
 export interface HideableProps<T extends TransitionComponent = TransitionComponent> {
@@ -32,40 +32,46 @@ export default function TransitionFlex<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType
 >({
-  hidden,
-  appear = true,
-  disposable,
-  keepChildren,
   transition = Fade as T,
   transitionProps,
-  transitionDuration,
+  transitionDuration = (transitionProps as TransitionProps)?.timeout,
+  hidden = !((transitionProps as TransitionProps)?.in ?? false),
+  appear = (transitionProps as TransitionProps)?.appear ?? true,
+  disposable = (transitionProps as TransitionProps)?.unmountOnExit,
+  keepChildren,
   onHidden,
   onShown,
   className,
   hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
-  const trCompProps = transitionProps as TransitionProps | undefined;
   const { children: childrenProp } = rest as React.PropsWithChildren<EmptyObject>;
 
   const lastChildrenRef = useRef(childrenProp);
   if (keepChildren && !hidden) {
     lastChildrenRef.current = childrenProp;
   }
+
   const children = keepChildren ? childrenProp || lastChildrenRef.current : childrenProp;
 
-  const enteredHandler = useChainRefCallback(onShown && (() => onShown()), trCompProps?.onEntered);
+  const enteredHandler = useChainRefCallback(
+    onShown && (() => onShown()),
+    (transitionProps as TransitionProps)?.onEntered
+  );
 
-  const exitedHandler = useChainRefCallback(onHidden && (() => onHidden()), trCompProps?.onExited);
+  const exitedHandler = useChainRefCallback(
+    onHidden && (() => onHidden()),
+    (transitionProps as TransitionProps)?.onExited
+  );
 
   return React.createElement(
-    transition,
+    transition as React.ComponentType<TransitionProps>,
     {
       ...transitionProps,
-      in: (hidden == null ? trCompProps?.in : undefined) ?? !hidden,
+      in: !hidden,
       appear,
-      unmountOnExit: disposable ?? trCompProps?.unmountOnExit,
-      timeout: transitionDuration ?? trCompProps?.timeout,
+      unmountOnExit: disposable,
+      timeout: transitionDuration,
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },

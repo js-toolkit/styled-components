@@ -1,13 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
 import getRandom from '@js-toolkit/utils/getRandom';
 import toInt from '@js-toolkit/utils/toInt';
 import noop from '@js-toolkit/utils/noop';
-import useUpdateState from '@js-toolkit/react-hooks/useUpdateState';
+import useRefState from '@js-toolkit/react-hooks/useRefState';
+import useUpdate from '@js-toolkit/react-hooks/useUpdate';
+import useRefs from '@js-toolkit/react-hooks/useRefs';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import WatermarkField from '../WatermarkField';
 import type { Size } from '../ResizeListener';
 import type { Theme } from '../theme';
+
+export type VideoWatermarkProps = FlexComponentProps &
+  Partial<Point> &
+  Partial<Size> & {
+    text: string;
+    baseFontSize?: number;
+    scaleBySize?: number;
+  } & (
+    | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement> }
+    | { mode?: 'stripes'; videoRef?: React.RefObject<HTMLVideoElement> }
+  );
 
 const useStyles = makeStyles(({ rc }: Theme) => {
   const textStyles: React.CSSProperties = {
@@ -34,6 +48,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       //   content: '""',
       // },
       position: 'absolute',
+      fontSize: 'inherit',
     },
 
     textDefault: {
@@ -52,29 +67,25 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     },
 
     random: {
+      transition: 'left 0.2s linear, top 0.2s linear',
       ...rc?.VideoWatermark?.default,
       ...rc?.VideoWatermark?.random,
       position: 'absolute',
-      transition: 'left 0.2s linear, top 0.2s linear',
     },
   };
 });
 
-export type VideoWatermarkProps = FlexComponentProps &
-  Partial<Point> &
-  Partial<Size> & {
-    text: string;
-    baseFontSize?: number;
-  } & (
-    | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement> }
-    | { mode?: 'stripes'; videoRef?: React.RefObject<HTMLVideoElement> }
-  );
+function scaleFontSize(baseFontSize: number, scale: number, width: number, height: number): number {
+  const minSize = Math.min(width, height);
+  return Math.floor(baseFontSize * ((minSize / 100) * scale));
+}
 
 export default React.memo(function VideoWatermark({
   videoRef,
   text,
   mode = 'stripes',
   baseFontSize,
+  scaleBySize,
   x,
   y,
   width: widthProp,
@@ -84,12 +95,27 @@ export default React.memo(function VideoWatermark({
 }: VideoWatermarkProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
   const rootRef = useRef<HTMLDivElement>(null);
+  const forceUpdate = useUpdate();
+  const setRootRef = useRefs(rootRef, forceUpdate);
   const textRef = useRef<HTMLDivElement>(null);
-  const [getTextSize, setTextSize] = useUpdateState({ textWidth: 0, textHeight: 0 });
+  const [getTextSize, setTextSize] = useRefState({ textWidth: 0, textHeight: 0 });
   const [coord, setCoord] = useState<Point | undefined>(undefined);
 
-  const width = useMemo(() => widthProp && toInt(widthProp), [widthProp]);
-  const height = useMemo(() => heightProp && toInt(heightProp), [heightProp]);
+  const width = widthProp && toInt(widthProp);
+  const height = heightProp && toInt(heightProp);
+
+  const fontSize = (() => {
+    if (baseFontSize && scaleBySize) {
+      if (!rootRef.current) return undefined;
+      return scaleFontSize(
+        baseFontSize,
+        scaleBySize,
+        rootRef.current.offsetWidth,
+        rootRef.current.offsetHeight
+      );
+    }
+    return baseFontSize;
+  })();
 
   // const watermarkImg = useMemo(() => {
   //   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${textWidth}" height="${textHeight}">
@@ -98,7 +124,7 @@ export default React.memo(function VideoWatermark({
   //   return `url("${base64ToDataUrl(toBase64(svg), 'image/svg+xml')}")`;
   // }, [text, textHeight, textWidth]);
 
-  const updateRandom = useCallback(() => {
+  const updateRandom = useRefCallback(() => {
     const { current: root } = rootRef;
     if (!root) return;
     const { textWidth, textHeight } = getTextSize();
@@ -108,27 +134,25 @@ export default React.memo(function VideoWatermark({
       x: getRandom(minX, maxX),
       y: getRandom(minY, maxY),
     });
-  }, [getTextSize]);
+  });
 
   useEffect(() => {
     const { current: textEl } = textRef;
     if (!textEl) return;
+    if (baseFontSize && !fontSize) return;
     const { width: textWidth, height: textHeight } = textEl.getBoundingClientRect();
     setTextSize({ textWidth, textHeight });
     // console.log(textWidth, textHeight, textEl.clientWidth, textEl.clientHeight);
-  }, [text, baseFontSize, setTextSize, updateRandom]);
-
-  useEffect(() => {
-    if (mode === 'random') {
-      updateRandom();
-    }
-  }, [width, height, text, updateRandom, mode]);
+  }, [setTextSize, baseFontSize, fontSize, text]);
 
   useEffect(() => {
     const { current: root } = rootRef;
     if (!root || !videoRef || mode !== 'random') return noop;
+    if (baseFontSize && !fontSize) return noop;
     const { current: video } = videoRef;
     if (!video) return noop;
+
+    updateRandom();
 
     let timer = 0;
 
@@ -151,19 +175,19 @@ export default React.memo(function VideoWatermark({
       video.removeEventListener('pause', stop);
       stop();
     };
-  }, [mode, updateRandom, videoRef]);
+  }, [mode, updateRandom, videoRef, baseFontSize, fontSize, text, width, height]);
 
   const { textWidth, textHeight } = getTextSize();
 
   return (
     <Flex
-      componentRef={rootRef}
+      componentRef={setRootRef}
       fill
       className={css.root}
       {...rest}
       style={{
         ...rest.style,
-        fontSize: baseFontSize,
+        fontSize: fontSize ?? baseFontSize,
         left: x ?? 0,
         top: y ?? 0,
         width: width ?? '100%',

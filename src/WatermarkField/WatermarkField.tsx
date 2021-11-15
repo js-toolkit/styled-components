@@ -6,17 +6,20 @@ export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> 
   textHeight: number;
 }
 
-export default function WatermarkField({
-  text,
-  textWidth,
-  textHeight,
-  patternUnits,
-  patternContentUnits,
-  patternTransform,
-  ...rest
-}: WatermarkFieldProps): JSX.Element {
+export default React.forwardRef(function WatermarkField(
+  {
+    text,
+    textWidth,
+    textHeight,
+    patternUnits,
+    patternContentUnits,
+    patternTransform,
+    ...rest
+  }: WatermarkFieldProps,
+  ref: React.Ref<SVGSVGElement>
+): JSX.Element {
   return (
-    <svg width="100%" height="100%" fill="currentColor" {...rest}>
+    <svg ref={ref} width="100%" height="100%" fill="currentColor" {...rest}>
       <defs>
         <pattern
           id="textstripe"
@@ -49,4 +52,4 @@ export default function WatermarkField({
       <rect width="100%" height="100%" fill="url(#textstripe)" />
     </svg>
   );
-}
+});

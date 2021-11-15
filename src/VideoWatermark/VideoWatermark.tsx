@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
+import useTheme from '@mui/styles/useTheme';
+import Fade from '@mui/material/Fade';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { Flex, FlexComponentProps } from 'reflexy';
 import getRandom from '@js-toolkit/utils/getRandom';
 import toInt from '@js-toolkit/utils/toInt';
@@ -59,6 +62,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     textRandom: {
       ...rc?.VideoWatermark?.default,
       ...rc?.VideoWatermark?.random,
+      transitionDuration: undefined,
       ...textStyles,
     },
 
@@ -67,9 +71,10 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     },
 
     random: {
-      transition: 'left 0.2s linear, top 0.2s linear',
+      // transition: 'left 0.2s linear, top 0.2s linear',
       ...rc?.VideoWatermark?.default,
       ...rc?.VideoWatermark?.random,
+      transitionDuration: undefined,
       position: 'absolute',
     },
   };
@@ -104,15 +109,13 @@ export default React.memo(function VideoWatermark({
   const width = widthProp && toInt(widthProp);
   const height = heightProp && toInt(heightProp);
 
+  const actualWidth = width ?? rootRef.current?.offsetWidth;
+  const actualHeight = height ?? rootRef.current?.offsetHeight;
+
   const fontSize = (() => {
     if (baseFontSize && scaleBySize) {
-      if (!rootRef.current) return undefined;
-      return scaleFontSize(
-        baseFontSize,
-        scaleBySize,
-        rootRef.current.offsetWidth,
-        rootRef.current.offsetHeight
-      );
+      if (!actualWidth || !actualHeight) return undefined;
+      return scaleFontSize(baseFontSize, scaleBySize, actualWidth, actualHeight);
     }
     return baseFontSize;
   })();
@@ -125,14 +128,13 @@ export default React.memo(function VideoWatermark({
   // }, [text, textHeight, textWidth]);
 
   const updateRandom = useRefCallback(() => {
-    const { current: root } = rootRef;
-    if (!root) return;
+    if (!actualWidth || !actualHeight) return;
     const { textWidth, textHeight } = getTextSize();
-    const [minX, maxX] = [0, root.clientWidth - textWidth];
-    const [minY, maxY] = [0, root.clientHeight - textHeight];
+    const maxX = actualWidth - textWidth;
+    const maxY = actualHeight - textHeight;
     setCoord({
-      x: getRandom(minX, maxX),
-      y: getRandom(minY, maxY),
+      x: getRandom(0, maxX),
+      y: getRandom(0, maxY),
     });
   });
 
@@ -146,13 +148,10 @@ export default React.memo(function VideoWatermark({
   }, [setTextSize, baseFontSize, fontSize, text]);
 
   useEffect(() => {
-    const { current: root } = rootRef;
-    if (!root || !videoRef || mode !== 'random') return noop;
+    if (!videoRef || mode !== 'random') return noop;
     if (baseFontSize && !fontSize) return noop;
     const { current: video } = videoRef;
     if (!video) return noop;
-
-    updateRandom();
 
     let timer = 0;
 
@@ -170,6 +169,10 @@ export default React.memo(function VideoWatermark({
     video.addEventListener('play', loop);
     video.addEventListener('pause', stop);
 
+    updateRandom();
+
+    if (!video.paused) loop();
+
     return () => {
       video.removeEventListener('play', loop);
       video.removeEventListener('pause', stop);
@@ -177,6 +180,7 @@ export default React.memo(function VideoWatermark({
     };
   }, [mode, updateRandom, videoRef, baseFontSize, fontSize, text, width, height]);
 
+  const { rc } = useTheme<Theme>();
   const { textWidth, textHeight } = getTextSize();
 
   return (
@@ -207,18 +211,30 @@ export default React.memo(function VideoWatermark({
         />
       )}
 
-      {mode === 'random' && textWidth > 0 && textHeight > 0 && coord && (
-        <WatermarkField
-          text={text}
-          textWidth={textWidth}
-          textHeight={textHeight}
-          width={textWidth}
-          height={textHeight}
-          patternTransform=""
-          className={css.random}
-          style={{ left: coord.x, top: coord.y }}
-        />
-      )}
+      {mode === 'random' &&
+        textWidth > 0 &&
+        textHeight > 0 &&
+        coord &&
+        !!actualWidth &&
+        !!actualHeight && (
+          <TransitionGroup key={`${actualWidth}${actualHeight}`} component={null}>
+            <Fade
+              key={`${coord.x}${coord.y}`}
+              timeout={rc?.VideoWatermark?.random?.transitionDuration}
+            >
+              <WatermarkField
+                text={text}
+                textWidth={textWidth}
+                textHeight={textHeight}
+                width={textWidth}
+                height={textHeight}
+                patternTransform=""
+                className={css.random}
+                style={{ left: coord.x, top: coord.y }}
+              />
+            </Fade>
+          </TransitionGroup>
+        )}
     </Flex>
   );
 });

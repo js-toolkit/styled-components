@@ -175,7 +175,7 @@ export interface Theme {
 
     VideoWatermark?: {
       default?: CSSProperties;
-      random?: CSSProperties;
+      random?: Omit<CSSProperties, 'transitionDuration'> & { transitionDuration?: number };
     };
 
     SvgSpriteIcon?: {

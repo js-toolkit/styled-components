@@ -103,8 +103,8 @@ export default React.forwardRef(function Transition(
       {(status /* , childProps */) => {
         return React.cloneElement(children, {
           style: {
-            ...(styles && styles[status]),
             ...children.props.style,
+            ...(styles && styles[status]),
           },
           ref: handleRef,
           // ...childProps,

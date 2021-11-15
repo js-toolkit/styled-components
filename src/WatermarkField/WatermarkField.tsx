@@ -11,9 +11,9 @@ export default React.forwardRef(function WatermarkField(
     text,
     textWidth,
     textHeight,
-    patternUnits,
+    patternUnits = 'userSpaceOnUse',
     patternContentUnits,
-    patternTransform,
+    patternTransform = 'rotate(-45)',
     ...rest
   }: WatermarkFieldProps,
   ref: React.Ref<SVGSVGElement>
@@ -25,9 +25,9 @@ export default React.forwardRef(function WatermarkField(
           id="textstripe"
           width={textWidth * 2}
           height={textHeight * 2}
-          patternUnits={patternUnits ?? 'userSpaceOnUse'}
+          patternUnits={patternUnits}
           patternContentUnits={patternContentUnits}
-          patternTransform={patternTransform ?? 'rotate(-45)'}
+          patternTransform={patternTransform}
         >
           <text
             x={0}

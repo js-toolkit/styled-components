@@ -62,19 +62,18 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     textRandom: {
       ...rc?.VideoWatermark?.default,
       ...rc?.VideoWatermark?.random,
-      transitionDuration: undefined,
       ...textStyles,
     },
 
-    field: {
+    stripes: {
       ...rc?.VideoWatermark?.default,
+      ...rc?.VideoWatermark?.stripes,
     },
 
     random: {
       // transition: 'left 0.2s linear, top 0.2s linear',
       ...rc?.VideoWatermark?.default,
       ...rc?.VideoWatermark?.random,
-      transitionDuration: undefined,
       position: 'absolute',
     },
   };
@@ -204,10 +203,11 @@ export default React.memo(function VideoWatermark({
 
       {mode === 'stripes' && textWidth > 0 && textHeight > 0 && (
         <WatermarkField
+          {...rc?.VideoWatermark?.stripes?.field}
           text={text}
           textWidth={textWidth}
           textHeight={textHeight}
-          className={css.field}
+          className={css.stripes}
         />
       )}
 
@@ -220,7 +220,7 @@ export default React.memo(function VideoWatermark({
           <TransitionGroup key={`${actualWidth}${actualHeight}`} component={null}>
             <Fade
               key={`${coord.x}${coord.y}`}
-              timeout={rc?.VideoWatermark?.random?.transitionDuration}
+              timeout={rc?.VideoWatermark?.random?.field?.transitionDuration}
             >
               <WatermarkField
                 text={text}

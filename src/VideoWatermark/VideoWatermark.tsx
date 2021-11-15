@@ -54,8 +54,9 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       fontSize: 'inherit',
     },
 
-    textDefault: {
+    textStripes: {
       ...rc?.VideoWatermark?.default,
+      ...rc?.VideoWatermark?.stripes,
       ...textStyles,
     },
 
@@ -197,7 +198,7 @@ export default React.memo(function VideoWatermark({
         height: height ?? '100%',
       }}
     >
-      <span ref={textRef} className={mode === 'random' ? css.textRandom : css.textDefault}>
+      <span ref={textRef} className={mode === 'random' ? css.textRandom : css.textStripes}>
         {text}
       </span>
 

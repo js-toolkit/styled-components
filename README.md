@@ -2,7 +2,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/js-toolkit/styled-components)
 
-Powered by [JSS](https://github.com/cssinjs/jss) via [@material-ui/styles](https://github.com/mui-org/material-ui/tree/next/packages/material-ui-styles).
+Powered by [JSS](https://github.com/cssinjs/jss) via [@mui/styles](https://github.com/mui-org/material-ui/tree/master/packages/mui-styles).
 
 ## Installation
 

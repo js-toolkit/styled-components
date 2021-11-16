@@ -13,12 +13,7 @@ type MakeStylesProps = { clickable: boolean };
 const useStyles = makeStyles(({ rc }: Theme) => ({
   root: {
     cursor: ({ clickable }: MakeStylesProps) => (clickable ? 'pointer' : ''),
-
     ...rc?.MenuListItem?.root,
-
-    '&:hover': {
-      ...rc?.MenuListItem?.hover,
-    },
   },
 
   title: {

@@ -185,7 +185,9 @@ export interface Theme {
     };
 
     MenuList?: {
+      root?: CSSProperties;
       header?: {
+        root?: CSSProperties;
         flex?: FlexComponentProps;
         backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
         closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;

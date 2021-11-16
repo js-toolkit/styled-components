@@ -10,9 +10,13 @@ import Button from '../Button';
 import MenuListItem, { MenuListItemProps } from './MenuListItem';
 
 const useStyles = makeStyles(({ rc }: Theme) => ({
+  root: { ...rc?.MenuList?.root },
+
   clickable: {
     cursor: 'pointer',
   },
+
+  header: { ...rc?.MenuList?.header?.root },
 
   headerTitle: {
     fontWeight: 500,
@@ -64,10 +68,13 @@ export default function MenuList<
   headerAction,
   onHeaderAction,
   children,
+  className,
   ...rest
 }: MenuListProps<V, I, HI>): JSX.Element {
-  const css = useStyles();
   const { rc } = useTheme<Theme>();
+  const css = useStyles({
+    classes: { root: className, header: rc?.MenuList?.header?.flex?.className },
+  });
 
   const backHandler = useChainRefCallback<React.MouseEventHandler>(
     onBack && stopPropagation,
@@ -103,9 +110,17 @@ export default function MenuList<
     typeof theme?.list?.flex === 'function' ? theme.list.flex({ hasHeader }) : theme?.list?.flex;
 
   return (
-    <Flex column {...rest}>
+    <Flex column className={css.root} {...rest}>
       {hasHeader && (
-        <Flex py="xs" pl="s" pr alignItems="center" shrink={0} {...theme?.header?.flex}>
+        <Flex
+          py="xs"
+          pl="s"
+          pr
+          alignItems="center"
+          shrink={0}
+          {...theme?.header?.flex}
+          className={css.header}
+        >
           <Flex
             grow
             alignItems="center"

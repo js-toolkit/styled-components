@@ -35,7 +35,7 @@ export default function TransitionFlex<
   transition = Fade as T,
   transitionProps,
   transitionDuration = (transitionProps as TransitionProps)?.timeout,
-  hidden = !((transitionProps as TransitionProps)?.in ?? false),
+  hidden = !((transitionProps as TransitionProps)?.in ?? true),
   appear = (transitionProps as TransitionProps)?.appear ?? true,
   disposable = (transitionProps as TransitionProps)?.unmountOnExit,
   keepChildren,

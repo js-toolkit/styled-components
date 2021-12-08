@@ -17,12 +17,10 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 
   title: {
-    whiteSpace: 'nowrap',
     ...rc?.MenuListItem?.title?.root,
   },
 
   subtitle: {
-    whiteSpace: 'nowrap',
     ...rc?.MenuListItem?.subtitle?.root,
   },
 }));

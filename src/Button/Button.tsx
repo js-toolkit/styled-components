@@ -1,40 +1,29 @@
 import React from 'react';
 import { Flex, FlexAllProps } from 'reflexy/styled';
 import clsx from 'clsx';
+import type { GetOverridedKeys } from '../types/local';
 import useStyles from './useStyles';
 
-export interface ButtonSizes {
-  contain: 'contain';
-  xs: 'xs';
-  s: 's';
-  m: 'm';
-  l: 'l';
-  xl: 'xl';
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ButtonSizes {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ButtonColors {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ButtonVariants {}
 
-export interface ButtonColors {
-  none: 'none';
-  default: 'default';
-  primary: 'primary';
-  secondary: 'secondary';
-}
+export type ButtonSize = GetOverridedKeys<'contain' | 'xs' | 's' | 'm' | 'l' | 'xl', ButtonSizes>;
 
-export interface ButtonVariants {
-  outlined: 'outlined';
-  filled: 'filled';
-  text: 'text';
-}
+export type ButtonColor = GetOverridedKeys<
+  'none' | 'default' | 'primary' | 'secondary',
+  ButtonColors
+>;
 
-export type ButtonSize = keyof ButtonSizes;
-
-export type ButtonColor = keyof ButtonColors;
-
-export type ButtonVariant = keyof ButtonVariants;
+export type ButtonVariant = GetOverridedKeys<'outlined' | 'filled' | 'text', ButtonVariants>;
 
 export interface ButtonStyleProps {
-  size?: ButtonSizes[ButtonSize];
-  color?: ButtonColors[ButtonColor];
-  variant?: ButtonVariants[ButtonVariant];
+  size?: ButtonSize;
+  color?: ButtonColor;
+  variant?: ButtonVariant;
 }
 
 export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C> &
@@ -51,7 +40,7 @@ export default function Button<C extends React.ElementType = 'button'>({
   const css = useStyles({ classes: { root: className }, variant });
 
   const sizeClassName = (css[`size-${size}`] as string) ?? '';
-  const colorClassName = (css[`${color}-${variant}`] as string) ?? '';
+  const colorClassName = css[`${color}-${variant}`] ?? '';
 
   return (
     <Flex

@@ -31,19 +31,19 @@ export default React.forwardRef(function WatermarkField(
         >
           <text
             x={0}
-            y={0}
+            y={-(textHeight / 2)}
             dy={textHeight}
             lengthAdjust="spacingAndGlyphs"
-            dominantBaseline="text-after-edge"
+            dominantBaseline="middle"
           >
             {text}
           </text>
           <text
             x={textWidth}
-            y={textHeight}
+            y={textHeight / 2}
             dy={textHeight}
             lengthAdjust="spacingAndGlyphs"
-            dominantBaseline="text-after-edge"
+            dominantBaseline="middle"
           >
             {text}
           </text>

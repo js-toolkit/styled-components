@@ -272,16 +272,17 @@ export default React.memo(function VideoWatermark({
         !!actualHeight && (
           <TransitionGroup key={`${actualWidth}${actualHeight}`} component={null}>
             <Fade
-              key={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}${coord.y}`}
+              key={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}-${coord.y}`}
               timeout={rc?.VideoWatermark?.random?.field?.transitionDuration}
             >
               <WatermarkField
+                id={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}-${coord.y}`}
                 text={text}
                 textWidth={textWidth}
                 textHeight={textHeight}
                 width={textWidth}
                 height={textHeight}
-                patternTransform=""
+                patternTransform="none"
                 className={css.random}
                 style={{ left: coord.x, top: coord.y }}
               />

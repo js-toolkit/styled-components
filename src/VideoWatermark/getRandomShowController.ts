@@ -52,10 +52,7 @@ export function getRandomShowController({
   });
 
   return {
-    start: () => {
-      update();
-      updateTimer.start();
-    },
+    start: updateTimer.start,
     stop: updateTimer.stop,
     update,
   };

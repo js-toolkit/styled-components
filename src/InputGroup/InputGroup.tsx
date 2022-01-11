@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps, FlexAllProps } from 'reflexy';
 import type { Theme } from '../theme';
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => {
   const errorColor = theme.rc?.colors?.error || 'var(--rc--color-invalid, #a94442)';
 
   return {
-    root: ({ showErrorIcon }: { showErrorIcon: boolean }) => ({
+    root: {
       ...theme.rc?.InputGroup?.root,
 
       "&[data-invalid='true']": {
@@ -23,9 +23,8 @@ const useStyles = makeStyles((theme: Theme) => {
         ...theme.rc?.InputGroup?.error?.root,
 
         '& [data-input]:not([data-dropdown]), & [data-dropdown-label]': {
-          paddingRight: showErrorIcon
-            ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)`
-            : undefined,
+          paddingRight: ({ showErrorIcon }: { showErrorIcon: boolean }) =>
+            showErrorIcon ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)` : undefined,
 
           // color: errorColor,
           borderColor: errorColor,
@@ -76,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => {
         zIndex: 0,
         ...theme.rc?.InputGroup?.errorIcon,
       },
-    }),
+    },
   };
 });
 
@@ -89,13 +88,15 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
 }: React.PropsWithChildren<InputGroupProps<C>>): JSX.Element {
   const hasError = error != null && error !== false;
   const showErrorIcon = error != null && typeof error === 'string' && !!error;
-  const css = useStyles({ classes: { root: className }, showErrorIcon } as any);
-  const stateAttrs = useMemo(() => ({ 'data-invalid': hasError || undefined }), [hasError]);
 
-  const inputComponent = React.isValidElement(input) ? (
-    React.cloneElement(input, { ...stateAttrs, 'data-input': '' } as any)
+  const css = useStyles({ classes: { root: className }, showErrorIcon });
+
+  const stateAttrs = { 'data-invalid': hasError || undefined };
+
+  const inputComponent = React.isValidElement<typeof stateAttrs & { 'data-input': '' }>(input) ? (
+    React.cloneElement(input, { ...stateAttrs, 'data-input': '' })
   ) : (
-    <Flex {...(input as FlexAllProps<'input'>)} data-input="" />
+    <Flex flex={false} {...(input as FlexAllProps<'input'>)} data-input="" />
   );
 
   return (

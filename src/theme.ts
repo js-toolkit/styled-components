@@ -5,6 +5,7 @@ import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
 import type { NotificationPosition, NotificationVariant } from './Notifications';
+import type { FieldState } from './Field';
 
 export interface CSSPropertiesDeep extends BaseCSSProperties {
   [k: string]: any | CSSPropertiesDeep;
@@ -146,13 +147,12 @@ export interface Theme {
     Field?: {
       root?: CSSProperties;
       label?: CSSProperties;
-      info?: CSSProperties;
-
-      error?: {
-        root?: CSSProperties;
-        label?: CSSProperties;
-        info?: CSSProperties;
-      };
+      helperText?: CSSProperties;
+    } & {
+      [P in FieldState]?: Pick<
+        NonNullable<NonNullable<Theme['rc']>['Field']>,
+        'root' | 'label' | 'helperText'
+      >;
     };
 
     InputGroup?: {

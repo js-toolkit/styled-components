@@ -1,55 +1,71 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
+import clsx from 'clsx';
 import { Flex, FlexComponentProps } from 'reflexy';
-import type { Theme } from '../theme';
+import { GetOverridedKeys } from '../types/local';
+import type { CSSProperties, Theme } from '../theme';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface FieldStates {}
+
+export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
 export interface FieldProps extends FlexComponentProps {
   label?: string | (FlexComponentProps<'label'> & { content?: React.ReactNode });
   container?: FlexComponentProps<'div'>;
-  info?: React.ReactNode;
-  error?: boolean;
+  helperText?: React.ReactNode;
+  state?: FieldState;
 }
 
 const useStyles = makeStyles((theme: Theme) => {
-  const rowLabelMargin = '1.5em';
-  const colLabelMargin = '0.5em';
+  const { root, label, helperText, ...restTheme } = theme.rc?.Field ?? {};
+
+  type StatesTheme = Pick<NonNullable<NonNullable<Theme['rc']>['Field']>, FieldState>;
+
+  // Build futured classes from theme
+  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce((acc, p) => {
+    const stateTheme = restTheme[p] as NonNullable<StatesTheme[keyof StatesTheme]>;
+
+    acc[`&[data-field-state='${p}']`] = {
+      ...stateTheme?.root,
+      '& $label': stateTheme?.label,
+      '& $helperText': stateTheme?.helperText,
+    };
+
+    return acc;
+  }, {} as Record<`&[data-field-state='${FieldState}']`, CSSProperties>);
 
   return {
     root: {
-      ...theme.rc?.Field?.root,
-
-      "&[data-field-invalid='true']": {
-        color: theme.rc?.colors?.error || 'var(--rc--color-invalid, #a94442)',
-        ...theme.rc?.Field?.error?.root,
-
-        '& $label': theme.rc?.Field?.error?.label,
-
-        '& $info': theme.rc?.Field?.error?.info,
-      },
+      ...root,
+      ...themeClasses,
     },
 
-    label: ({ row }: FlexComponentProps) =>
-      row
-        ? {
-            width: 'auto',
-            marginRight: rowLabelMargin,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            ...theme.rc?.Field?.label,
-          }
-        : {
-            paddingBottom: colLabelMargin,
-            ...theme.rc?.Field?.label,
-          },
+    rowLabel: {
+      composes: '$label',
+      width: 'auto',
+      marginRight: '1.5em',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
 
-    info: {
-      marginTop: colLabelMargin,
+    colLabel: {
+      composes: '$label',
+      paddingBottom: '0.5em',
+    },
+
+    label: {
+      ...label,
+    },
+
+    helperText: {
+      marginTop: '0.5em',
       fontSize: '0.85em',
       color: 'inherit',
       opacity: 'var(--rc--placeholder-opacity, 0.7)',
       textAlign: 'left',
-      ...theme.rc?.Field?.info,
+      ...helperText,
     },
   };
 });
@@ -59,16 +75,23 @@ export default function Field({
   row = !column,
   label,
   container,
-  info,
-  error,
+  helperText,
+  state = 'default',
   children,
   className,
   ...rest
 }: React.PropsWithChildren<FieldProps>): JSX.Element {
-  const labelClassName = (typeof label === 'object' && label?.className) || undefined;
-  const labelContent = typeof label === 'string' ? label : label?.content ?? label?.children;
+  const {
+    children: labelChildren,
+    content: labelContent = labelChildren,
+    className: labelClassName,
+    ...labelProps
+  } = (typeof label === 'string' ? { content: label } : label) as Exclude<
+    FieldProps['label'],
+    undefined | string
+  >;
 
-  const css = useStyles({ classes: { root: className, label: labelClassName }, row });
+  const css = useStyles({ classes: { root: className } });
 
   return (
     <Flex
@@ -79,7 +102,7 @@ export default function Field({
       data-field=""
       data-field-row={row || undefined}
       data-field-column={column || undefined}
-      data-field-invalid={!!error || undefined}
+      data-field-state={state || undefined}
       {...rest}
     >
       {labelContent && (
@@ -89,8 +112,8 @@ export default function Field({
           justifyContent={row ? 'flex-end' : undefined}
           component="label"
           data-field-label
-          {...(typeof label === 'object' ? label : undefined)}
-          className={css.label}
+          {...labelProps}
+          className={clsx(row ? css.rowLabel : css.colLabel, labelClassName)}
         >
           {labelContent}
         </Flex>
@@ -98,9 +121,9 @@ export default function Field({
 
       <Flex column shrink={false} hfill={column} {...container}>
         {children}
-        {!!info && (
-          <div className={css.info} data-field-info>
-            {info}
+        {!!helperText && (
+          <div className={css.helperText} data-field-helper-text>
+            {helperText}
           </div>
         )}
       </Flex>

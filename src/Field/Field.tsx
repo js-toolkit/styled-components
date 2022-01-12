@@ -2,18 +2,23 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import { Flex, FlexComponentProps } from 'reflexy';
-import { GetOverridedKeys } from '../types/local';
 import type { CSSProperties, Theme } from '../theme';
+import { GetOverridedKeys } from '../types/local';
+import { isValidReactNode } from '../isValidReactNode';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
+type FlexContent<T extends React.ElementType> = FlexComponentProps<T> & {
+  content?: React.ReactNode;
+};
+
 export interface FieldProps extends FlexComponentProps {
-  label?: string | (FlexComponentProps<'label'> & { content?: React.ReactNode });
+  label?: React.ReactNode | FlexContent<'label'>;
   container?: FlexComponentProps<'div'>;
-  helperText?: React.ReactNode;
+  helperText?: React.ReactNode | FlexContent<'div'>;
   state?: FieldState;
 }
 
@@ -26,33 +31,31 @@ const useStyles = makeStyles((theme: Theme) => {
   const themeClasses = Object.getOwnPropertyNames(restTheme).reduce((acc, p) => {
     const stateTheme = restTheme[p] as NonNullable<StatesTheme[keyof StatesTheme]>;
 
-    acc[`&[data-field-state='${p}']`] = {
+    acc[`&[data-field-state=${p}]`] = {
       ...stateTheme?.root,
       '& $label': stateTheme?.label,
       '& $helperText': stateTheme?.helperText,
     };
 
     return acc;
-  }, {} as Record<`&[data-field-state='${FieldState}']`, CSSProperties>);
+  }, {} as Record<`&[data-field-state=${FieldState}]`, CSSProperties>);
 
   return {
     root: {
+      '&[data-field-row] $label': {
+        width: 'auto',
+        marginRight: '1.5em',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      },
+
+      '&[data-field-column] $label': {
+        paddingBottom: '0.5em',
+      },
+
       ...root,
       ...themeClasses,
-    },
-
-    rowLabel: {
-      composes: '$label',
-      width: 'auto',
-      marginRight: '1.5em',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-
-    colLabel: {
-      composes: '$label',
-      paddingBottom: '0.5em',
     },
 
     label: {
@@ -86,10 +89,14 @@ export default function Field({
     content: labelContent = labelChildren,
     className: labelClassName,
     ...labelProps
-  } = (typeof label === 'string' ? { content: label } : label) as Exclude<
-    FieldProps['label'],
-    undefined | string
-  >;
+  } = (isValidReactNode(label) ? { content: label } : label) as FlexContent<'label'>;
+
+  const {
+    children: helperTextChildren,
+    content: helperTextContent = helperTextChildren,
+    className: helperTextClassName,
+    ...helperTextProps
+  } = (isValidReactNode(helperText) ? { content: helperText } : helperText) as FlexContent<'div'>;
 
   const css = useStyles({ classes: { root: className } });
 
@@ -100,8 +107,8 @@ export default function Field({
       alignItems={column ? 'flex-start' : 'baseline'}
       className={css.root}
       data-field=""
-      data-field-row={row || undefined}
-      data-field-column={column || undefined}
+      data-field-row={row ? '' : undefined}
+      data-field-column={column ? '' : undefined}
       data-field-state={state || undefined}
       {...rest}
     >
@@ -111,9 +118,9 @@ export default function Field({
           shrink={false}
           justifyContent={row ? 'flex-end' : undefined}
           component="label"
-          data-field-label
+          data-field-label=""
           {...labelProps}
-          className={clsx(row ? css.rowLabel : css.colLabel, labelClassName)}
+          className={clsx(css.label, labelClassName)}
         >
           {labelContent}
         </Flex>
@@ -121,10 +128,16 @@ export default function Field({
 
       <Flex column shrink={false} hfill={column} {...container}>
         {children}
-        {!!helperText && (
-          <div className={css.helperText} data-field-helper-text>
-            {helperText}
-          </div>
+
+        {helperTextContent && (
+          <Flex
+            shrink={false}
+            data-field-helper-text=""
+            {...helperTextProps}
+            className={clsx(css.helperText, helperTextClassName)}
+          >
+            {helperTextContent}
+          </Flex>
         )}
       </Flex>
     </Flex>

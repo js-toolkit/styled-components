@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     helperText: {
+      cursor: 'default',
       marginTop: '0.5em',
       fontSize: '0.85em',
       color: 'inherit',
@@ -129,7 +130,7 @@ export default function Field({
       <Flex column shrink={false} hfill={column} {...container}>
         {children}
 
-        {helperTextContent && (
+        {helperTextContent != null && (
           <Flex
             shrink={false}
             data-field-helper-text=""

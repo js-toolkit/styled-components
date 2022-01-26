@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@mui/styles/styled';
-import { DropDownContextValue } from '../DropDownContext';
+import type { DropDownContextValue } from '../DropDownContext';
 
 const ExpandIcon = styled(
   ({

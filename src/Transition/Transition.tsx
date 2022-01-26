@@ -44,7 +44,7 @@ export default React.forwardRef(function Transition(
   const nodeRef = React.useRef<HTMLElement | undefined>(null);
 
   const handleRef = useRefs(
-    (children as React.FunctionComponentElement<EmptyObject>).ref,
+    (children as React.FunctionComponentElement<unknown>).ref,
     ref,
     nodeRef
   );

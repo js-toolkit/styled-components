@@ -45,7 +45,7 @@ export default function TransitionFlex<
   hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
-  const { children: childrenProp } = rest as React.PropsWithChildren<EmptyObject>;
+  const { children: childrenProp } = rest as React.PropsWithChildren<unknown>;
 
   const lastChildrenRef = useRef(childrenProp);
   if (keepChildren && !hidden) {

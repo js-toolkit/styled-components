@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import { Flex, FlexComponentProps } from 'reflexy';
 import type { CSSProperties, Theme } from '../theme';
-import { GetOverridedKeys } from '../types/local';
+import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

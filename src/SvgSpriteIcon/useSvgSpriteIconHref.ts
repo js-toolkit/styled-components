@@ -1,5 +1,5 @@
 import useTheme from '@mui/styles/useTheme';
-import { Theme } from '../theme';
+import type { Theme } from '../theme';
 import SvgSpriteIcon from './SvgSpriteIcon';
 
 export default function useSvgSpriteIconHref(name: string): string | undefined {

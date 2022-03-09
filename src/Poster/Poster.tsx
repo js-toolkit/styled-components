@@ -6,7 +6,7 @@ import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';
 // import blobToDataUrl from '@js-toolkit/web-utils/blobToDataUrl';
 import noop from '@js-toolkit/utils/noop';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
-import HideableFlex, { HideableFlexProps } from '../HideableFlex';
+import TransitionFlex, { HideableProps } from '../TransitionFlex';
 
 const useStyles = makeStyles({
   root: {
@@ -20,8 +20,8 @@ const useStyles = makeStyles({
 export interface PosterProps
   extends FlexComponentProps,
     Pick<
-      HideableFlexProps,
-      'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionFunction'
+      HideableProps,
+      'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
     > {
   url: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
@@ -38,6 +38,7 @@ export default function Poster({
   crossOrigin,
   showImmediately,
   timeout,
+  transitionProps,
   onLoadTimeout,
   onLoaded,
   onError,
@@ -102,10 +103,10 @@ export default function Poster({
   const url = getUrl();
 
   return (
-    <HideableFlex
+    <TransitionFlex
       hidden={hidden || !url}
-      transitionFunction={hidden ? 'ease-out' : 'ease-in'}
-      transitionDuration="0.25s"
+      transitionDuration={250}
+      transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}
       className={css.root}
       style={url ? { ...style, backgroundImage: `url('${url}')` } : style}
       {...rest}

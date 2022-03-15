@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
 import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
-import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
 import type { Theme } from '../theme';
 import Button from '../Button';
@@ -43,8 +43,14 @@ export interface MenuListProps<
   headerAction?: string;
   items?: MenuItem<V, I>[];
   onItemSelect?: MenuListItemProps<V, I>['onSelect'];
-  onItemMouseEnter?: MenuListItemProps<V, I>['onMouseEnter'];
-  onItemMouseLeave?: MenuListItemProps<V, I>['onMouseLeave'];
+  onItemMouseEnter?: (
+    value: MenuListItemProps<V, I>['value'],
+    event: React.MouseEvent<HTMLDivElement>
+  ) => void;
+  onItemMouseLeave?: (
+    value: MenuListItemProps<V, I>['value'],
+    event: React.MouseEvent<HTMLDivElement>
+  ) => void;
   onItemProps?: (itemProps: MenuListItemProps<V, I>) => MenuListItemProps<V, I>;
   onClose?: () => void;
   onBack?: () => void;
@@ -69,27 +75,26 @@ export default function MenuList<
   onHeaderAction,
   children,
   className,
+  onKeyDown,
   ...rest
 }: MenuListProps<V, I, HI>): JSX.Element {
   const { rc } = useTheme<Theme>();
-  const css = useStyles({
-    classes: { root: className, header: rc?.MenuList?.header?.flex?.className },
+  const css = useStyles({ classes: { root: className } });
+
+  const backHandler = useRefCallback<React.MouseEventHandler>((event) => {
+    onBack && stopPropagation(event);
+    onBack && onBack();
   });
 
-  const backHandler = useChainRefCallback<React.MouseEventHandler>(
-    onBack && stopPropagation,
-    onBack && (() => onBack())
-  );
+  const closeHandler = useRefCallback<React.MouseEventHandler>((event) => {
+    onClose && stopPropagation(event);
+    onClose && onClose();
+  });
 
-  const closeHandler = useChainRefCallback<React.MouseEventHandler>(
-    onClose && stopPropagation,
-    onClose && (() => onClose())
-  );
-
-  const headerActionHandler = useChainRefCallback<React.MouseEventHandler>(
-    onHeaderAction && stopPropagation,
-    onHeaderAction && (() => onHeaderAction())
-  );
+  const headerActionHandler = useRefCallback<React.MouseEventHandler>((event) => {
+    onHeaderAction && stopPropagation(event);
+    onHeaderAction && onHeaderAction();
+  });
 
   const theme = rc?.MenuList;
   const backIconProps = onBack ? theme?.header?.backIcon : undefined;
@@ -99,18 +104,48 @@ export default function MenuList<
     typeof headerIcon === 'string'
       ? { name: headerIcon }
       : (headerIcon as SvgSpriteIconProps<string>);
+
   const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
   const headerTitleFlex =
     typeof theme?.header?.title?.flex === 'function'
       ? theme.header.title.flex({ hasIcon: !!backIconProps || !!headerIconProps })
       : theme?.header?.title?.flex;
+
   const headerActionFlex = theme?.header?.action?.flex;
+
   const listFlex =
     typeof theme?.list?.flex === 'function' ? theme.list.flex({ hasHeader }) : theme?.list?.flex;
 
+  const itemsElements = useMemo(() => {
+    return (
+      items &&
+      items.map((itemProps) => {
+        const { value, ...restItemProps } = onItemProps ? onItemProps(itemProps) : itemProps;
+        return (
+          <MenuListItem
+            key={value}
+            value={value}
+            onSelect={onItemSelect}
+            onMouseEnter={onItemMouseEnter && ((event) => onItemMouseEnter(value, event))}
+            onMouseLeave={onItemMouseLeave && ((event) => onItemMouseLeave(value, event))}
+            {...restItemProps}
+          />
+        );
+      })
+    );
+  }, [items, onItemMouseEnter, onItemMouseLeave, onItemProps, onItemSelect]);
+
+  const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
+    onKeyDown && onKeyDown(event);
+    if (event.code === 'ArrowLeft') {
+      stopPropagation(event);
+      onBack && onBack();
+    }
+  });
+
   return (
-    <Flex column className={css.root} {...rest}>
+    <Flex column className={css.root} role="menu" onKeyDown={keyDownHandler} {...rest}>
       {hasHeader && (
         <Flex
           py="xs"
@@ -165,21 +200,7 @@ export default function MenuList<
 
       <Flex mt={hasHeader ? 'xs' : undefined} column overflowY="auto" {...listFlex}>
         <Flex column shrink={0}>
-          {items &&
-            items.map((itemProps) => {
-              const { value, ...restProps } = onItemProps ? onItemProps(itemProps) : itemProps;
-              return (
-                <MenuListItem
-                  key={value}
-                  value={value}
-                  onSelect={onItemSelect}
-                  onMouseEnter={onItemMouseEnter}
-                  onMouseLeave={onItemMouseLeave}
-                  {...restProps}
-                />
-              );
-            })}
-
+          {itemsElements}
           {children}
         </Flex>
       </Flex>

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
+import noop from '@js-toolkit/utils/noop';
+import preventDefault from '@js-toolkit/web-utils/preventDefault';
 import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useRefs from '@js-toolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';
 import TruncatedText from '../TruncatedText';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
@@ -26,8 +29,17 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
 }));
 
 export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
-  extends FlexComponentProps,
-    Pick<React.HTMLAttributes<HTMLDivElement>, keyof React.AriaAttributes | 'tabIndex' | 'role'> {
+  extends FlexComponentProps<'div', { omitProps: true }>,
+    Pick<
+      React.HTMLAttributes<HTMLDivElement>,
+      | keyof React.AriaAttributes
+      | 'tabIndex'
+      | 'role'
+      | Exclude<
+          KeysOfType<React.HTMLAttributes<HTMLDivElement>, AnyFunction>,
+          'onSelect' | 'onSelectCapture'
+        >
+    > {
   icon?: I;
   title: React.ReactNode;
   subtitle?: React.ReactNode;
@@ -35,9 +47,8 @@ export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<stri
   value: V;
   submenu?: boolean;
   checked?: boolean;
-  onSelect?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseEnter?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseLeave?: (value: this['value'], event: React.MouseEvent<HTMLDivElement>) => void;
+  autoFocus?: boolean | number;
+  onSelect?: (value: this['value'], event: React.UIEvent<HTMLDivElement>) => void;
 }
 
 export default function MenuListItem<V, I extends string | SvgSpriteIconProps<string>>({
@@ -47,30 +58,57 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   value,
   submenu,
   checked,
+  autoFocus,
   shrinkTitle = (!subtitle && !!(checked || submenu)) || (!subtitle && !checked && !submenu),
   className,
   onSelect,
-  onMouseEnter,
-  onMouseLeave,
+  onClick,
+  onKeyDown,
+  componentRef,
   ...rest
 }: MenuListItemProps<V, I>): JSX.Element {
   const css = useStyles({ classes: { root: className }, clickable: !!onSelect });
   const { rc } = useTheme<Theme>();
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
+    onClick && onClick(event);
     if (onSelect) {
       stopPropagation(event);
       onSelect(value, event);
     }
   });
 
-  const mouseEnterHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
-    (event) => onMouseEnter && onMouseEnter(value, event)
-  );
+  const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
+    onKeyDown && onKeyDown(event);
+    if (
+      onSelect &&
+      (event.code === 'Enter' || event.code === 'Space' || event.code === 'ArrowRight')
+    ) {
+      preventDefault(event); // For enter
+      stopPropagation(event);
+      if (event.code !== 'ArrowRight' || submenu) {
+        onSelect(value, event);
+      }
+    }
+  });
 
-  const mouseLeaveHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>(
-    (event) => onMouseLeave && onMouseLeave(value, event)
-  );
+  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRefs = useRefs(rootRef, componentRef);
+
+  useEffect(() => {
+    const { current: root } = rootRef;
+    if (!root || !autoFocus) return noop;
+
+    if (autoFocus === true) {
+      root.focus();
+      return noop;
+    }
+
+    const timer = setTimeout(() => root.focus(), autoFocus);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [autoFocus]);
 
   const theme = rc?.MenuListItem;
 
@@ -94,14 +132,16 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
 
   return (
     <Flex
+      aria-haspopup={submenu || undefined}
+      role="menuitem"
+      componentRef={rootRefs}
       px
       py={iconProps ? 0.375 : 0.625}
       alignItems="center"
       {...rootFlex}
       className={css.root}
       onClick={clickHandler}
-      onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
+      onKeyDown={keyDownHandler}
       {...rest}
     >
       {!!iconProps && <SvgSpriteIcon {...iconProps} />}

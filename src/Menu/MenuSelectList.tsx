@@ -7,21 +7,15 @@ export interface MenuSelectListProps<
   V extends React.Key | null,
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
-> extends OmitStrict<MenuListProps<V, I, HI>, 'onItemSelect'> {
+> extends MenuListProps<V, I, HI> {
   selectedValue: MenuItem<V, I>['value'];
-  onSelectValue: NonNullable<MenuListProps<V, I, HI>['onItemSelect']>;
 }
 
 export default function MenuSelectList<
   V extends React.Key | null,
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
->({
-  selectedValue,
-  onSelectValue,
-  onItemProps,
-  ...rest
-}: MenuSelectListProps<V, I, HI>): JSX.Element {
+>({ selectedValue, onItemProps, ...rest }: MenuSelectListProps<V, I, HI>): JSX.Element {
   const itemPropsHandler = useRefCallback<NonNullable<MenuListProps<V, I, HI>['onItemProps']>>(
     (itemProps) => {
       return {
@@ -31,5 +25,5 @@ export default function MenuSelectList<
     }
   );
 
-  return <MenuList onItemProps={itemPropsHandler} onItemSelect={onSelectValue} {...rest} />;
+  return <MenuList onItemProps={itemPropsHandler} {...rest} />;
 }

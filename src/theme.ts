@@ -1,5 +1,5 @@
 import type { BaseCSSProperties } from '@mui/styles/withStyles';
-import type { FlexComponentProps } from 'reflexy';
+import type { FlexOnlyProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
@@ -188,42 +188,40 @@ export interface Theme {
       root?: CSSProperties;
       header?: {
         root?: CSSProperties;
-        flex?: FlexComponentProps;
+        flex?: FlexOnlyProps;
         backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
         closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
         title?: {
           root?: CSSProperties;
-          flex?: FlexComponentProps | ((options: { hasIcon: boolean }) => FlexComponentProps);
+          flex?: FlexOnlyProps | ((options: { hasIcon: boolean }) => FlexOnlyProps);
         };
         action?: {
           root?: CSSProperties;
-          flex?: FlexComponentProps;
+          flex?: FlexOnlyProps;
         };
       };
       list?: {
-        flex?: FlexComponentProps | ((options: { hasHeader: boolean }) => FlexComponentProps);
+        flex?: FlexOnlyProps | ((options: { hasHeader: boolean }) => FlexOnlyProps);
       };
     };
 
     MenuListItem?: {
       root?: CSSProperties;
       hover?: CSSProperties;
-      flex?: FlexComponentProps | ((options: { hasIcon: boolean }) => FlexComponentProps);
+      flex?: FlexOnlyProps | ((options: { hasIcon: boolean }) => FlexOnlyProps);
       title?: {
         root?: CSSProperties;
         flex?:
-          | FlexComponentProps
+          | FlexOnlyProps
           | ((
               options: { hasIcon: boolean } & Pick<MenuListItemProps<string, string>, 'shrinkTitle'>
-            ) => FlexComponentProps);
+            ) => FlexOnlyProps);
       };
       subtitle?: {
         root?: CSSProperties;
         flex?:
-          | FlexComponentProps
-          | ((
-              options: Pick<MenuListItemProps<string, string>, 'shrinkTitle'>
-            ) => FlexComponentProps);
+          | FlexOnlyProps
+          | ((options: Pick<MenuListItemProps<string, string>, 'shrinkTitle'>) => FlexOnlyProps);
       };
       checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
       submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;

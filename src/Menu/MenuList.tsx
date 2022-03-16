@@ -6,7 +6,7 @@ import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
 import type { Theme } from '../theme';
-import Button from '../Button';
+import Button, { ButtonProps } from '../Button';
 import MenuListItem, { MenuListItemProps } from './MenuListItem';
 
 const useStyles = makeStyles(({ rc }: Theme) => ({
@@ -38,9 +38,9 @@ export interface MenuListProps<
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
 > extends FlexComponentProps<'div'> {
-  header?: string;
+  header?: React.ReactChild;
   headerIcon?: HI;
-  headerAction?: string;
+  headerAction?: string | React.ReactElement<any, any>;
   items?: MenuItem<V, I>[];
   onItemSelect?: MenuListItemProps<V, I>['onSelect'];
   onItemMouseEnter?: (
@@ -55,6 +55,22 @@ export interface MenuListProps<
   onClose?: () => void;
   onBack?: () => void;
   onHeaderAction?: () => void;
+}
+
+export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.Element {
+  const { rc } = useTheme<Theme>();
+  const css = useStyles({ classes: { headerAction: className } });
+  return (
+    <Button
+      ml
+      shrink={0}
+      size="contain"
+      color="none"
+      {...rc?.MenuList?.header?.action?.flex}
+      className={css.headerAction}
+      {...rest}
+    />
+  );
 }
 
 export default function MenuList<
@@ -112,8 +128,6 @@ export default function MenuList<
       ? theme.header.title.flex({ hasIcon: !!backIconProps || !!headerIconProps })
       : theme?.header?.title?.flex;
 
-  const headerActionFlex = theme?.header?.action?.flex;
-
   const listFlex =
     typeof theme?.list?.flex === 'function' ? theme.list.flex({ hasHeader }) : theme?.list?.flex;
 
@@ -138,11 +152,17 @@ export default function MenuList<
 
   const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
     onKeyDown && onKeyDown(event);
-    if (event.code === 'ArrowLeft') {
-      stopPropagation(event);
-      onBack && onBack();
-    }
+    (event.code === 'ArrowLeft' || event.code === 'ArrowRight') && stopPropagation(event);
+    event.code === 'ArrowLeft' && onBack && onBack();
   });
+
+  const headerActionElement =
+    !!headerAction &&
+    (React.isValidElement(headerAction) ? (
+      headerAction
+    ) : (
+      <DefaultHeaderAction onClick={headerActionHandler}>{headerAction}</DefaultHeaderAction>
+    ));
 
   return (
     <Flex column className={css.root} role="menu" onKeyDown={keyDownHandler} {...rest}>
@@ -176,7 +196,9 @@ export default function MenuList<
             </Flex>
           </Flex>
 
-          {!!headerAction && (
+          {headerActionElement}
+
+          {/* {!!headerAction && (
             <Button
               ml
               shrink={0}
@@ -188,7 +210,7 @@ export default function MenuList<
             >
               {headerAction}
             </Button>
-          )}
+          )} */}
 
           {!!closeIconProps && (
             <Button shrink={0} size="contain" color="none" onClick={closeHandler}>

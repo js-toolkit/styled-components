@@ -28,13 +28,14 @@ const useStyles = makeStyles(({ rc }: Theme) => ({
   },
 }));
 
-export type MenuItem<
-  V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<string>
-> = Omit<MenuListItemProps<V, I>, 'onClick'> & React.Attributes;
+export type MenuItem<V, I extends string | SvgSpriteIconProps<string>> = Omit<
+  MenuListItemProps<V, I>,
+  'onClick'
+> &
+  React.Attributes;
 
 export interface MenuListProps<
-  V extends React.Key | null,
+  V,
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
 > extends FlexComponentProps<'div'> {
@@ -51,7 +52,15 @@ export interface MenuListProps<
     value: MenuListItemProps<V, I>['value'],
     event: React.MouseEvent<HTMLDivElement>
   ) => void;
-  onItemProps?: (itemProps: MenuListItemProps<V, I>) => MenuListItemProps<V, I>;
+  onItemFocus?: (
+    value: MenuListItemProps<V, I>['value'],
+    event: React.FocusEvent<HTMLDivElement>
+  ) => void;
+  onItemBlur?: (
+    value: MenuListItemProps<V, I>['value'],
+    event: React.FocusEvent<HTMLDivElement>
+  ) => void;
+  onItemProps?: (itemProps: MenuItem<V, I>) => MenuItem<V, I>;
   onClose?: () => void;
   onBack?: () => void;
   onHeaderAction?: () => void;
@@ -74,7 +83,7 @@ export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.El
 }
 
 export default function MenuList<
-  V extends React.Key | null,
+  V,
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
 >({
@@ -86,6 +95,8 @@ export default function MenuList<
   onItemSelect,
   onItemMouseEnter,
   onItemMouseLeave,
+  onItemFocus,
+  onItemBlur,
   onItemProps,
   headerAction,
   onHeaderAction,
@@ -132,23 +143,37 @@ export default function MenuList<
     typeof theme?.list?.flex === 'function' ? theme.list.flex({ hasHeader }) : theme?.list?.flex;
 
   const itemsElements = useMemo(() => {
-    return (
-      items &&
-      items.map((itemProps) => {
-        const { value, ...restItemProps } = onItemProps ? onItemProps(itemProps) : itemProps;
-        return (
-          <MenuListItem
-            key={value}
-            value={value}
-            onSelect={onItemSelect}
-            onMouseEnter={onItemMouseEnter && ((event) => onItemMouseEnter(value, event))}
-            onMouseLeave={onItemMouseLeave && ((event) => onItemMouseLeave(value, event))}
-            {...restItemProps}
-          />
-        );
-      })
-    );
-  }, [items, onItemMouseEnter, onItemMouseLeave, onItemProps, onItemSelect]);
+    if (!items || items.length === 0) return [];
+    return items.map((itemProps, i) => {
+      const {
+        value,
+        key = value == null || typeof value === 'string' || typeof value === 'number'
+          ? (value as unknown as React.Key)
+          : `key${i}`,
+        ...restItemProps
+      } = onItemProps ? onItemProps(itemProps) : itemProps;
+      return (
+        <MenuListItem
+          key={key}
+          value={value}
+          onSelect={onItemSelect}
+          onMouseEnter={onItemMouseEnter && ((event) => onItemMouseEnter(value, event))}
+          onMouseLeave={onItemMouseLeave && ((event) => onItemMouseLeave(value, event))}
+          onFocus={onItemFocus && ((event) => onItemFocus(value, event))}
+          onBlur={onItemBlur && ((event) => onItemBlur(value, event))}
+          {...restItemProps}
+        />
+      );
+    });
+  }, [
+    items,
+    onItemBlur,
+    onItemFocus,
+    onItemMouseEnter,
+    onItemMouseLeave,
+    onItemProps,
+    onItemSelect,
+  ]);
 
   const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
     onKeyDown && onKeyDown(event);

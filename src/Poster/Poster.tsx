@@ -104,7 +104,7 @@ export default function Poster({
 
   return (
     <TransitionFlex
-      hidden={hidden || !url}
+      hidden={hidden ?? !url}
       transitionDuration={250}
       transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}
       className={css.root}

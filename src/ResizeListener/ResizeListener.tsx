@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export interface Size {
   width: number;
@@ -11,29 +11,26 @@ export interface ResizeListenerProps {
   onSizeChange: (size: Size, domRect: DOMRect) => void;
 }
 
+const style: React.CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  background: 'transparent',
+  border: 'none',
+  // Must be visible for FireFox.
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1295245
+  visibility: 'visible',
+  opacity: 0,
+  zIndex: -1,
+};
+
 export default function ResizeListener({
   onlyWidth,
   onlyHeight,
   onSizeChange,
 }: ResizeListenerProps): JSX.Element {
-  const style = useMemo<React.CSSProperties>(
-    () => ({
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'transparent',
-      border: 'none',
-      // Must be visible for FireFox.
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1295245
-      visibility: 'visible',
-      opacity: 0,
-      zIndex: -1,
-    }),
-    []
-  );
-
   const rootRef = useRef<HTMLIFrameElement>(null);
   const lastRectRef = useRef<DOMRect>();
 

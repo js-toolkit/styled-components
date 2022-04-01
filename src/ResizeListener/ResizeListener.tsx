@@ -85,5 +85,5 @@ export default function ResizeListener({
   }, [onSizeChange, onlyHeight, onlyWidth]);
 
   // eslint-disable-next-line jsx-a11y/iframe-has-title
-  return <iframe ref={rootRef} style={style} />;
+  return <iframe ref={rootRef} style={style} tabIndex={-1} />;
 }

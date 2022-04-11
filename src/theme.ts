@@ -160,15 +160,15 @@ export interface Theme {
       root?: CSSProperties;
       input?: CSSProperties;
 
-      // errorIcon?: CSSProperties & {
-      //   size: 'string';
-      //   indent: 'string';
-      // };
+      errorIcon?: CSSProperties & {
+        size: 'string';
+        indent: 'string';
+      };
 
-      // error?: {
-      //   root?: CSSProperties;
-      //   input?: CSSProperties;
-      // };
+      error?: {
+        root?: CSSProperties;
+        input?: CSSProperties;
+      };
 
       DropDownLabel?: CSSProperties;
       DropDownBox?: CSSProperties;

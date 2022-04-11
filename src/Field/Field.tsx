@@ -17,13 +17,15 @@ type FlexContent<T extends React.ElementType> = FlexComponentProps<T> & {
 
 export interface FieldProps extends FlexComponentProps {
   label?: React.ReactNode | FlexContent<'label'>;
+  /** @deprecated Use `controls` */
   container?: FlexComponentProps<'div'>;
+  controls?: FlexComponentProps<'div'>;
   helperText?: React.ReactNode | FlexContent<'div'>;
   state?: FieldState;
 }
 
 const useStyles = makeStyles((theme: Theme) => {
-  const { root, label, helperText, ...restTheme } = theme.rc?.Field ?? {};
+  const { root, label, controls, helperText, ...restTheme } = theme.rc?.Field ?? {};
 
   type StatesTheme = Pick<NonNullable<NonNullable<Theme['rc']>['Field']>, FieldState>;
 
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) => {
     acc[`&[data-field-state=${p}]`] = {
       ...stateTheme?.root,
       '& $label': stateTheme?.label,
+      '& $controls': stateTheme?.controls,
       '& $helperText': stateTheme?.helperText,
     };
 
@@ -62,6 +65,10 @@ const useStyles = makeStyles((theme: Theme) => {
       ...label,
     },
 
+    controls: {
+      ...controls,
+    },
+
     helperText: {
       cursor: 'default',
       marginTop: '0.5em',
@@ -79,6 +86,7 @@ export default function Field({
   row = !column,
   label,
   container,
+  controls = container,
   helperText,
   state = 'default',
   children,
@@ -127,7 +135,13 @@ export default function Field({
         </Flex>
       )}
 
-      <Flex column shrink={false} hfill={column} {...container}>
+      <Flex
+        column
+        shrink={false}
+        hfill={column}
+        {...controls}
+        className={clsx(css.controls, controls?.className)}
+      >
         {children}
 
         {helperTextContent != null && (

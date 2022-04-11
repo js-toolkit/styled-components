@@ -147,11 +147,12 @@ export interface Theme {
     Field?: {
       root?: CSSProperties;
       label?: CSSProperties;
+      controls?: CSSProperties;
       helperText?: CSSProperties;
     } & {
       [P in FieldState]?: Pick<
         NonNullable<NonNullable<Theme['rc']>['Field']>,
-        'root' | 'label' | 'helperText'
+        'root' | 'label' | 'controls' | 'helperText'
       >;
     };
 
@@ -159,18 +160,23 @@ export interface Theme {
       root?: CSSProperties;
       input?: CSSProperties;
 
-      errorIcon?: CSSProperties & {
-        size: 'string';
-        indent: 'string';
-      };
+      // errorIcon?: CSSProperties & {
+      //   size: 'string';
+      //   indent: 'string';
+      // };
 
-      error?: {
-        root?: CSSProperties;
-        input?: CSSProperties;
-      };
+      // error?: {
+      //   root?: CSSProperties;
+      //   input?: CSSProperties;
+      // };
 
       DropDownLabel?: CSSProperties;
       DropDownBox?: CSSProperties;
+    } & {
+      [P in FieldState]?: Pick<
+        NonNullable<NonNullable<Theme['rc']>['InputGroup']>,
+        'root' | 'input' | 'DropDownLabel' | 'DropDownBox'
+      >;
     };
 
     VideoWatermark?: {

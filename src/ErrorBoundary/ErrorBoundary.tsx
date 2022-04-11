@@ -11,7 +11,10 @@ interface State {
   error: unknown;
 }
 
-export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
+export default class ErrorBoundary extends React.Component<
+  React.PropsWithChildren<ErrorBoundaryProps>,
+  State
+> {
   static defaultRenderer: ErrorBoundaryProps['renderer'] = (error) => (
     <DefaultRenderer error={error} />
   );

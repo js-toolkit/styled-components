@@ -1,50 +1,71 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
+import { Flex, FlexAllProps } from 'reflexy';
 import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: theme.rc?.HighlightedText?.root ?? {},
+  root: {
+    ...theme.rc?.HighlightedText?.root,
+  },
 }));
 
-export interface HighlightedTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+// export interface HighlightedTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+//   ignoreCase?: boolean;
+//   children?: string | string[];
+//   highlight?: string;
+// }
+
+export type HighlightedTextProps<C extends React.ElementType = 'span'> = {
   ignoreCase?: boolean;
-  children: string | string[];
-  highlight: string;
-}
+  children?: string | string[];
+  highlight?: string;
+} & FlexAllProps<C>;
 
 function isHighlightPart(part: string, highlight: string, ignoreCase: boolean): boolean {
   return ignoreCase ? part.toLowerCase() === highlight.toLowerCase() : part === highlight;
 }
 
-export default function HighlightedText({
+function normalizeArray<T>(array: T | T[] | undefined): typeof array {
+  return Array.isArray(array) && array.length === 0 ? undefined : array;
+}
+
+export default function HighlightedText<C extends React.ElementType = 'span'>({
   highlight,
   children: text,
   ignoreCase = true,
   className,
   ...rest
-}: HighlightedTextProps): JSX.Element {
+}: HighlightedTextProps<C>): JSX.Element {
   const css = useStyles({ classes: { root: className } });
 
-  const parts = useMemo(() => {
-    if (!highlight) return [];
-    return (Array.isArray(text) ? text.join('') : text)
+  const content = useMemo(() => {
+    if (!highlight || !text) return text;
+
+    const parts = (Array.isArray(text) ? text.join('') : text)
       .split(new RegExp(`(${highlight})`, `g${ignoreCase ? 'i' : ''}`))
       .filter((p) => !!p);
+
+    if (parts.length === 1) {
+      return isHighlightPart(parts[0], highlight, ignoreCase) ? (
+        <mark>{parts[0]}</mark>
+      ) : (
+        normalizeArray(parts)
+      );
+    }
+
+    return normalizeArray(
+      parts.map((part, i) => {
+        const key = `${highlight}${part}${i}`;
+        if (isHighlightPart(part, highlight, ignoreCase)) return <mark key={key}>{part}</mark>;
+        // return <span key={key}>{part}</span>;
+        return part;
+      })
+    );
   }, [highlight, ignoreCase, text]);
 
-  // eslint-disable-next-line no-nested-ternary
-  const content = !highlight
-    ? text
-    : parts.length === 1
-    ? (isHighlightPart(parts[0], highlight, ignoreCase) && <mark>{parts[0]}</mark>) || parts
-    : parts.map((part) => {
-        if (isHighlightPart(part, highlight, ignoreCase)) return <mark key={part}>{part}</mark>;
-        return <span key={part}>{part}</span>;
-      });
-
   return (
-    <span className={css.root} {...rest}>
+    <Flex component="span" flex={false} className={css.root} {...rest}>
       {content}
-    </span>
+    </Flex>
   );
 }

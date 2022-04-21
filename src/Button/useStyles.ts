@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => {
     default: colorDefault,
     primary: colorPrimary,
     secondary: colorSecondary,
-    // 'size-contain': sizeContain,
+    'size-contain': sizeContain,
     'size-xs': sizeXS,
     'size-s': sizeS,
     'size-m': sizeM,
@@ -68,6 +68,11 @@ const useStyles = makeStyles((theme: Theme) => {
     // Sizes
 
     ...themeClasses.sizes,
+
+    'size-contain': {
+      lineHeight: 'inherit',
+      ...sizeContain,
+    },
 
     // 28
     'size-xs': {

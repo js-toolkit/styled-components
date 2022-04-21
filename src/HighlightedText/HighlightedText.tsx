@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps } from 'reflexy';
+import { escapeRegExp } from '@js-toolkit/utils/escapeRegExp';
 import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,7 +43,7 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
     if (!highlight || !text) return text;
 
     const parts = (Array.isArray(text) ? text.join('') : text)
-      .split(new RegExp(`(${highlight})`, `g${ignoreCase ? 'i' : ''}`))
+      .split(new RegExp(`(${escapeRegExp(highlight)})`, `g${ignoreCase ? 'i' : ''}`))
       .filter((p) => !!p);
 
     if (parts.length === 1) {

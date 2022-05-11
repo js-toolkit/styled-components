@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useIsMounted from '@js-toolkit/react-hooks/useIsMounted';
+import useIsMounted from '@jstoolkit/react-hooks/useIsMounted';
 
 export interface SuspenseFallbackProps {
   readonly delay?: number;

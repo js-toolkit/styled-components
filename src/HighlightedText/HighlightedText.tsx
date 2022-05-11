@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps } from 'reflexy';
-import { escapeRegExp } from '@js-toolkit/utils/escapeRegExp';
+import { escapeRegExp } from '@jstoolkit/utils/escapeRegExp';
 import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => ({

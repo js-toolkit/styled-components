@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import useToggleDebounce from '@js-toolkit/react-hooks/useToggleDebounce';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useToggleDebounce from '@jstoolkit/react-hooks/useToggleDebounce';
+import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import Button, { ButtonProps } from '../Button';
 
 export interface TooltipData {

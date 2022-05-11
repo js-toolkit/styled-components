@@ -1,1 +1,1 @@
-import '@js-toolkit/web-utils/types';
+import '@jstoolkit/web-utils/types';

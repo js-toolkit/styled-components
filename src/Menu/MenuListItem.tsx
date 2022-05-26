@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { AriaAttributes, useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
 import { Flex, FlexComponentProps } from 'reflexy';
@@ -39,7 +39,8 @@ export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<stri
           KeysOfType<React.HTMLAttributes<HTMLDivElement>, AnyFunction>,
           'onSelect' | 'onSelectCapture'
         >
-    > {
+    >,
+    AriaAttributes {
   icon?: I;
   title: React.ReactNode;
   subtitle?: React.ReactNode;

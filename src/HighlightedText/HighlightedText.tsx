@@ -10,28 +10,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-// export interface HighlightedTextProps extends React.HTMLAttributes<HTMLSpanElement> {
-//   ignoreCase?: boolean;
-//   children?: string | string[];
-//   highlight?: string;
-// }
-
 export type HighlightedTextProps<C extends React.ElementType = 'span'> = {
   ignoreCase?: boolean;
   children?: string | string[];
   highlight?: string;
+  // onHighlight?: (parts: string[]) => void;
 } & FlexAllProps<C>;
 
 function isHighlightPart(part: string, highlight: string, ignoreCase: boolean): boolean {
   return ignoreCase ? part.toLowerCase() === highlight.toLowerCase() : part === highlight;
 }
 
-function normalizeArray<T>(array: T | T[] | undefined): typeof array {
-  return Array.isArray(array) && array.length === 0 ? undefined : array;
+function normalizeArray<T>(array: T | T[] | undefined): T[] | undefined {
+  return (Array.isArray(array) ? array.length > 0 && array : array != null && [array]) || undefined;
 }
 
 export default function HighlightedText<C extends React.ElementType = 'span'>({
   highlight,
+  // onHighlight,
   children: text,
   ignoreCase = true,
   className,
@@ -39,8 +35,8 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
 }: HighlightedTextProps<C>): JSX.Element {
   const css = useStyles({ classes: { root: className } });
 
-  const content = useMemo(() => {
-    if (!highlight || !text) return text;
+  const [content, _highlighted] = useMemo(() => {
+    if (!highlight || !text) return [text, undefined];
 
     const parts = (Array.isArray(text) ? text.join('') : text)
       .split(new RegExp(`(${escapeRegExp(highlight)})`, `g${ignoreCase ? 'i' : ''}`))
@@ -54,16 +50,26 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
     //   );
     // }
 
-    return normalizeArray(
-      parts.map((part, i) => {
+    const [nextParts, hParts] = parts.reduce(
+      (acc, part, i) => {
         if (isHighlightPart(part, highlight, ignoreCase)) {
           const key = `${highlight}${part}${i}`;
-          return <mark key={key}>{part}</mark>;
+          acc[0].push(<mark key={key}>{part}</mark>);
+          acc[1].push(part);
+        } else {
+          acc[0].push(part);
         }
-        return part;
-      })
+        return acc;
+      },
+      [[] as (JSX.Element | string)[], [] as string[]] as const
     );
+
+    return [normalizeArray(nextParts), normalizeArray(hParts)] as const;
   }, [highlight, ignoreCase, text]);
+
+  // useEffect(() => {
+  //   highlighted && highlighted.length > 0 && onHighlight && onHighlight(highlighted);
+  // }, [highlighted, onHighlight]);
 
   return (
     <Flex component="span" flex={false} className={css.root} {...rest}>

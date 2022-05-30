@@ -46,19 +46,20 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
       .split(new RegExp(`(${escapeRegExp(highlight)})`, `g${ignoreCase ? 'i' : ''}`))
       .filter((p) => !!p);
 
-    if (parts.length === 1) {
-      return isHighlightPart(parts[0], highlight, ignoreCase) ? (
-        <mark>{parts[0]}</mark>
-      ) : (
-        normalizeArray(parts)
-      );
-    }
+    // if (parts.length === 1) {
+    //   return isHighlightPart(parts[0], highlight, ignoreCase) ? (
+    //     <mark>{parts[0]}</mark>
+    //   ) : (
+    //     normalizeArray(parts)
+    //   );
+    // }
 
     return normalizeArray(
       parts.map((part, i) => {
-        const key = `${highlight}${part}${i}`;
-        if (isHighlightPart(part, highlight, ignoreCase)) return <mark key={key}>{part}</mark>;
-        // return <span key={key}>{part}</span>;
+        if (isHighlightPart(part, highlight, ignoreCase)) {
+          const key = `${highlight}${part}${i}`;
+          return <mark key={key}>{part}</mark>;
+        }
         return part;
       })
     );

@@ -1,19 +1,21 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import CheckboxContext, { CheckboxContextValue } from '../CheckboxContext';
+import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
+import CheckboxContext, { CheckboxContextValue } from './CheckboxContext';
 
-export interface CheckboxGroupChangeEvent<V = any> {
+export interface CheckboxGroupChangeEvent<V = unknown> {
   name?: string;
   value: V;
 }
 
-export interface CheckboxGroupProps<V = any> extends Omit<FlexComponentProps<'div'>, 'onChange'> {
+export interface CheckboxGroupProps<V = unknown>
+  extends Omit<FlexComponentProps<'div'>, 'onChange'> {
   name?: string;
   value?: CheckboxContextValue<V>['checkedValue'];
   onChange?: (data: CheckboxGroupChangeEvent<V>) => void;
 }
 
-export default function CheckboxGroup<V = any>({
+export default function CheckboxGroup<V = unknown>({
   name,
   value: checkedValueProp,
   onChange,
@@ -21,18 +23,15 @@ export default function CheckboxGroup<V = any>({
 }: React.PropsWithChildren<CheckboxGroupProps<V>>): JSX.Element {
   const [checkedValue, setCheckedValue] = useState(checkedValueProp);
 
-  const onChecked = useCallback(
-    (value: V) => {
-      // If controlled
-      if (onChange) {
-        onChange({ value, name });
-        return;
-      }
-      // Not controlled
-      setCheckedValue(value);
-    },
-    [name, onChange]
-  );
+  const onChecked = useRefCallback((value: V) => {
+    // If controlled
+    if (onChange) {
+      onChange({ value, name });
+      return;
+    }
+    // Not controlled
+    setCheckedValue(value);
+  });
 
   const contextValue = useMemo<CheckboxContextValue<V>>(
     () => ({

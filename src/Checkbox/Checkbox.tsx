@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useRef, useContext } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
-import type { Theme } from '../theme';
-import CheckboxContext, { CheckboxContextValue } from './CheckboxContext';
+import type { CSSProperties, Theme } from '../theme';
+import CheckboxContext from './CheckboxContext';
 
 export type CheckboxType = 'checkbox' | 'radio' | 'switch';
 
-export interface CheckboxProps<V = any> extends Omit<FlexComponentProps<'div'>, 'onChange'> {
+export interface CheckboxProps<V = unknown> extends Omit<FlexComponentProps<'div'>, 'onChange'> {
   type?: CheckboxType;
   onChange?: (checked: boolean) => void;
   checked?: boolean;
@@ -18,7 +18,7 @@ export interface CheckboxProps<V = any> extends Omit<FlexComponentProps<'div'>, 
 const useStyles = makeStyles((theme: Theme) => {
   const checkboxTheme = theme.rc?.Checkbox ?? {};
 
-  const shapeSize = checkboxTheme.shape?.width || checkboxTheme.shape?.height || '1em';
+  const defaultShapeSize = checkboxTheme.shape?.width || checkboxTheme.shape?.height || '1em';
 
   const checkedColor =
     checkboxTheme.colors?.checked || 'var(--rc--checkbox-checked-color, rgb(92, 184, 92))';
@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme: Theme) => {
   const hoverColor =
     checkboxTheme.colors?.hover || 'var(--rc--checkbox-hover-color, rgba(92, 184, 92, 0.5))';
   const emptyColor = checkboxTheme.colors?.empty || 'var(--rc--area-bg-color, #f4f7f8)';
-
-  const switchDuration = checkboxTheme.switch?.duration || '0.2s';
-  const switchIndent = checkboxTheme.switch?.indent || '2px';
 
   return {
     root: {
@@ -46,29 +43,35 @@ const useStyles = makeStyles((theme: Theme) => {
 
       '&::before': {
         content: '""',
-        width: shapeSize,
-        height: shapeSize,
-        border: `1px solid ${uncheckedColor}`,
+        width: defaultShapeSize,
+        height: defaultShapeSize,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         ...checkboxTheme.shape,
       },
 
-      '&:not(:empty)::before': {
-        marginRight: `calc(${shapeSize} / 2)`,
-        ...checkboxTheme.root?.['&:not(:empty)::before'],
-      },
+      // '&:not(:empty)::before': {
+      //   marginRight: `calc(${shapeSize} / 2)`,
+      //   ...checkboxTheme.root?.['&:not(:empty)::before'],
+      // },
 
-      '&:hover::before': checkboxTheme.shape?.['&:hover'],
+      '&:hover::before': {
+        ...(checkboxTheme.shape?.['&:hover'] as CSSProperties),
+      },
 
       // Checkbox
       "&[role='checkbox']": {
         ...checkboxTheme.checkbox?.root,
 
-        '&::before': checkboxTheme.checkbox?.shape,
+        '&::before': {
+          border: `1px solid ${uncheckedColor}`,
+          ...checkboxTheme.checkbox?.shape,
+        },
 
-        '&:hover::before': checkboxTheme.checkbox?.shape?.['&:hover'],
+        '&:hover::before': {
+          ...(checkboxTheme.checkbox?.shape?.['&:hover'] as CSSProperties),
+        },
 
         "&[aria-checked='true']": {
           ...checkboxTheme.checkbox?.checked?.root,
@@ -86,14 +89,15 @@ const useStyles = makeStyles((theme: Theme) => {
         ...checkboxTheme.radio?.root,
 
         '&::before': {
+          border: `1px solid ${uncheckedColor}`,
           borderRadius: '100%',
           ...checkboxTheme.radio?.shape,
         },
 
         '&:hover::before': {
           borderColor: hoverColor,
-          background: `radial-gradient(ellipse at center, ${hoverColor} 0, ${hoverColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
-          ...checkboxTheme.radio?.shape?.['&:hover'],
+          backgroundColor: `radial-gradient(ellipse at center, ${hoverColor} 0, ${hoverColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
+          ...(checkboxTheme.radio?.shape?.['&:hover'] as CSSProperties),
         },
 
         "&[aria-checked='true']": {
@@ -101,49 +105,63 @@ const useStyles = makeStyles((theme: Theme) => {
 
           '&::before': {
             borderColor: checkedColor,
-            background: `radial-gradient(ellipse at center, ${checkedColor} 0, ${checkedColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
+            backgroundColor: `radial-gradient(ellipse at center, ${checkedColor} 0, ${checkedColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
             ...checkboxTheme.radio?.checked?.shape,
           },
         },
       },
 
       // Switch
-      "&[role='switch']": {
-        userSelect: 'none',
-        minWidth: `calc((${shapeSize} * 2) + (${switchIndent} * 2))`,
-        height: `calc(${shapeSize} + (${switchIndent} * 2))`,
-        borderRadius: shapeSize,
-        background: uncheckedColor,
-        transition: `background-color ${switchDuration}`,
-        ...checkboxTheme.switch?.root,
+      "&[role='switch']": (() => {
+        const switchDuration = checkboxTheme.switch?.duration || '0.2s';
+        const switchIndent = checkboxTheme.switch?.indent || '2px';
+        const switchIndentAbs = switchIndent.startsWith('-')
+          ? switchIndent.substring(1)
+          : switchIndent;
+        const shapeSize =
+          checkboxTheme.switch?.shape?.width ||
+          checkboxTheme.switch?.shape?.height ||
+          defaultShapeSize;
 
-        '&::before': {
-          position: 'absolute',
-          border: 'none',
-          borderRadius: '100%',
-          background: emptyColor,
-          transition: `margin-left ${switchDuration}`,
-          marginLeft: switchIndent,
-          ...checkboxTheme.switch?.shape,
-        },
-
-        '&:hover::before': checkboxTheme.switch?.shape?.['&:hover'],
-
-        "&[aria-checked='true']": {
-          background: checkedColor,
-          ...checkboxTheme.switch?.checked?.root,
+        return {
+          userSelect: 'none',
+          minWidth: `calc((${shapeSize} * 2) + (${switchIndentAbs} * 2))`,
+          height: `calc(${shapeSize} + (${switchIndentAbs} * 2))`,
+          borderRadius: shapeSize,
+          backgroundColor: uncheckedColor,
+          transition: `background-color ${switchDuration}`,
+          ...checkboxTheme.switch?.root,
 
           '&::before': {
-            marginLeft: `calc(100% - ${shapeSize} - ${switchIndent})`,
-            ...checkboxTheme.switch?.checked?.shape,
+            position: 'absolute',
+            border: 'none',
+            borderRadius: '100%',
+            backgroundColor: emptyColor,
+            transition: `margin-left ${switchDuration}`,
+            marginLeft: switchIndent,
+            ...checkboxTheme.switch?.shape,
           },
-        },
-      },
+
+          '&:hover::before': {
+            ...(checkboxTheme.switch?.shape?.['&:hover'] as CSSProperties),
+          },
+
+          "&[aria-checked='true']": {
+            backgroundColor: checkedColor,
+            ...checkboxTheme.switch?.checked?.root,
+
+            '&::before': {
+              marginLeft: `calc(100% - ${shapeSize} - ${switchIndent})`,
+              ...checkboxTheme.switch?.checked?.shape,
+            },
+          },
+        };
+      })(),
     },
   };
 });
 
-export default function Checkbox<V = any>({
+export default function Checkbox<V = unknown>({
   type = 'checkbox',
   onChange,
   checked,
@@ -153,7 +171,7 @@ export default function Checkbox<V = any>({
   ...rest
 }: React.PropsWithChildren<CheckboxProps<V>>): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-  const { checkedValue, onChecked } = useContext<CheckboxContextValue<V>>(CheckboxContext);
+  const { checkedValue, onChecked } = useContext(CheckboxContext);
   const [isChecked, setChecked] = useState(!!checked);
 
   const isCheckedRef = useRef(false);
@@ -196,7 +214,6 @@ export default function Checkbox<V = any>({
 
   return (
     <Flex
-      row
       alignItems="center"
       role={type}
       aria-checked={isCheckedRef.current || undefined}

@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) => {
     default: colorDefault,
     primary: colorPrimary,
     secondary: colorSecondary,
+    'variant-text': variantText,
+    'variant-outlined': variantOutlined,
+    'variant-filled': variantFilled,
     'size-contain': sizeContain,
     'size-xs': sizeXS,
     'size-s': sizeS,
@@ -26,8 +29,11 @@ const useStyles = makeStyles((theme: Theme) => {
   // Build futured classes from theme
   const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
     (acc, p) => {
-      if (p.indexOf('size-') === 0) acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
-      else {
+      if (p.indexOf('size-') === 0) {
+        acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
+      } else if (p.indexOf('variant-') === 0) {
+        acc.variants[p] = { ...(restTheme[p] as CSSProperties) };
+      } else {
         const colorTheme = restTheme[p] as Record<ButtonVariant, CSSProperties>;
         Object.getOwnPropertyNames(colorTheme).forEach((variant) => {
           acc.colors[`${p}-${variant}`] = { ...(colorTheme[variant] as CSSProperties) };
@@ -38,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) => {
     {
       sizes: {} as Record<ButtonSize, CSSProperties>,
       colors: {} as Record<`${ButtonColor}-${ButtonVariant}`, CSSProperties>,
+      variants: {} as Record<ButtonVariant, CSSProperties>,
     }
   );
 
@@ -120,6 +127,23 @@ const useStyles = makeStyles((theme: Theme) => {
       ...sizeXL,
     },
 
+    // Variants
+
+    ...themeClasses.variants,
+
+    'variant-text': {
+      ...variantText,
+    },
+
+    'variant-outlined': {
+      border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
+      ...variantOutlined,
+    },
+
+    'variant-filled': {
+      ...variantFilled,
+    },
+
     // Colors and variants
 
     ...themeClasses.colors,
@@ -148,8 +172,7 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     'default-outlined': {
-      border: ({ variant }: MakeStylesProps) =>
-        `${getBorderWidth(variant)} solid rgb(195, 205, 205)`,
+      borderColor: 'rgb(195, 205, 205)',
       color: 'rgb(70, 80, 80)',
       ...colorDefault?.outlined,
       // ...(colorDefault?.outlined?.[sizeProp] as CSSProperties),
@@ -211,7 +234,7 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     'primary-outlined': {
-      border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid rgb(92, 184, 92)`,
+      borderColor: 'rgb(92, 184, 92)',
       color: 'rgb(92, 184, 92)',
       ...colorPrimary?.outlined,
       // ...(colorPrimary?.outlined?.[sizeProp] as CSSProperties),
@@ -277,7 +300,7 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     'secondary-outlined': {
-      border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid rgb(220, 0, 78)`,
+      borderColor: 'rgb(220, 0, 78)',
       color: 'rgb(220, 0, 78)',
       ...colorSecondary?.outlined,
       // ...(colorSecondary?.outlined?.[sizeProp] as CSSProperties),

@@ -39,14 +39,15 @@ export default function Button<C extends React.ElementType = 'button'>({
 }: ButtonProps<C>): JSX.Element {
   const css = useStyles({ classes: { root: className }, variant });
 
-  const sizeClassName = (css[`size-${size}`] as string) ?? '';
+  const variantClassName = css[`variant-${variant}`] ?? '';
+  const sizeClassName = css[`size-${size}`] ?? '';
   const colorClassName = css[`${color}-${variant}`] ?? '';
 
   return (
     <Flex
       center
       shrink={false}
-      className={clsx(css.root, sizeClassName, colorClassName)}
+      className={clsx(css.root, variantClassName, sizeClassName, colorClassName)}
       component={component}
       {...(rest as any)}
     />

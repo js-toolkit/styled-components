@@ -5,8 +5,10 @@ import type { ButtonColor, ButtonProps, ButtonSize, ButtonVariant } from './Butt
 type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 
 const useStyles = makeStyles((theme: Theme) => {
+  const outlinedBorderWidth = '1px';
+
   const getBorderWidth = (variant?: MakeStylesProps['variant']): string =>
-    variant === 'outlined' ? '1px' : '0px';
+    variant === 'outlined' ? outlinedBorderWidth : '0px';
 
   const {
     root,
@@ -136,7 +138,8 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     'variant-outlined': {
-      border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
+      borderWidth: outlinedBorderWidth,
+      borderStyle: 'solid',
       ...variantOutlined,
     },
 

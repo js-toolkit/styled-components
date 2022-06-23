@@ -25,7 +25,7 @@ export interface PosterProps
     > {
   url: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
-  showImmediately?: boolean;
+  useRegularUrl?: boolean;
   timeout?: number;
   onLoadTimeout?: VoidFunction;
   onLoaded?: VoidFunction;
@@ -36,7 +36,7 @@ export default function Poster({
   hidden,
   url: urlProp,
   crossOrigin,
-  showImmediately,
+  useRegularUrl,
   timeout,
   transitionProps,
   onLoadTimeout,
@@ -48,14 +48,14 @@ export default function Poster({
 }: PosterProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
 
-  const [getUrl, setUrl] = useUpdatedRefState(showImmediately ? urlProp : '', [
-    showImmediately,
+  const [getUrl, setUrl] = useUpdatedRefState(useRegularUrl ? urlProp : '', [
+    useRegularUrl,
     urlProp,
   ]);
 
   const loadImagePromise = useMemo(
-    () => (showImmediately ? undefined : loadImage(urlProp, crossOrigin)),
-    [crossOrigin, showImmediately, urlProp]
+    () => (useRegularUrl ? undefined : loadImage(urlProp, crossOrigin)),
+    [crossOrigin, useRegularUrl, urlProp]
   );
   // const loadImagePromise = useMemo(
   //   () =>

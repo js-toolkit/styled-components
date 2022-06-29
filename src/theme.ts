@@ -1,5 +1,5 @@
 import type { BaseCSSProperties } from '@mui/styles/withStyles';
-import type { FlexOnlyProps } from 'reflexy';
+import type { FlexOnlyProps, SpaceProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
@@ -221,23 +221,33 @@ export interface Theme {
     MenuListItem?: {
       root?: CSSProperties;
       hover?: CSSProperties;
-      flex?: FlexOnlyProps | ((options: { hasIcon: boolean }) => FlexOnlyProps);
+      flex?:
+        | FlexOnlyProps
+        | ((options: { hasIcon: boolean; submenu: boolean; checked: boolean }) => FlexOnlyProps);
       title?: {
         root?: CSSProperties;
         flex?:
           | FlexOnlyProps
           | ((
-              options: { hasIcon: boolean } & Pick<MenuListItemProps<string, string>, 'shrinkTitle'>
+              options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
+                MenuListItemProps<string, string>,
+                'shrinkTitle'
+              >
             ) => FlexOnlyProps);
       };
       subtitle?: {
         root?: CSSProperties;
         flex?:
           | FlexOnlyProps
-          | ((options: Pick<MenuListItemProps<string, string>, 'shrinkTitle'>) => FlexOnlyProps);
+          | ((
+              options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
+                MenuListItemProps<string, string>,
+                'shrinkTitle'
+              >
+            ) => FlexOnlyProps);
       };
-      checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
-      submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
+      checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps;
+      submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps;
     };
 
     Tooltip?: {

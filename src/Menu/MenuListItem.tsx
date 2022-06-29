@@ -57,8 +57,8 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   title,
   subtitle,
   value,
-  submenu,
-  checked,
+  submenu = false,
+  checked = false,
   autoFocus,
   shrinkTitle = (!subtitle && !!(checked || submenu)) || (!subtitle && !checked && !submenu),
   className,
@@ -117,15 +117,17 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
     typeof icon === 'string' ? { name: icon, size: '1.5em' } : (icon as SvgSpriteIconProps<string>);
 
   const rootFlex =
-    typeof theme?.flex === 'function' ? theme.flex({ hasIcon: !!iconProps }) : theme?.flex;
+    typeof theme?.flex === 'function'
+      ? theme.flex({ hasIcon: !!iconProps, submenu, checked })
+      : theme?.flex;
 
   const titleFlex =
     typeof theme?.title?.flex === 'function'
-      ? theme.title.flex({ hasIcon: !!iconProps, shrinkTitle })
+      ? theme.title.flex({ hasIcon: !!iconProps, shrinkTitle, submenu, checked })
       : theme?.title?.flex;
   const subtitleFlex =
     typeof theme?.subtitle?.flex === 'function'
-      ? theme.subtitle.flex({ shrinkTitle })
+      ? theme.subtitle.flex({ hasIcon: !!iconProps, shrinkTitle, submenu, checked })
       : theme?.subtitle?.flex;
 
   const checkIconProps = checked ? theme?.checkIcon : undefined;

@@ -182,6 +182,7 @@ export default function Tooltip({
           column
           alignItems="flex-start"
           {...rest}
+          {...rc?.Tooltip?.space}
           {...tooltip.space}
           className={css.container}
           style={tooltip.maxWidth != null ? { maxWidth: tooltip.maxWidth } : undefined}
@@ -201,7 +202,13 @@ export default function Tooltip({
               {React.isValidElement(tooltip.title) ? (
                 tooltip.title
               ) : (
-                <TruncatedText mb="xs" p="xs" {...tooltip.innerSpace} className={css.title}>
+                <TruncatedText
+                  mb="xs"
+                  p="xs"
+                  {...rc?.Tooltip?.innerSpace}
+                  {...tooltip.innerSpace}
+                  className={css.title}
+                >
                   {tooltip.title}
                 </TruncatedText>
               )}
@@ -212,7 +219,12 @@ export default function Tooltip({
             {tooltip.text && React.isValidElement(tooltip.text) ? (
               tooltip.text
             ) : (
-              <TruncatedText p="xs" {...tooltip.innerSpace} className={css.text}>
+              <TruncatedText
+                p="xs"
+                {...rc?.Tooltip?.innerSpace}
+                {...tooltip.innerSpace}
+                className={css.text}
+              >
                 {tooltip.text}
               </TruncatedText>
             )}

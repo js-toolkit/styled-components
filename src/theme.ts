@@ -255,6 +255,8 @@ export interface Theme {
       title?: CSSProperties;
       text?: CSSProperties;
       arrowColor?: string;
+      space?: SpaceProps;
+      innerSpace?: SpaceProps;
     };
 
     Notifications?: {

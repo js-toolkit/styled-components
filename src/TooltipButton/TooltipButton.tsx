@@ -3,34 +3,32 @@ import useToggleDebounce from '@jstoolkit/react-hooks/useToggleDebounce';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import Button, { ButtonProps } from '../Button';
 
-export interface TooltipData {
+export interface TooltipData<D = never> {
   readonly target: HTMLButtonElement;
   readonly title: string;
+  readonly data?: D;
 }
 
-export interface TooltipButtonTooltipProps {
-  tooltip?: TooltipData['title'];
+export interface TooltipButtonTooltipProps<D = never> {
+  tooltip?: TooltipData<D>['title'];
   tooltipDelay?: number;
-  onShowTooltip?: (tooltip: TooltipData) => void;
-  onHideTooltip?: (target: TooltipData['target']) => void;
+  onShowTooltip?: (tooltip: TooltipData<D>) => void;
+  onHideTooltip?: (target: TooltipData<D>['target']) => void;
 }
 
-export type TooltipButtonProps<
-  C extends React.ElementType = 'button'
-  // D = unknown
-> = ButtonProps<C> & TooltipButtonTooltipProps /* & {
+export type TooltipButtonProps<C extends React.ElementType = 'button', D = never> = ButtonProps<C> &
+  TooltipButtonTooltipProps<D> & {
     readonly data?: D;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>, data?: D) => void;
-  } */;
+  };
 
-export default function TooltipButton<C extends React.ElementType = 'button'>({
+export default function TooltipButton<C extends React.ElementType = 'button', D = never>({
   tooltip,
   tooltipDelay = 0,
+  data,
   onShowTooltip,
   onHideTooltip,
-  // data,
   ...restProps
-}: TooltipButtonProps<C>): JSX.Element {
+}: TooltipButtonProps<C, D>): JSX.Element {
   const { onClick, onMouseEnter, onMouseLeave, onTouchStart, onContextMenu, ...rest } =
     restProps as TooltipButtonProps<'button'>;
 
@@ -45,11 +43,11 @@ export default function TooltipButton<C extends React.ElementType = 'button'>({
 
   useEffect(() => {
     if (isHover && onShowTooltip && tooltip && element) {
-      onShowTooltip({ target: element, title: tooltip });
+      onShowTooltip({ target: element, title: tooltip, data });
     } else if ((!isHover || !tooltip) && onHideTooltip && element) {
       onHideTooltip(element);
     }
-  }, [element, isHover, onHideTooltip, onShowTooltip, tooltip]);
+  }, [data, element, isHover, onHideTooltip, onShowTooltip, tooltip]);
 
   const touchStartHandler = useRefCallback<React.TouchEventHandler<HTMLButtonElement>>((event) => {
     // console.log('touchStart', event.nativeEvent.type);

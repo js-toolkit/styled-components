@@ -151,6 +151,11 @@ export interface Theme {
       root?: CSSProperties;
     };
 
+    TruncatedText?: {
+      root?: CSSProperties;
+      multiline?: CSSProperties;
+    };
+
     Field?: {
       root?: CSSProperties;
       label?: CSSProperties;

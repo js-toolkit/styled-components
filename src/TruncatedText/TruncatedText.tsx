@@ -2,6 +2,7 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import { Flex, FlexAllProps } from 'reflexy';
+import type { Theme } from '../theme';
 
 export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllProps<C> & {
   lines?: number;
@@ -9,21 +10,24 @@ export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllPr
 
 type MakeStylesProps = Pick<TruncatedTextProps, 'lines'>;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ rc }: Theme) => ({
   root: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    ...rc?.TruncatedText?.root,
   },
 
   multiline: {
     whiteSpace: 'normal',
-    hyphens: 'auto',
+    wordBreak: 'break-word',
+    // hyphens: 'auto',
     display: '-webkit-box',
     boxOrient: 'vertical',
     lineClamp: ({ lines }: MakeStylesProps) => lines,
+    ...rc?.TruncatedText?.multiline,
   },
-});
+}));
 
 export default function TruncatedText<C extends React.ElementType = 'span'>({
   component = 'span' as C,

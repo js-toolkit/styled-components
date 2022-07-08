@@ -68,8 +68,9 @@ const useStyles = makeStyles((theme: Theme) => {
       ...root,
 
       '&:disabled': {
-        cursor: 'not-allowed',
+        cursor: 'default',
         opacity: 'var(--rc--disabled-opacity, 0.5)',
+        pointerEvents: 'none', // Fix onMouseEnter in TooltipButton when the pointer moving from disabled button to enabled one.
         ...(root?.['&:disabled'] as CSSProperties),
       },
     },

@@ -83,9 +83,6 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
 
   return (
     <Button
-      // color="none"
-      // size="contain"
-      // shrink={0}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
       onTouchStart={touchStartHandler}

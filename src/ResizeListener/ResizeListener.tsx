@@ -26,6 +26,9 @@ const style: React.CSSProperties = {
   zIndex: -1,
 };
 
+/**
+ * If used inside iframe with `sandbox` it needs to allow `allow-same-origin`.
+ */
 export default function ResizeListener({
   onlyWidth,
   onlyHeight,

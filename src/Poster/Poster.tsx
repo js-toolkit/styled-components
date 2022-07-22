@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@jstoolkit/web-utils/loadImage';
 import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
-// import blobToDataUrl from '@jstoolkit/web-utils/blobToDataUrl';
+import { isImageTypeSupported } from '@jstoolkit/web-utils/isImageTypeSupported';
 import noop from '@jstoolkit/utils/noop';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { HideableProps } from '../TransitionFlex';
@@ -23,24 +23,29 @@ export interface PosterProps
       HideableProps,
       'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
     > {
-  url: string;
+  src:
+    | string
+    | PartialSome<
+        Pick<HTMLSourceElement, 'type' | 'src' | 'srcset' | 'sizes'>,
+        'srcset' | 'sizes'
+      >[];
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
   useRegularUrl?: boolean;
   timeout?: number;
   onLoadTimeout?: VoidFunction;
-  onLoaded?: VoidFunction;
+  onLoadCompleted?: VoidFunction;
   onError?: (error: unknown) => void;
 }
 
 export default function Poster({
   hidden,
-  url: urlProp,
+  src: srcProp,
   crossOrigin,
   useRegularUrl,
   timeout,
   transitionProps,
   onLoadTimeout,
-  onLoaded,
+  onLoadCompleted,
   onError,
   className,
   style,
@@ -48,18 +53,28 @@ export default function Poster({
 }: PosterProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
 
-  const [getUrl, setUrl] = useUpdatedRefState(useRegularUrl ? urlProp : '', [
+  const selectedSrc = useMemo(() => {
+    if (typeof srcProp === 'string') return { src: srcProp };
+    const img = srcProp.find(({ type }) => isImageTypeSupported(type));
+    if (!img) return undefined;
+    const { type, ...src } = img;
+    return src;
+  }, [srcProp]);
+
+  const [getUrl, setUrl] = useUpdatedRefState(useRegularUrl ? selectedSrc?.src : '', [
+    selectedSrc,
     useRegularUrl,
-    urlProp,
   ]);
 
-  const loadImagePromise = useMemo(
-    () => (useRegularUrl ? undefined : loadImage(urlProp, crossOrigin)),
-    [crossOrigin, useRegularUrl, urlProp]
-  );
+  const loadImagePromise = useMemo(() => {
+    return useRegularUrl
+      ? undefined
+      : (selectedSrc && loadImage({ ...selectedSrc, crossOrigin })) ||
+          Promise.reject(new Error('Unsupported type of image.'));
+  }, [useRegularUrl, selectedSrc, crossOrigin]);
   // const loadImagePromise = useMemo(
   //   () =>
-  //     // With `mode: 'no-cors'` can't access to response body so blob length will 0.
+  //     // With `mode: 'no-cors'` unable to access to the response body so the blob length will 0.
   //     window
   //       .fetch(urlProp, {
   //         method: 'GET',
@@ -85,13 +100,13 @@ export default function Poster({
 
     void loadImagePromise
       .then((img) => {
-        if (unmounted) return;
         clearTimeout(timer);
+        if (unmounted) return;
         const dataUrl = takeSnapshot(img, { quality: 1 });
         setUrl(dataUrl);
       })
       .catch((ex) => !unmounted && (onError ? onError(ex) : console.error(ex)))
-      .finally(() => !unmounted && onLoaded && onLoaded());
+      .finally(() => !unmounted && onLoadCompleted && onLoadCompleted());
 
     return () => {
       unmounted = true;

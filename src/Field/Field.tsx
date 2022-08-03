@@ -98,14 +98,14 @@ export default function Field({
     content: labelContent = labelChildren,
     className: labelClassName,
     ...labelProps
-  } = (isValidReactNode(label) ? { content: label } : label) as FlexContent<'label'>;
+  } = isValidReactNode(label) ? ({ content: label } as FlexContent<'label'>) : label;
 
   const {
     children: helperTextChildren,
     content: helperTextContent = helperTextChildren,
     className: helperTextClassName,
     ...helperTextProps
-  } = (isValidReactNode(helperText) ? { content: helperText } : helperText) as FlexContent<'div'>;
+  } = isValidReactNode(helperText) ? ({ content: helperText } as FlexContent<'div'>) : helperText;
 
   const css = useStyles({ classes: { root: className } });
 

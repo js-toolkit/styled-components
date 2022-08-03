@@ -25,40 +25,42 @@ export interface FieldProps extends FlexComponentProps {
 }
 
 const useStyles = makeStyles((theme: Theme) => {
-  const { root, label, controls, helperText, ...restTheme } = theme.rc?.Field ?? {};
+  const { root, label, controls, helperText, row, column, ...restTheme } = theme.rc?.Field ?? {};
 
   type StatesTheme = Pick<NonNullable<NonNullable<Theme['rc']>['Field']>, FieldState>;
 
   // Build futured classes from theme
-  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce((acc, p) => {
-    const stateTheme = restTheme[p] as NonNullable<StatesTheme[keyof StatesTheme]>;
+  const themeStateClasses = Object.getOwnPropertyNames(restTheme).reduce(
+    (acc, p) => {
+      const stateTheme = restTheme[p] as NonNullable<StatesTheme[keyof StatesTheme]>;
+      acc.root[`state-${p}`] = { ...stateTheme?.root };
+      acc.label[`state-${p}-label`] = { ...stateTheme?.label };
+      acc.controls[`state-${p}-controls`] = { ...stateTheme?.controls };
+      acc.helperText[`state-${p}-helperText`] = { ...stateTheme?.helperText };
+      return acc;
+    },
+    {
+      root: {} as Record<`state-${FieldState}`, CSSProperties>,
+      label: {} as Record<`state-${FieldState}-label`, CSSProperties>,
+      controls: {} as Record<`state-${FieldState}-controls`, CSSProperties>,
+      helperText: {} as Record<`state-${FieldState}-helperText`, CSSProperties>,
+    }
+  );
 
-    acc[`&[data-field-state=${p}]`] = {
-      ...stateTheme?.root,
-      '& $label': stateTheme?.label,
-      '& $controls': stateTheme?.controls,
-      '& $helperText': stateTheme?.helperText,
-    };
-
-    return acc;
-  }, {} as Record<`&[data-field-state=${FieldState}]`, CSSProperties>);
+  const themeDirClasses = {
+    row: (row?.root && { ...row.root }) as CSSProperties,
+    'row-label': (row?.label && { ...row.label }) as CSSProperties,
+    'row-controls': (row?.controls && { ...row.controls }) as CSSProperties,
+    'row-helperText': (row?.helperText && { ...row.helperText }) as CSSProperties,
+    column: (column?.root && { ...column.root }) as CSSProperties,
+    'column-label': (column?.label && { ...column.label }) as CSSProperties,
+    'column-controls': (column?.controls && { ...column.controls }) as CSSProperties,
+    'column-helperText': (column?.helperText && { ...column.helperText }) as CSSProperties,
+  };
 
   return {
     root: {
-      '&[data-field-row] $label': {
-        width: 'auto',
-        marginRight: '1.5em',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      },
-
-      '&[data-field-column] $label': {
-        paddingBottom: '0.5em',
-      },
-
       ...root,
-      ...themeClasses,
     },
 
     label: {
@@ -78,6 +80,27 @@ const useStyles = makeStyles((theme: Theme) => {
       textAlign: 'left',
       ...helperText,
     },
+
+    ...themeDirClasses,
+
+    'row-label': {
+      width: 'auto',
+      marginRight: '1.5em',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      ...themeDirClasses['row-label'],
+    },
+
+    'column-label': {
+      paddingBottom: '0.5em',
+      ...themeDirClasses['column-label'],
+    },
+
+    ...themeStateClasses.root,
+    ...themeStateClasses.label,
+    ...themeStateClasses.controls,
+    ...themeStateClasses.helperText,
   };
 });
 
@@ -107,17 +130,18 @@ export default function Field({
     ...helperTextProps
   } = isValidReactNode(helperText) ? ({ content: helperText } as FlexContent<'div'>) : helperText;
 
-  const css = useStyles({ classes: { root: className } });
+  const css = useStyles();
+
+  const dir = column ? 'column' : 'row';
 
   return (
     <Flex
       row={row}
       column={column}
       alignItems={column ? 'flex-start' : 'baseline'}
-      className={css.root}
+      className={clsx(css.root, css[dir], css[`state-${state}`], className)}
       data-field=""
-      data-field-row={row ? '' : undefined}
-      data-field-column={column ? '' : undefined}
+      data-field-dir={dir}
       data-field-state={state || undefined}
       {...rest}
     >
@@ -129,7 +153,12 @@ export default function Field({
           component="label"
           data-field-label=""
           {...labelProps}
-          className={clsx(css.label, labelClassName)}
+          className={clsx(
+            css.label,
+            css[`${dir}-label`],
+            css[`state-${state}-label`],
+            labelClassName
+          )}
         >
           {labelContent}
         </Flex>
@@ -140,7 +169,12 @@ export default function Field({
         shrink={false}
         hfill={column}
         {...controls}
-        className={clsx(css.controls, controls?.className)}
+        className={clsx(
+          css.controls,
+          css[`${dir}-controls`],
+          css[`state-${state}-controls`],
+          controls?.className
+        )}
       >
         {children}
 
@@ -149,7 +183,12 @@ export default function Field({
             shrink={false}
             data-field-helper-text=""
             {...helperTextProps}
-            className={clsx(css.helperText, helperTextClassName)}
+            className={clsx(
+              css.helperText,
+              css[`${dir}-helperText`],
+              css[`state-${state}-helperText`],
+              helperTextClassName
+            )}
           >
             {helperTextContent}
           </Flex>

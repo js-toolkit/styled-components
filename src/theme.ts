@@ -166,6 +166,11 @@ export interface Theme {
         NonNullable<NonNullable<Theme['rc']>['Field']>,
         'root' | 'label' | 'controls' | 'helperText'
       >;
+    } & {
+      [P in 'row' | 'column']?: Pick<
+        NonNullable<NonNullable<Theme['rc']>['Field']>,
+        'root' | 'label' | 'controls' | 'helperText'
+      >;
     };
 
     InputGroup?: {

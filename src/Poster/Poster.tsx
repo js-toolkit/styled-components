@@ -6,6 +6,7 @@ import loadImage from '@jstoolkit/web-utils/loadImage';
 import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
 import { isWebPSupported } from '@jstoolkit/web-utils/isWebPSupported';
 import TransitionFlex, { HideableProps } from '../TransitionFlex';
+import type { PictureProps } from '../Picture';
 
 const useStyles = makeStyles({
   root: {
@@ -21,19 +22,11 @@ export interface PosterProps
     Pick<
       HideableProps,
       'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
-    > {
-  src:
-    | string
-    | PartialSome<
-        Pick<HTMLSourceElement, 'type' | 'src' | 'srcset' | 'sizes'>,
-        'srcset' | 'sizes'
-      >[];
-  crossOrigin?: 'anonymous' | 'use-credentials' | null;
-  timeout?: number;
-  onLoadTimeout?: VoidFunction;
-  onLoadCompleted?: VoidFunction;
-  onError?: (error: unknown) => void;
-}
+    >,
+    Pick<
+      PictureProps,
+      'src' | 'crossOrigin' | 'timeout' | 'onLoadTimeout' | 'onLoadCompleted' | 'onError'
+    > {}
 
 export default function Poster({
   hidden,
@@ -53,23 +46,33 @@ export default function Poster({
 
   useEffect(() => {
     const tryLoad = async (): Promise<HTMLImageElement> => {
-      const list = typeof srcProp === 'string' ? [{ src: srcProp, type: '' }] : srcProp;
-      let img: HTMLImageElement | undefined;
+      if (typeof srcProp === 'string') {
+        return loadImage({ src: srcProp, crossOrigin });
+      }
 
-      for (const { type, ...imgSrc } of list) {
+      let img: HTMLImageElement | undefined;
+      let webpSupported: boolean | undefined;
+
+      for (const { type, media, ...srcsetRest } of srcProp.srcset ?? []) {
         try {
           let load = true;
-          if (type.toLowerCase() === 'image/webp') {
-            load = await isWebPSupported();
+          if (type === 'image/webp') {
+            load = webpSupported ?? (webpSupported = await isWebPSupported());
           }
-          img = load ? await loadImage({ ...imgSrc, crossOrigin }) : undefined;
+          if (load) {
+            load = !media || window.matchMedia(media).matches;
+          }
+          img = load ? await loadImage({ ...srcsetRest, crossOrigin }) : undefined;
           if (img) break;
         } catch {
           //
         }
       }
 
-      if (!img) throw new Error('Unsupported type of image.');
+      if (!img) {
+        return loadImage({ src: srcProp.src, crossOrigin });
+      }
+
       return img;
     };
 
@@ -84,7 +87,13 @@ export default function Poster({
         const dataUrl = takeSnapshot(img, { quality: 1 });
         setUrl(dataUrl);
       })
-      .catch((ex) => !unmounted && (onError ? onError(ex) : console.error(ex)))
+      .catch((ex) => {
+        clearTimeout(timer);
+        if (!unmounted) {
+          if (onError) onError(ex);
+          else console.error(ex);
+        }
+      })
       .finally(() => !unmounted && onLoadCompleted && onLoadCompleted());
 
     return () => {

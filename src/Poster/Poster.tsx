@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+/* eslint-disable no-await-in-loop */
+import React, { useEffect, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@jstoolkit/web-utils/loadImage';
 import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
-import { isImageTypeSupported } from '@jstoolkit/web-utils/isImageTypeSupported';
-import noop from '@jstoolkit/utils/noop';
-import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
+import { isWebPSupported } from '@jstoolkit/web-utils/isWebPSupported';
 import TransitionFlex, { HideableProps } from '../TransitionFlex';
 
 const useStyles = makeStyles({
@@ -30,7 +29,6 @@ export interface PosterProps
         'srcset' | 'sizes'
       >[];
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
-  useRegularUrl?: boolean;
   timeout?: number;
   onLoadTimeout?: VoidFunction;
   onLoadCompleted?: VoidFunction;
@@ -41,7 +39,6 @@ export default function Poster({
   hidden,
   src: srcProp,
   crossOrigin,
-  useRegularUrl,
   timeout,
   transitionProps,
   onLoadTimeout,
@@ -52,53 +49,35 @@ export default function Poster({
   ...rest
 }: PosterProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-
-  const selectedSrc = useMemo(() => {
-    if (typeof srcProp === 'string') return { src: srcProp };
-    const img = srcProp.find(({ type }) => isImageTypeSupported(type));
-    if (!img) return undefined;
-    const { type, ...src } = img;
-    return src;
-  }, [srcProp]);
-
-  const [getUrl, setUrl] = useUpdatedRefState(useRegularUrl ? selectedSrc?.src : '', [
-    selectedSrc,
-    useRegularUrl,
-  ]);
-
-  const loadImagePromise = useMemo(() => {
-    return useRegularUrl
-      ? undefined
-      : (selectedSrc && loadImage({ ...selectedSrc, crossOrigin })) ||
-          Promise.reject(new Error('Unsupported type of image.'));
-  }, [useRegularUrl, selectedSrc, crossOrigin]);
-  // const loadImagePromise = useMemo(
-  //   () =>
-  //     // With `mode: 'no-cors'` unable to access to the response body so the blob length will 0.
-  //     window
-  //       .fetch(urlProp, {
-  //         method: 'GET',
-  //         mode: 'cors',
-  //         credentials:
-  //           (crossOrigin === 'anonymous' && 'omit') ||
-  //           (crossOrigin === 'use-credentials' && 'include') ||
-  //           undefined,
-  //         cache: 'default',
-  //       })
-  //       .then((res) => res.blob())
-  //       .then((blob) => (blob.size > 0 ? blobToDataUrl(blob) : '')),
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [urlProp]
-  // );
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
-    if (!loadImagePromise) return noop;
+    const tryLoad = async (): Promise<HTMLImageElement> => {
+      const list = typeof srcProp === 'string' ? [{ src: srcProp, type: '' }] : srcProp;
+      let img: HTMLImageElement | undefined;
+
+      for (const { type, ...imgSrc } of list) {
+        try {
+          let load = true;
+          if (type.toLowerCase() === 'image/webp') {
+            load = await isWebPSupported();
+          }
+          img = load ? await loadImage({ ...imgSrc, crossOrigin }) : undefined;
+          if (img) break;
+        } catch {
+          //
+        }
+      }
+
+      if (!img) throw new Error('Unsupported type of image.');
+      return img;
+    };
+
     let unmounted = false;
 
-    const timer =
-      timeout != null && timeout > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
+    const timer = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
 
-    void loadImagePromise
+    tryLoad()
       .then((img) => {
         clearTimeout(timer);
         if (unmounted) return;
@@ -113,9 +92,7 @@ export default function Poster({
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadImagePromise]);
-
-  const url = getUrl();
+  }, [crossOrigin, srcProp, timeout]);
 
   return (
     <TransitionFlex

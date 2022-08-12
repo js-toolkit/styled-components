@@ -78,11 +78,13 @@ export default function Picture({
   }, [onLoadCompleted]);
 
   const errorHandler = useCallback(
-    (err: unknown) => {
+    (ev: unknown) => {
       clearTimeout(timerRef.current);
-      onError && onError(err);
+      if (onError) onError(ev);
+      else console.error(ev);
+      onLoadCompleted && onLoadCompleted();
     },
-    [onError]
+    [onError, onLoadCompleted]
   );
 
   return (

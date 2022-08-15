@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
+/* eslint-disable jsx-a11y/alt-text */
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
@@ -50,26 +51,39 @@ export default function Picture({
 }: PictureProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const timerRef = useRef(0);
 
-  const variants = useMemoDestructor(() => {
+  const [sources, variants] = useMemoDestructor(() => {
     const normalizedSrc = typeof srcProp === 'string' ? { src: srcProp } : srcProp;
 
     timerRef.current = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
 
     return [
-      <>
-        {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
-          <source key={src} srcSet={src} {...srcRest} />
-        ))}
-        <img src={normalizedSrc.src} alt="" crossOrigin={crossOrigin} />
-      </>,
+      [
+        normalizedSrc,
+        <>
+          {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
+            <source key={src} srcSet={src} {...srcRest} />
+          ))}
+          <img ref={imgRef} crossOrigin={crossOrigin} />
+        </>,
+      ],
 
       () => {
         clearTimeout(timerRef.current);
       },
     ];
   }, [crossOrigin, srcProp]);
+
+  // The trick to workaround the WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=190031)
+  // to do not load img together with selected source.
+  // Se also https://habr.com/ru/post/682014/
+  useLayoutEffect(() => {
+    const { current: img } = imgRef;
+    if (!img) return;
+    img.src = sources.src;
+  }, [sources]);
 
   const loadHandler = useCallback(() => {
     clearTimeout(timerRef.current);

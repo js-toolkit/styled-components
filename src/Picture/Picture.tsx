@@ -52,7 +52,7 @@ export default function Picture({
   const [loaded, setLoaded] = useState(false);
   const timerRef = useRef(0);
 
-  const picture = useMemoDestructor(() => {
+  const variants = useMemoDestructor(() => {
     const normalizedSrc = typeof srcProp === 'string' ? { src: srcProp } : srcProp;
 
     timerRef.current = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
@@ -99,7 +99,7 @@ export default function Picture({
       className={css.root}
       {...rest}
     >
-      {picture}
+      {variants}
     </TransitionFlex>
   );
 }

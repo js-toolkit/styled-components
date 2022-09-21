@@ -13,6 +13,8 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     'sticky-bottom': stickyBottom,
     top,
     bottom,
+    'left-middle': leftMiddle,
+    'left-bottom': leftBottom,
     'window-top': windowTop,
     'window-bottom': windowBottom,
   } = rc?.Notifications ?? {};
@@ -74,6 +76,21 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       ...bottom,
     },
 
+    'left-middle': {
+      position: 'absolute',
+      left: 0,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      ...leftMiddle,
+    },
+
+    'left-bottom': {
+      position: 'absolute',
+      left: 0,
+      bottom: 0,
+      ...leftBottom,
+    },
+
     'window-top': {
       position: 'fixed',
       top: '0.75rem',
@@ -105,6 +122,8 @@ export interface NotificationPositions {
   'sticky-bottom': 'sticky-bottom';
   top: 'top';
   bottom: 'bottom';
+  'left-middle': 'left-middle';
+  'left-bottom': 'left-bottom';
   'window-top': 'window-top';
   'window-bottom': 'window-bottom';
 }
@@ -118,12 +137,10 @@ export interface Notification<
     Pick<NotificationBarProps<TID>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
     'variant'
   > {
-  // readonly id: TID;
-  // readonly type: NotificationVariant;
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly noAction?: boolean;
-  // readonly contentProps?: NotificationBarProps['contentProps'];
+  readonly rootProps?: NotificationBarProps['contentProps'];
 }
 
 export type NotificationsProps<
@@ -141,7 +158,7 @@ export type NotificationsProps<
   >['onAction'];
 };
 
-export default function Notifications<
+export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,
   N extends Notification<any, any> = Notification
 >({
@@ -175,6 +192,7 @@ export default function Notifications<
         // closeIcon={defaultCloseIcon}
         contentProps={n.contentProps}
         actionProps={n.actionProps}
+        {...n.rootProps}
       >
         {n.content}
       </NotificationBar>
@@ -197,8 +215,12 @@ export default function Notifications<
 
         // It needs an extra container for correct positioning by center
         const containerClassName =
-          (pos.indexOf('window') === 0 && css.fixedContainer) ||
-          ((pos === 'top' || pos === 'bottom') && `${css.absoluteContainer} ${css[pos]}`) ||
+          (pos.startsWith('window') && css.fixedContainer) ||
+          ((pos === 'top' ||
+            pos === 'bottom' ||
+            pos.startsWith('left') ||
+            pos.startsWith('right')) &&
+            `${css.absoluteContainer} ${css[pos]}`) ||
           css[pos];
 
         return (
@@ -209,4 +231,4 @@ export default function Notifications<
       })}
     </>
   );
-}
+});

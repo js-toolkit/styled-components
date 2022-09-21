@@ -57,7 +57,8 @@ export default function Picture({
   const [sources, variants] = useMemoDestructor(() => {
     const normalizedSrc = typeof srcProp === 'string' ? { src: srcProp } : srcProp;
 
-    timerRef.current = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
+    timerRef.current =
+      (timeout ?? 0) > 0 && onLoadTimeout ? window.setTimeout(onLoadTimeout, timeout) : 0;
 
     return [
       [

@@ -122,7 +122,7 @@ export interface Notification<
   // readonly type: NotificationVariant;
   readonly content: TContent;
   readonly position?: NotificationPosition;
-  readonly permanent?: boolean;
+  readonly noAction?: boolean;
   // readonly contentProps?: NotificationBarProps['contentProps'];
 }
 
@@ -170,8 +170,8 @@ export default function Notifications<
         shrink={false}
         justifyContent="center"
         className={css.item}
-        action={defaultAction}
-        onAction={n.permanent ? undefined : onAction}
+        action={n.noAction ? undefined : defaultAction}
+        onAction={n.noAction ? undefined : onAction}
         // closeIcon={defaultCloseIcon}
         contentProps={n.contentProps}
         actionProps={n.actionProps}

@@ -100,14 +100,27 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
     const { current: root } = rootRef;
     if (!root || !autoFocus) return noop;
 
+    const focus = (): number => {
+      return requestAnimationFrame(() => {
+        root.focus({ preventScroll: !!root.scrollIntoView });
+        root.scrollIntoView && root.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    };
+
+    let raf: number;
+
     if (autoFocus === true) {
-      root.focus();
-      return noop;
+      raf = focus();
+      return () => cancelAnimationFrame(raf);
     }
 
-    const timer = setTimeout(() => root.focus(), autoFocus);
+    const timer = setTimeout(() => {
+      raf = focus();
+    }, autoFocus);
+
     return () => {
       clearTimeout(timer);
+      cancelAnimationFrame(raf);
     };
   }, [autoFocus]);
 

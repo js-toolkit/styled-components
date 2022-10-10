@@ -3,17 +3,17 @@ import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
 import type { Theme, CSSProperties } from '../theme';
+import type { GetOverridedKeys } from '../types/local';
 
-export interface NotificationVariants {
-  info: 'info';
-  success: 'success';
-  warning: 'warning';
-  error: 'error';
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface NotificationVariants {}
 
-export type NotificationVariant = NotificationVariants[keyof NotificationVariants];
+export type NotificationVariant = GetOverridedKeys<
+  'info' | 'success' | 'warning' | 'error',
+  NotificationVariants
+>;
 
-export interface NotificationBarProps<T extends React.ReactText = React.ReactText>
+export interface NotificationBarProps<T extends string | number = string | number>
   extends FlexComponentProps {
   readonly id: T;
   readonly variant?: NotificationVariant;

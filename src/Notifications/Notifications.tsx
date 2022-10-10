@@ -3,6 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy';
 import clsx from 'clsx';
 import type { Theme } from '../theme';
+import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { NotificationBarProps } from './NotificationBar';
 
 const useStyles = makeStyles(({ rc }: Theme) => {
@@ -13,8 +14,12 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     'sticky-bottom': stickyBottom,
     top,
     bottom,
+    'left-top': leftTop,
     'left-middle': leftMiddle,
     'left-bottom': leftBottom,
+    'right-top': rightTop,
+    'right-middle': rightMiddle,
+    'right-bottom': rightBottom,
     'window-top': windowTop,
     'window-bottom': windowBottom,
   } = rc?.Notifications ?? {};
@@ -76,6 +81,13 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       ...bottom,
     },
 
+    'left-top': {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      ...leftTop,
+    },
+
     'left-middle': {
       position: 'absolute',
       left: 0,
@@ -89,6 +101,28 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       left: 0,
       bottom: 0,
       ...leftBottom,
+    },
+
+    'right-top': {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      ...rightTop,
+    },
+
+    'right-middle': {
+      position: 'absolute',
+      right: 0,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      ...rightMiddle,
+    },
+
+    'right-bottom': {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+      ...rightBottom,
     },
 
     'window-top': {
@@ -117,18 +151,22 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 });
 
 export interface NotificationPositions {
-  static: 'static';
-  'sticky-top': 'sticky-top';
-  'sticky-bottom': 'sticky-bottom';
-  top: 'top';
-  bottom: 'bottom';
-  'left-middle': 'left-middle';
-  'left-bottom': 'left-bottom';
-  'window-top': 'window-top';
-  'window-bottom': 'window-bottom';
+  static: true;
+  'sticky-top': true;
+  'sticky-bottom': true;
+  top: true;
+  bottom: true;
+  'left-top': true;
+  'left-middle': true;
+  'left-bottom': true;
+  'right-top': true;
+  'right-middle': true;
+  'right-bottom': true;
+  'window-top': true;
+  'window-bottom': true;
 }
 
-export type NotificationPosition = keyof NotificationPositions;
+export type NotificationPosition = GetOverridedKeys<never, NotificationPositions>;
 
 export interface Notification<
   TID extends React.ReactText = React.ReactText,

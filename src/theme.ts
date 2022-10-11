@@ -271,6 +271,8 @@ export interface Theme {
 
     Notifications?: {
       root?: CSSProperties;
+      item?: CSSProperties;
+      mt?: CSSProperties;
     } & { [P in NotificationPosition]?: CSSProperties };
 
     NotificationBar?: {

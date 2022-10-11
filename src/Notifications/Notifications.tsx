@@ -6,9 +6,12 @@ import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { NotificationBarProps } from './NotificationBar';
 
+// These styles take precedence over NotificationBar styles because makeStyles is called later.
 const useStyles = makeStyles(({ rc }: Theme) => {
   const {
     root,
+    item,
+    mt,
     static: staticPos,
     'sticky-top': stickyTop,
     'sticky-bottom': stickyBottom,
@@ -140,12 +143,17 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     },
 
     item: {
-      marginTop: '0.375em',
-      marginBottom: '0.375em',
-
-      // '& + &': {
+      ...item,
       //   marginTop: '0.375em',
-      // },
+      //   marginBottom: '0.375em',
+      //   // '& + &': {
+      //   //   marginTop: '0.375em',
+      //   // },
+    },
+
+    mt: {
+      marginTop: '0.75em',
+      ...mt,
     },
   };
 });
@@ -224,7 +232,9 @@ export default React.memo(function Notifications<
         variant={n.variant}
         shrink={false}
         justifyContent="center"
-        className={css.item}
+        // mt={acc[position].length > 0 ? 0.75 : undefined}
+        // className={css.item}
+        className={clsx(css.item, acc[position].length > 0 && css.mt)}
         action={n.noAction ? undefined : defaultAction}
         onAction={n.noAction ? undefined : onAction}
         // closeIcon={defaultCloseIcon}

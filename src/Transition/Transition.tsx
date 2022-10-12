@@ -6,7 +6,6 @@ import type {
   EnterHandler,
   ExitHandler,
 } from 'react-transition-group/Transition';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import CSSTransition, { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 

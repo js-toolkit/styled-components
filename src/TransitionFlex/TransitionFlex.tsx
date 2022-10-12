@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
 import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
 
-type TransitionComponent = React.JSXElementConstructor<
+export type TransitionComponent = React.JSXElementConstructor<
   TransitionProps & { children: React.ReactElement<any, any> }
 >;
 

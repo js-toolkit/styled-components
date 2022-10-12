@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps, FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
+import TransitionFlex, { HideableProps } from '../TransitionFlex';
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
@@ -14,16 +16,15 @@ export type NotificationVariant = GetOverridedKeys<
 >;
 
 export interface NotificationBarProps<
-  T extends string | number = string | number,
+  TId extends string | number = string | number,
   CT extends React.ElementType = any,
   AT extends React.ElementType = any
-> extends FlexComponentProps {
-  readonly id: T;
+> extends FlexComponentProps<'div', { omitProps: true }>,
+    HideableProps {
+  readonly id: TId;
   readonly variant?: NotificationVariant;
   readonly action?: (props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element;
-  readonly onAction?: (id: T) => void;
-  // readonly onClose?: (id: T) => void;
-  // readonly closeIcon?: React.ReactNode;
+  readonly onAction?: (id: TId) => void;
   readonly contentProps?: FlexAllProps<CT>;
   readonly actionProps?: FlexAllProps<AT>;
 }
@@ -104,7 +105,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 });
 
 export default function NotificationBar<
-  T extends string | number = string | number,
+  TId extends string | number = string | number,
   CT extends React.ElementType = any,
   AT extends React.ElementType = any
 >({
@@ -112,21 +113,52 @@ export default function NotificationBar<
   variant = 'info',
   action: Action,
   onAction,
-  // onClose,
-  // closeIcon,
   className,
   contentProps,
   actionProps,
   children,
+  transitionProps,
   ...rest
-}: React.PropsWithChildren<NotificationBarProps<T, CT, AT>>): JSX.Element {
+}: React.PropsWithChildren<NotificationBarProps<TId, CT, AT>>): JSX.Element {
   const css = useStyles({
     classes: { content: contentProps?.className, action: actionProps?.className },
     contentProps,
   });
 
+  // In case if NotificationBar inside TransitionGroup
+  const {
+    appear,
+    in: inProp,
+    enter,
+    exit,
+    onEnter,
+    onEntering,
+    onEntered,
+    onExit,
+    onExiting,
+    onExited,
+    ...rootRest
+  } = rest as NonNullable<HideableProps['transitionProps']>;
+
   return (
-    <Flex alignItems="center" className={clsx(css.root, css[variant], className)} {...rest}>
+    <TransitionFlex
+      alignItems="center"
+      className={clsx(css.root, css[variant], className)}
+      {...rootRest}
+      transitionProps={{
+        appear,
+        in: inProp,
+        enter,
+        exit,
+        onEnter,
+        onEntering,
+        onEntered,
+        onExit,
+        onExiting,
+        onExited,
+        ...transitionProps,
+      }}
+    >
       <Flex grow {...(contentProps as FlexComponentProps)} className={css.content}>
         {children}
       </Flex>
@@ -135,6 +167,6 @@ export default function NotificationBar<
           <Action id={id} variant={variant} onAction={onAction} />
         </Flex>
       )}
-    </Flex>
+    </TransitionFlex>
   );
 }

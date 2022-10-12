@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy';
+import { Flex, FlexAllProps, DefaultComponentType, FlexComponentProps, ForwardRef } from 'reflexy';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
+import type { TransitionComponent, TransitionFlexProps } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { NotificationBarProps } from './NotificationBar';
@@ -11,7 +14,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
   const {
     root,
     item,
-    mt,
+    itemSpace,
     static: staticPos,
     'sticky-top': stickyTop,
     'sticky-bottom': stickyBottom,
@@ -144,16 +147,10 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 
     item: {
       ...item,
-      //   marginTop: '0.375em',
-      //   marginBottom: '0.375em',
-      //   // '& + &': {
-      //   //   marginTop: '0.375em',
-      //   // },
-    },
-
-    mt: {
-      marginTop: '0.75em',
-      ...mt,
+      '& + &': {
+        marginTop: '0.75em',
+        ...itemSpace,
+      },
     },
   };
 });
@@ -179,6 +176,8 @@ export type NotificationPosition = GetOverridedKeys<never, NotificationPositions
 export interface Notification<
   TID extends string | number = string | number,
   TContent = JSX.Element | string,
+  TTransition extends TransitionComponent = TransitionComponent,
+  RT extends React.ElementType = any,
   CT extends React.ElementType = any,
   AT extends React.ElementType = any
 > extends RequiredSome<
@@ -188,7 +187,8 @@ export interface Notification<
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly noAction?: boolean;
-  readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
+  // readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
+  readonly rootProps?: TransitionFlexProps<TTransition, RT>;
 }
 
 export type NotificationsProps<
@@ -200,7 +200,6 @@ export type NotificationsProps<
   readonly defaultAction?: NotificationBarProps<
     N extends Notification<infer TID> ? TID : string | number
   >['action'];
-  // readonly defaultCloseIcon?: NotificationBarProps['closeIcon'];
   readonly onAction?: NotificationBarProps<
     N extends Notification<infer TID> ? TID : string | number
   >['onAction'];
@@ -214,8 +213,6 @@ export default React.memo(function Notifications<
   defaultPosition = 'window-top',
   defaultAction,
   onAction,
-  // defaultCloseIcon,
-  // onClose,
   className,
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
@@ -228,24 +225,23 @@ export default React.memo(function Notifications<
     acc[position] = acc[position] ?? [];
 
     const bar = (
-      <NotificationBar
+      <ForwardRef
+        component={NotificationBar}
         key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
         id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
         variant={n.variant}
         shrink={false}
         justifyContent="center"
         // mt={acc[position].length > 0 ? 0.75 : undefined}
-        // className={css.item}
-        className={clsx(css.item, acc[position].length > 0 && css.mt)}
-        action={n.noAction ? undefined : defaultAction}
-        onAction={n.noAction ? undefined : onAction}
-        // closeIcon={defaultCloseIcon}
+        className={css.item}
+        action={n.noAction ? undefined : (defaultAction as NotificationBarProps['action'])}
+        onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
         contentProps={n.contentProps}
         actionProps={n.actionProps}
-        {...n.rootProps}
+        {...(n.rootProps as FlexComponentProps)}
       >
         {n.content}
-      </NotificationBar>
+      </ForwardRef>
     );
 
     acc[position].push(bar);
@@ -259,7 +255,7 @@ export default React.memo(function Notifications<
         const rootClassName = clsx(css.root, css[pos], className);
         const root = (
           <Flex column className={rootClassName} {...rest}>
-            {items[pos]}
+            <TransitionGroup component={null}>{items[pos]}</TransitionGroup>
           </Flex>
         );
 

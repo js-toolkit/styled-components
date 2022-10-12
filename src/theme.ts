@@ -272,14 +272,13 @@ export interface Theme {
     Notifications?: {
       root?: CSSProperties;
       item?: CSSProperties;
-      mt?: CSSProperties;
+      itemSpace?: CSSProperties;
     } & { [P in NotificationPosition]?: CSSProperties };
 
     NotificationBar?: {
       root?: CSSProperties;
       content?: CSSProperties;
       action?: CSSProperties;
-      // closeButton?: CSSProperties;
     } & { [P in NotificationVariant]?: CSSProperties };
   };
 }

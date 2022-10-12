@@ -177,30 +177,32 @@ export interface NotificationPositions {
 export type NotificationPosition = GetOverridedKeys<never, NotificationPositions>;
 
 export interface Notification<
-  TID extends React.ReactText = React.ReactText,
-  TContent = JSX.Element | string
+  TID extends string | number = string | number,
+  TContent = JSX.Element | string,
+  CT extends React.ElementType = any,
+  AT extends React.ElementType = any
 > extends RequiredSome<
-    Pick<NotificationBarProps<TID>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
+    Pick<NotificationBarProps<TID, CT, AT>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
     'variant'
   > {
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly noAction?: boolean;
-  readonly rootProps?: NotificationBarProps['contentProps'];
+  readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
 }
 
 export type NotificationsProps<
   C extends React.ElementType = DefaultComponentType,
-  N extends Notification<any, any> = Notification
+  N extends Notification<any, any, any, any> = Notification
 > = FlexAllProps<C> & {
   readonly list: readonly N[];
   readonly defaultPosition?: NotificationPosition;
   readonly defaultAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : React.ReactText
+    N extends Notification<infer TID> ? TID : string | number
   >['action'];
   // readonly defaultCloseIcon?: NotificationBarProps['closeIcon'];
   readonly onAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : React.ReactText
+    N extends Notification<infer TID> ? TID : string | number
   >['onAction'];
 };
 
@@ -227,8 +229,8 @@ export default React.memo(function Notifications<
 
     const bar = (
       <NotificationBar
-        key={n.id}
-        id={n.id}
+        key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+        id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
         variant={n.variant}
         shrink={false}
         justifyContent="center"

@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexComponentProps } from 'reflexy';
+import { Flex, FlexAllProps, FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
@@ -13,16 +13,19 @@ export type NotificationVariant = GetOverridedKeys<
   NotificationVariants
 >;
 
-export interface NotificationBarProps<T extends string | number = string | number>
-  extends FlexComponentProps {
+export interface NotificationBarProps<
+  T extends string | number = string | number,
+  CT extends React.ElementType = any,
+  AT extends React.ElementType = any
+> extends FlexComponentProps {
   readonly id: T;
   readonly variant?: NotificationVariant;
   readonly action?: (props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element;
   readonly onAction?: (id: T) => void;
   // readonly onClose?: (id: T) => void;
   // readonly closeIcon?: React.ReactNode;
-  readonly contentProps?: FlexComponentProps;
-  readonly actionProps?: FlexComponentProps;
+  readonly contentProps?: FlexAllProps<CT>;
+  readonly actionProps?: FlexAllProps<AT>;
 }
 
 type MakeStylesProps = Pick<NotificationBarProps, 'contentProps'>;
@@ -100,7 +103,11 @@ const useStyles = makeStyles(({ rc }: Theme) => {
   };
 });
 
-export default function NotificationBar<T extends React.ReactText = React.ReactText>({
+export default function NotificationBar<
+  T extends string | number = string | number,
+  CT extends React.ElementType = any,
+  AT extends React.ElementType = any
+>({
   id,
   variant = 'info',
   action: Action,
@@ -112,7 +119,7 @@ export default function NotificationBar<T extends React.ReactText = React.ReactT
   actionProps,
   children,
   ...rest
-}: React.PropsWithChildren<NotificationBarProps<T>>): JSX.Element {
+}: React.PropsWithChildren<NotificationBarProps<T, CT, AT>>): JSX.Element {
   const css = useStyles({
     classes: { content: contentProps?.className, action: actionProps?.className },
     contentProps,
@@ -120,11 +127,11 @@ export default function NotificationBar<T extends React.ReactText = React.ReactT
 
   return (
     <Flex alignItems="center" className={clsx(css.root, css[variant], className)} {...rest}>
-      <Flex grow {...contentProps} className={css.content}>
+      <Flex grow {...(contentProps as FlexComponentProps)} className={css.content}>
         {children}
       </Flex>
       {!!Action && (
-        <Flex {...actionProps} className={css.action}>
+        <Flex {...(actionProps as FlexComponentProps)} className={css.action}>
           <Action id={id} variant={variant} onAction={onAction} />
         </Flex>
       )}

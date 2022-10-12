@@ -4,11 +4,11 @@ import Button from '../Button';
 import CloseIcon from '../Modal/CloseIcon';
 import type { NotificationBarProps } from './NotificationBar';
 
-export interface NotificationCloseActionProps<T extends React.ReactText>
+export interface NotificationCloseActionProps<T extends string | number>
   extends FlexComponentProps,
     Pick<NotificationBarProps<T>, 'id' | 'onAction'> {}
 
-export default function NotificationCloseAction<T extends React.ReactText>({
+export default function NotificationCloseAction<T extends string | number>({
   id,
   onAction,
   children,

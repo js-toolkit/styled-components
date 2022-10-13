@@ -205,6 +205,8 @@ export type NotificationsProps<
   readonly onAction?: NotificationBarProps<
     N extends Notification<infer TID> ? TID : string | number
   >['onAction'];
+  readonly containerProps?: FlexComponentProps<'div', { omitProps: true }>;
+  readonly listProps?: FlexComponentProps<'div', { omitProps: true }>;
 };
 
 export default React.memo(function Notifications<
@@ -216,6 +218,8 @@ export default React.memo(function Notifications<
   defaultAction,
   onAction,
   className,
+  containerProps,
+  listProps,
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
   const css = useStyles();
@@ -265,18 +269,34 @@ export default React.memo(function Notifications<
   if (!map) return null;
 
   return Array.from(map.entries(), ([pos, arr]) => {
-    // It needs an extra container for correct positioning by center
-    const containerClassName =
-      (pos.startsWith('window') && css.fixedContainer) ||
-      ((pos === 'top' || pos === 'bottom' || pos.startsWith('left') || pos.startsWith('right')) &&
-        `${css.absoluteContainer} ${css[pos]}`) ||
-      css[pos];
+    const containerClassName = clsx(
+      ((pos.startsWith('window') && css.fixedContainer) ||
+        pos === 'top' ||
+        pos === 'bottom' ||
+        pos.startsWith('left') ||
+        pos.startsWith('right')) &&
+        css.absoluteContainer,
+      css[pos],
+      containerProps?.className
+    );
     const rootClassName = clsx(css.root, css[pos], className);
 
     return (
-      <Flex key={pos} justifyContent="center" className={containerClassName}>
+      // Extra container for correct positioning by center
+      <Flex key={pos} justifyContent="center" {...containerProps} className={containerClassName}>
         <Flex column className={rootClassName} {...rest}>
-          <TransitionGroup component={null}>{arr}</TransitionGroup>
+          {/* Extra container for scrolling */}
+          <Flex
+            column
+            alignItems={
+              (pos.startsWith('left') && 'flex-start') ||
+              (pos.startsWith('right') && 'flex-end') ||
+              undefined
+            }
+            {...listProps}
+          >
+            <TransitionGroup component={null}>{arr}</TransitionGroup>
+          </Flex>
         </Flex>
       </Flex>
     );

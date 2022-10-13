@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps, DefaultComponentType, FlexComponentProps, ForwardRef } from 'reflexy';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
+import clear from '@jstoolkit/utils/clear';
+import useUpdate from '@jstoolkit/react-hooks/useUpdate';
 import type { TransitionComponent, TransitionFlexProps } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
@@ -217,64 +219,66 @@ export default React.memo(function Notifications<
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
   const css = useStyles();
+  const update = useUpdate();
 
-  if (list.length === 0) return null;
+  // if (list.length === 0) return null;
+  const mapRef = useRef<Map<NotificationPosition, JSX.Element[]>>();
+  if (!mapRef.current) {
+    mapRef.current = new Map();
+  }
 
-  const items = list.reduce((acc, n) => {
-    const position = n.position ?? defaultPosition;
-    acc[position] = acc[position] ?? [];
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
 
-    const bar = (
-      <ForwardRef
-        component={NotificationBar}
-        key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-        id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-        variant={n.variant}
-        shrink={false}
-        justifyContent="center"
-        // mt={acc[position].length > 0 ? 0.75 : undefined}
-        className={css.item}
-        action={n.noAction ? undefined : (defaultAction as NotificationBarProps['action'])}
-        onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
-        contentProps={n.contentProps}
-        actionProps={n.actionProps}
-        {...(n.rootProps as FlexComponentProps)}
-      >
-        {n.content}
-      </ForwardRef>
+    map.forEach(clear);
+
+    list.forEach((n) => {
+      const position = n.position ?? defaultPosition;
+      const arr = map.get(position) ?? [];
+      map.set(position, arr);
+      arr.push(
+        <ForwardRef
+          component={NotificationBar}
+          key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+          id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+          variant={n.variant}
+          shrink={false}
+          justifyContent="center"
+          // mt={map[position].length > 0 ? 0.75 : undefined}
+          className={css.item}
+          action={n.noAction ? undefined : (defaultAction as NotificationBarProps['action'])}
+          onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
+          contentProps={n.contentProps}
+          actionProps={n.actionProps}
+          {...(n.rootProps as FlexComponentProps)}
+        >
+          {n.content}
+        </ForwardRef>
+      );
+    });
+
+    update();
+  }, [css, defaultAction, defaultPosition, list, onAction, update]);
+
+  const map = mapRef.current;
+  if (!map) return null;
+
+  return Array.from(map.entries(), ([pos, arr]) => {
+    // It needs an extra container for correct positioning by center
+    const containerClassName =
+      (pos.startsWith('window') && css.fixedContainer) ||
+      ((pos === 'top' || pos === 'bottom' || pos.startsWith('left') || pos.startsWith('right')) &&
+        `${css.absoluteContainer} ${css[pos]}`) ||
+      css[pos];
+    const rootClassName = clsx(css.root, css[pos], className);
+
+    return (
+      <Flex key={pos} justifyContent="center" className={containerClassName}>
+        <Flex column className={rootClassName} {...rest}>
+          <TransitionGroup component={null}>{arr}</TransitionGroup>
+        </Flex>
+      </Flex>
     );
-
-    acc[position].push(bar);
-
-    return acc;
-  }, {} as Record<NotificationPosition, JSX.Element[]>);
-
-  return (
-    <>
-      {(Object.getOwnPropertyNames(items) as (keyof typeof items)[]).map((pos) => {
-        const rootClassName = clsx(css.root, css[pos], className);
-        const root = (
-          <Flex column className={rootClassName} {...rest}>
-            <TransitionGroup component={null}>{items[pos]}</TransitionGroup>
-          </Flex>
-        );
-
-        // It needs an extra container for correct positioning by center
-        const containerClassName =
-          (pos.startsWith('window') && css.fixedContainer) ||
-          ((pos === 'top' ||
-            pos === 'bottom' ||
-            pos.startsWith('left') ||
-            pos.startsWith('right')) &&
-            `${css.absoluteContainer} ${css[pos]}`) ||
-          css[pos];
-
-        return (
-          <Flex key={pos} justifyContent="center" className={containerClassName}>
-            {root}
-          </Flex>
-        );
-      })}
-    </>
-  );
+  }) as unknown as JSX.Element;
 });

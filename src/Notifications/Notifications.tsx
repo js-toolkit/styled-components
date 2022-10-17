@@ -11,6 +11,60 @@ import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { NotificationBarProps } from './NotificationBar';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface NotificationPositions {}
+
+export type NotificationPosition = GetOverridedKeys<
+  | 'static'
+  | 'sticky-top'
+  | 'sticky-bottom'
+  | 'top'
+  | 'bottom'
+  | 'left-top'
+  | 'left-middle'
+  | 'left-bottom'
+  | 'right-top'
+  | 'right-middle'
+  | 'right-bottom'
+  | 'window-top'
+  | 'window-bottom',
+  NotificationPositions
+>;
+
+export interface Notification<
+  TID extends string | number = string | number,
+  TContent = JSX.Element | string,
+  TTransition extends TransitionComponent = TransitionComponent,
+  RT extends React.ElementType = any,
+  CT extends React.ElementType = any,
+  AT extends React.ElementType = any
+> extends RequiredSome<
+    Pick<NotificationBarProps<TID, CT, AT>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
+    'variant'
+  > {
+  readonly content: TContent;
+  readonly position?: NotificationPosition;
+  readonly noAction?: boolean;
+  // readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
+  readonly rootProps?: TransitionFlexProps<TTransition, RT>;
+}
+
+export type NotificationsProps<
+  C extends React.ElementType = DefaultComponentType,
+  N extends Notification<any, any, any, any> = Notification
+> = FlexAllProps<C> & {
+  readonly list: readonly N[];
+  readonly defaultPosition?: NotificationPosition;
+  readonly defaultAction?: NotificationBarProps<
+    N extends Notification<infer TID> ? TID : string | number
+  >['action'];
+  readonly onAction?: NotificationBarProps<
+    N extends Notification<infer TID> ? TID : string | number
+  >['onAction'];
+  readonly containerProps?: FlexComponentProps<'div', { omitProps: true }>;
+  readonly listProps?: FlexComponentProps<'div', { omitProps: true }>;
+};
+
 // These styles take precedence over NotificationBar styles because makeStyles is called later.
 const useStyles = makeStyles(({ rc }: Theme) => {
   const {
@@ -156,58 +210,6 @@ const useStyles = makeStyles(({ rc }: Theme) => {
     },
   };
 });
-
-export interface NotificationPositions {
-  static: true;
-  'sticky-top': true;
-  'sticky-bottom': true;
-  top: true;
-  bottom: true;
-  'left-top': true;
-  'left-middle': true;
-  'left-bottom': true;
-  'right-top': true;
-  'right-middle': true;
-  'right-bottom': true;
-  'window-top': true;
-  'window-bottom': true;
-}
-
-export type NotificationPosition = GetOverridedKeys<never, NotificationPositions>;
-
-export interface Notification<
-  TID extends string | number = string | number,
-  TContent = JSX.Element | string,
-  TTransition extends TransitionComponent = TransitionComponent,
-  RT extends React.ElementType = any,
-  CT extends React.ElementType = any,
-  AT extends React.ElementType = any
-> extends RequiredSome<
-    Pick<NotificationBarProps<TID, CT, AT>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
-    'variant'
-  > {
-  readonly content: TContent;
-  readonly position?: NotificationPosition;
-  readonly noAction?: boolean;
-  // readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
-  readonly rootProps?: TransitionFlexProps<TTransition, RT>;
-}
-
-export type NotificationsProps<
-  C extends React.ElementType = DefaultComponentType,
-  N extends Notification<any, any, any, any> = Notification
-> = FlexAllProps<C> & {
-  readonly list: readonly N[];
-  readonly defaultPosition?: NotificationPosition;
-  readonly defaultAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : string | number
-  >['action'];
-  readonly onAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : string | number
-  >['onAction'];
-  readonly containerProps?: FlexComponentProps<'div', { omitProps: true }>;
-  readonly listProps?: FlexComponentProps<'div', { omitProps: true }>;
-};
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,

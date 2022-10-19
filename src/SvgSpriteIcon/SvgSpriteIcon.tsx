@@ -2,6 +2,7 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
 import clsx from 'clsx';
+import useRefs from '@jstoolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';
 import useSvgSpriteIconHref from './useSvgSpriteIconHref';
 
@@ -10,6 +11,15 @@ export interface SvgSymbolInfo {
   id: string;
   viewBox: string;
   content: string;
+}
+
+export interface SvgSpriteIconProps<N extends string> extends React.SVGAttributes<SVGSVGElement> {
+  name: N;
+  size?: number | string;
+  scaleOnHover?: boolean | number;
+  useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'>;
+  htmlRef?: React.Ref<SVGSVGElement>;
+  componentRef?: this['htmlRef'];
 }
 
 type MakeStylesProps = ExcludeTypes<
@@ -35,14 +45,6 @@ const useStyles = makeStyles({
   },
 });
 
-export interface SvgSpriteIconProps<N extends string> extends React.SVGAttributes<SVGSVGElement> {
-  name: N;
-  size?: number | string;
-  scaleOnHover?: boolean | number;
-  useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'>;
-  htmlRef?: React.Ref<SVGSVGElement>;
-}
-
 /** Uses with svg-sprite-loader */
 function SvgSpriteIcon<N extends string>({
   name,
@@ -52,12 +54,14 @@ function SvgSpriteIcon<N extends string>({
   scaleOnHover,
   useProps,
   htmlRef,
+  componentRef,
   className,
   children,
   ...rest
 }: SvgSpriteIconProps<N>): JSX.Element | null {
   const css = useStyles({ scaleOnHover: scaleOnHover || 1 });
   const { rc } = useTheme<Theme>();
+  const refs = useRefs(htmlRef, componentRef);
 
   const href = useSvgSpriteIconHref(name);
   if (!href) return null;
@@ -67,7 +71,7 @@ function SvgSpriteIcon<N extends string>({
 
   return (
     <svg
-      ref={htmlRef}
+      ref={refs}
       width={w}
       height={h}
       className={clsx(css.root, scaleOnHover && css.scalable, className)}

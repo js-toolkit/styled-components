@@ -16,20 +16,18 @@ export type NotificationVariant = GetOverridedKeys<
 >;
 
 export interface NotificationBarProps<
-  TId extends string | number = string | number,
-  CT extends React.ElementType = any,
-  AT extends React.ElementType = any
+  TID extends string | number = string | number,
+  TContent extends React.ElementType = any,
+  TAction extends React.ElementType = any
 > extends FlexComponentProps<'div', { omitProps: true }>,
     HideableProps {
-  readonly id: TId;
+  readonly id: TID;
   readonly variant?: NotificationVariant;
   readonly action?: (props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element;
-  readonly onAction?: (id: TId) => void;
-  readonly contentProps?: FlexAllProps<CT>;
-  readonly actionProps?: FlexAllProps<AT>;
+  readonly onAction?: (id: TID) => void;
+  readonly contentProps?: FlexAllProps<TContent>;
+  readonly actionProps?: FlexAllProps<TAction>;
 }
-
-type MakeStylesProps = Pick<NotificationBarProps, 'contentProps'>;
 
 const useStyles = makeStyles(({ rc }: Theme) => {
   const { root, content, action, info, success, warning, error, ...restTheme } =
@@ -51,23 +49,18 @@ const useStyles = makeStyles(({ rc }: Theme) => {
       ...root,
     },
 
+    textRight: {
+      textAlign: 'right',
+    },
+
+    textCenter: {
+      textAlign: 'center',
+    },
+
     content: {
       userSelect: 'none',
       whiteSpace: 'pre-line',
       wordBreak: 'break-word',
-      textAlign: ({
-        contentProps: { column, alignItems, justifyContent, center } = {},
-      }: MakeStylesProps) => {
-        if (column) {
-          if (alignItems === 'flex-end') return 'right';
-          if (alignItems === 'center' || center) return 'center';
-          return undefined;
-        }
-        // If row
-        if (justifyContent === 'flex-end') return 'right';
-        if (justifyContent === 'center' || center) return 'center';
-        return undefined;
-      },
       ...content,
     },
 
@@ -105,9 +98,9 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 });
 
 export default function NotificationBar<
-  TId extends string | number = string | number,
-  CT extends React.ElementType = any,
-  AT extends React.ElementType = any
+  TID extends string | number = string | number,
+  TContent extends React.ElementType = any,
+  TAction extends React.ElementType = any
 >({
   id,
   variant = 'info',
@@ -119,10 +112,9 @@ export default function NotificationBar<
   children,
   transitionProps,
   ...rest
-}: React.PropsWithChildren<NotificationBarProps<TId, CT, AT>>): JSX.Element {
+}: React.PropsWithChildren<NotificationBarProps<TID, TContent, TAction>>): JSX.Element {
   const css = useStyles({
     classes: { content: contentProps?.className, action: actionProps?.className },
-    contentProps,
   });
 
   // In case if NotificationBar inside TransitionGroup
@@ -159,7 +151,24 @@ export default function NotificationBar<
         ...transitionProps,
       }}
     >
-      <Flex grow {...(contentProps as FlexComponentProps)} className={css.content}>
+      <Flex
+        grow
+        {...(contentProps as FlexComponentProps)}
+        className={
+          contentProps
+            ? clsx(
+                ((contentProps.column && contentProps.alignItems === 'flex-end') ||
+                  (!contentProps.column && contentProps.justifyContent === 'flex-end')) &&
+                  css.textRight,
+                (contentProps.center ||
+                  (contentProps.column && contentProps.alignItems === 'center') ||
+                  (!contentProps.column && contentProps.justifyContent === 'center')) &&
+                  css.textCenter,
+                css.content
+              )
+            : css.content
+        }
+      >
         {children}
       </Flex>
       {!!Action && (

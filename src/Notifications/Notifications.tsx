@@ -35,23 +35,26 @@ export interface Notification<
   TID extends string | number = string | number,
   TContent = JSX.Element | string,
   TTransition extends TransitionComponent = TransitionComponent,
-  RT extends React.ElementType = any,
-  CT extends React.ElementType = any,
-  AT extends React.ElementType = any
+  TRoot extends React.ElementType = any,
+  TBarContent extends React.ElementType = any,
+  TBarAction extends React.ElementType = any
 > extends RequiredSome<
-    Pick<NotificationBarProps<TID, CT, AT>, 'id' | 'variant' | 'contentProps' | 'actionProps'>,
+    Pick<
+      NotificationBarProps<TID, TBarContent, TBarAction>,
+      'id' | 'variant' | 'contentProps' | 'actionProps'
+    >,
     'variant'
   > {
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly noAction?: boolean;
   // readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
-  readonly rootProps?: TransitionFlexProps<TTransition, RT>;
+  readonly rootProps?: TransitionFlexProps<TTransition, TRoot>;
 }
 
 export type NotificationsProps<
-  C extends React.ElementType = DefaultComponentType,
-  N extends Notification<any, any, any, any> = Notification
+  C extends React.ElementType,
+  N extends Notification<any, any, any, any>
 > = FlexAllProps<C> & {
   readonly list: readonly N[];
   readonly defaultPosition?: NotificationPosition;
@@ -213,7 +216,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,
-  N extends Notification<any, any> = Notification
+  N extends Notification<any, any, any, any> = Notification
 >({
   list,
   defaultPosition = 'window-top',

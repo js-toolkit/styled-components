@@ -3,7 +3,7 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, FlexAllProps, FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
-import TransitionFlex, { HideableProps } from '../TransitionFlex';
+import TransitionFlex, { HideableProps, TransitionComponent } from '../TransitionFlex';
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
@@ -18,15 +18,17 @@ export type NotificationVariant = GetOverridedKeys<
 export interface NotificationBarProps<
   TID extends string | number = string | number,
   TContent extends React.ElementType = any,
-  TAction extends React.ElementType = any
+  TAction extends React.ElementType = any,
+  TTransition extends TransitionComponent = TransitionComponent
 > extends FlexComponentProps<'div', { omitProps: true }>,
-    HideableProps {
+    HideableProps<TTransition> {
   readonly id: TID;
   readonly variant?: NotificationVariant;
   readonly action?: (props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element;
   readonly onAction?: (id: TID) => void;
   readonly contentProps?: FlexAllProps<TContent>;
   readonly actionProps?: FlexAllProps<TAction>;
+  readonly applyClassesToTransition?: boolean;
 }
 
 const useStyles = makeStyles(({ rc }: Theme) => {
@@ -100,7 +102,8 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 export default function NotificationBar<
   TID extends string | number = string | number,
   TContent extends React.ElementType = any,
-  TAction extends React.ElementType = any
+  TAction extends React.ElementType = any,
+  TTransition extends TransitionComponent = TransitionComponent
 >({
   id,
   variant = 'info',
@@ -111,8 +114,11 @@ export default function NotificationBar<
   actionProps,
   children,
   transitionProps,
+  applyClassesToTransition,
   ...rest
-}: React.PropsWithChildren<NotificationBarProps<TID, TContent, TAction>>): JSX.Element {
+}: React.PropsWithChildren<
+  NotificationBarProps<TID, TContent, TAction, TTransition>
+>): JSX.Element {
   const css = useStyles({
     classes: { content: contentProps?.className, action: actionProps?.className },
   });
@@ -135,8 +141,7 @@ export default function NotificationBar<
   return (
     <TransitionFlex
       alignItems="center"
-      className={clsx(css.root, css[variant], className)}
-      {...rootRest}
+      className={applyClassesToTransition ? undefined : clsx(css.root, css[variant], className)}
       transitionProps={{
         appear,
         in: inProp,
@@ -149,7 +154,16 @@ export default function NotificationBar<
         onExiting,
         onExited,
         ...transitionProps,
+        className: applyClassesToTransition
+          ? clsx(
+              css.root,
+              css[variant],
+              (transitionProps as HideableProps['transitionProps'])?.className,
+              className
+            )
+          : (transitionProps as HideableProps['transitionProps'])?.className,
       }}
+      {...rootRest}
     >
       <Flex
         grow

@@ -6,7 +6,7 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
 import clear from '@jstoolkit/utils/clear';
 import useUpdate from '@jstoolkit/react-hooks/useUpdate';
-import type { TransitionComponent, TransitionFlexProps } from '../TransitionFlex';
+import type { TransitionComponent /* , TransitionFlexProps */ } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { NotificationBarProps } from './NotificationBar';
@@ -35,12 +35,12 @@ export interface Notification<
   TID extends string | number = string | number,
   TContent = JSX.Element | string,
   TTransition extends TransitionComponent = TransitionComponent,
-  TRoot extends React.ElementType = any,
-  TBarContent extends React.ElementType = any,
-  TBarAction extends React.ElementType = any
+  // TRoot extends React.ElementType = any,
+  TBarContentElement extends React.ElementType = any,
+  TBarActionElement extends React.ElementType = any
 > extends RequiredSome<
     Pick<
-      NotificationBarProps<TID, TBarContent, TBarAction>,
+      NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
       'id' | 'variant' | 'contentProps' | 'actionProps'
     >,
     'variant'
@@ -48,21 +48,24 @@ export interface Notification<
   readonly content: TContent;
   readonly position?: NotificationPosition;
   readonly noAction?: boolean;
-  // readonly rootProps?: NotificationBarProps<TID, CT, AT>['contentProps'];
-  readonly rootProps?: TransitionFlexProps<TTransition, TRoot>;
+  // readonly rootProps?: TransitionFlexProps<TTransition, TRoot>;
+  readonly rootProps?: OmitStrict<
+    NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
+    'id' | 'variant' | 'contentProps' | 'actionProps'
+  >;
 }
 
 export type NotificationsProps<
   C extends React.ElementType,
-  N extends Notification<any, any, any, any>
+  N extends Notification<any, any, any, any, any>
 > = FlexAllProps<C> & {
   readonly list: readonly N[];
   readonly defaultPosition?: NotificationPosition;
   readonly defaultAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : string | number
+    N extends Notification<infer TID, any, any, any, any> ? TID : string | number
   >['action'];
   readonly onAction?: NotificationBarProps<
-    N extends Notification<infer TID> ? TID : string | number
+    N extends Notification<infer TID, any, any, any, any> ? TID : string | number
   >['onAction'];
   readonly containerProps?: FlexComponentProps<'div', { omitProps: true }>;
   readonly listProps?: FlexComponentProps<'div', { omitProps: true }>;
@@ -216,7 +219,7 @@ const useStyles = makeStyles(({ rc }: Theme) => {
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,
-  N extends Notification<any, any, any, any> = Notification
+  N extends Notification<any, any, any, any, any> = Notification
 >({
   list,
   defaultPosition = 'window-top',

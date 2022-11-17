@@ -154,14 +154,14 @@ export default function NotificationBar<
         onExiting,
         onExited,
         ...transitionProps,
-        className: applyClassesToTransition
-          ? clsx(
-              css.root,
-              css[variant],
-              (transitionProps as HideableProps['transitionProps'])?.className,
-              className
-            )
-          : (transitionProps as HideableProps['transitionProps'])?.className,
+        ...(applyClassesToTransition && {
+          className: clsx(
+            css.root,
+            css[variant],
+            (transitionProps as HideableProps['transitionProps'])?.className,
+            className
+          ),
+        }),
       }}
       {...rootRest}
     >

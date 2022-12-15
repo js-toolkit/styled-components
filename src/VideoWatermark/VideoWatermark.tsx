@@ -282,7 +282,7 @@ export default React.memo(function VideoWatermark({
                 textHeight={textHeight}
                 width={textWidth}
                 height={textHeight}
-                patternTransform="none"
+                patternTransform={null as unknown as undefined}
                 className={css.random}
                 style={{ left: coord.x, top: coord.y }}
               />

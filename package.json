@@ -19,7 +19,7 @@
     "build-to-player": "tsc --build ./tsconfig.json && npm run minify && copyfiles -e './dist/*(package.json|README.md|LICENSE)' -u 1 './dist/**/*' '../../../player/modules/styled-components'",
     "build-to-player-utils": "tsc --build ./tsconfig.json && copyfiles -e './dist/*(package.json|README.md|LICENSE)' -u 1 './dist/**/*' '../player-utils/node_modules/@jstoolkit/styled-components'",
     "patch-publish": "yarn run build && npm version patch --no-workspaces-update -m 'v%s' && yarn run copy:configs && cd ./dist && npm publish --access public && git push origin master --follow-tags",
-    "minor-publish": "yarn run build && npm version patch --no-workspaces-update -m 'v%s' && yarn run copy:configs && cd ./dist && npm publish --access public && git push origin master --follow-tags"
+    "minor-publish": "yarn run build && npm version minor --no-workspaces-update -m 'v%s' && yarn run copy:configs && cd ./dist && npm publish --access public && git push origin master --follow-tags"
   },
   "optionalDependencies": {
     "@js-toolkit/node-utils": "^1.1.4"

@@ -13,15 +13,26 @@ export interface TooltipData<D = never> {
 }
 
 export interface TooltipButtonTooltipProps<D = never> {
-  tooltip?: TooltipData<D>['title'];
-  tooltipDelay?: number;
-  onShowTooltip?: (tooltip: TooltipData<D>) => void;
-  onHideTooltip?: (target: TooltipData<D>['target']) => void;
+  readonly tooltip?: TooltipData['title'];
+  readonly tooltipDelay?: number;
+  readonly onShowTooltip?: (tooltip: TooltipData<D>) => void;
+  readonly onHideTooltip?: (target: TooltipData['target']) => void;
 }
 
-export type TooltipButtonProps<C extends React.ElementType = 'button', D = never> = ButtonProps<C> &
-  TooltipButtonTooltipProps<D> & {
-    readonly data?: D;
+type WithData<D = never> = Exclude<D, undefined> extends never
+  ? { readonly data?: D }
+  : unknown extends D // In case tooltip's data has unknown type
+  ? { readonly data?: D }
+  : IfExtends<D, undefined, { readonly data?: D }, { readonly data: D }>;
+
+export type TooltipButtonProps<C extends React.ElementType = 'button', D = never> = Omit<
+  ButtonProps<C>,
+  'onClick'
+> &
+  TooltipButtonTooltipProps<D> &
+  WithData<D> & {
+    // readonly data?: D;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>, data: D) => void;
   };
 
 export default function TooltipButton<C extends React.ElementType = 'button', D = never>({
@@ -105,7 +116,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLButtonElement>>((event) => {
     // console.log('click', event.nativeEvent.type);
     isTouchingRef.current = false;
-    onClick && onClick(event);
+    onClick && onClick(event, data as never);
   });
 
   const mouseEnterHandler = useRefCallback<React.MouseEventHandler<HTMLButtonElement>>((event) => {

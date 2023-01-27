@@ -12,7 +12,7 @@ export type LoadableButtonProps<C extends React.ElementType = 'button'> = Omit<
   LoadableFlexProps<any>,
   'size' | 'color' | 'variant' | 'spinnerPosition' | 'spinnerSize'
 > &
-  ButtonProps<C> & { spinnerPosition?: SpinnerPosition };
+  ButtonProps<C> & { spinnerPosition?: SpinnerPosition | undefined };
 
 export default function LoadableButton<C extends React.ElementType = 'button'>({
   component = Button as C,

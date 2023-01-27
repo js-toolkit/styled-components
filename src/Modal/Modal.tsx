@@ -31,14 +31,14 @@ export interface ModalProps
       | 'contentElement'
       | 'closeTimeoutMS'
     > {
-  readonly backdropElement?: ReactModal.Props['overlayElement'];
-  readonly backdropRef?: ReactModal.Props['overlayRef'];
-  readonly shouldCloseOnBackdropClick?: ReactModal.Props['shouldCloseOnOverlayClick'];
-  readonly backdropClassName?: this['className'];
-  readonly backdropStyle?: this['style'];
-  readonly disableBackdrop?: boolean;
-  readonly lockBodyScroll?: boolean;
-  readonly size?: ModalSize;
+  readonly backdropElement?: ReactModal.Props['overlayElement'] | undefined;
+  readonly backdropRef?: ReactModal.Props['overlayRef'] | undefined;
+  readonly shouldCloseOnBackdropClick?: ReactModal.Props['shouldCloseOnOverlayClick'] | undefined;
+  readonly backdropClassName?: this['className'] | undefined;
+  readonly backdropStyle?: this['style'] | undefined;
+  readonly disableBackdrop?: boolean | undefined;
+  readonly lockBodyScroll?: boolean | undefined;
+  readonly size?: ModalSize | undefined;
 }
 
 // type MakeStylesProps = Pick<ModalProps, 'blurBackdrop'>;

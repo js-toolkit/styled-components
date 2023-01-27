@@ -16,8 +16,8 @@ interface BaseProps
 
 export interface TransitionProps extends BaseProps {
   /** A single child content element. */
-  children: React.ReactElement<{ style?: React.CSSProperties }, any>;
-  styles?: Partial<Record<TransitionStatus, React.CSSProperties>>;
+  children: React.ReactElement<{ style?: React.CSSProperties | undefined }, any>;
+  styles?: Partial<Record<TransitionStatus, React.CSSProperties>> | undefined;
 }
 
 export default React.forwardRef(function Transition(
@@ -51,7 +51,7 @@ export default React.forwardRef(function Transition(
   const normalizedTransitionCallback =
     (
       callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
-    ): ((isAppearing?: boolean) => void) =>
+    ): ((isAppearing?: boolean | undefined) => void) =>
     (maybeIsAppearing) => {
       if (!callback || !nodeRef.current) return;
       const node = nodeRef.current;

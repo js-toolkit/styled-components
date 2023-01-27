@@ -7,8 +7,8 @@ import createPlugins from './createPlugins';
 
 export interface StylesProviderProps
   extends MuiStylesProviderProps,
-    Partial<Pick<JssOptions, 'Renderer' | 'insertionPoint' | 'id'>> {
-  plugins?: () => JssOptions['plugins'];
+    OptionalToUndefined<Partial<Pick<JssOptions, 'Renderer' | 'insertionPoint' | 'id'>>> {
+  plugins?: (() => JssOptions['plugins']) | undefined;
 }
 
 export default function StylesProvider({

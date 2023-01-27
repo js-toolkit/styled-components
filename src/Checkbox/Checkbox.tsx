@@ -7,12 +7,12 @@ import CheckboxContext from './CheckboxContext';
 export type CheckboxType = 'checkbox' | 'radio' | 'switch';
 
 export interface CheckboxProps<V = unknown> extends Omit<FlexComponentProps<'div'>, 'onChange'> {
-  type?: CheckboxType;
-  onChange?: (checked: boolean) => void;
-  checked?: boolean;
-  disabled?: boolean;
+  type?: CheckboxType | undefined;
+  onChange?: ((checked: boolean) => void) | undefined;
+  checked?: boolean | undefined;
+  disabled?: boolean | undefined;
   /** Used with CheckboxGroup */
-  value?: V;
+  value?: V | undefined;
 }
 
 const useStyles = makeStyles((theme: Theme) => {

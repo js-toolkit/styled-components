@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import useIsMounted from '@jstoolkit/react-hooks/useIsMounted';
 
 export interface SuspenseFallbackProps {
-  readonly delay?: number;
-  readonly onMountChanged?: (mounted: boolean) => void;
-  readonly onMount?: VoidFunction;
-  readonly onUnmount?: VoidFunction;
-  readonly element?: React.SuspenseProps['fallback'];
+  readonly delay?: number | undefined;
+  readonly onMountChanged?: ((mounted: boolean) => void) | undefined;
+  readonly onMount?: VoidFunction | undefined;
+  readonly onUnmount?: VoidFunction | undefined;
+  readonly element?: React.SuspenseProps['fallback'] | undefined;
 }
 
 export default function SuspenseFallback({

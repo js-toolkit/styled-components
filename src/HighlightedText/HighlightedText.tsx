@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export type HighlightedTextProps<C extends React.ElementType = 'span'> = {
-  ignoreCase?: boolean;
-  children?: string | string[];
-  highlight?: string;
+  ignoreCase?: boolean | undefined;
+  children?: string | string[] | undefined;
+  highlight?: string | undefined;
   // onHighlight?: (parts: string[]) => void;
 } & FlexAllProps<C>;
 

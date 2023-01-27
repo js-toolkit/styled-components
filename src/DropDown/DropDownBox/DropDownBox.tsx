@@ -12,12 +12,16 @@ export interface DropDownBoxProps extends FlexComponentProps<'div'> {
    * { a: undefined } - close on any link click.
    * { a: <selector> } - close on link click if link matches the selector.
    */
-  closeOnClick?: ((event: React.MouseEvent<Element>) => boolean) | boolean | HtmlTagSelectorMap;
+  closeOnClick?:
+    | ((event: React.MouseEvent<Element>) => boolean)
+    | boolean
+    | HtmlTagSelectorMap
+    | undefined;
   /**
    * Whether render hidden content.
    * Useful if needed always rendered links (but hidden) for SEO.
    */
-  prerender?: boolean;
+  prerender?: boolean | undefined;
 }
 
 function isShouldClose(el: Element, topNode: Element, map: HtmlTagSelectorMap): boolean {

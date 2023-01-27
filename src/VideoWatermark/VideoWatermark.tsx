@@ -22,15 +22,15 @@ export type VideoWatermarkProps = FlexComponentProps &
   Partial<Point> &
   Partial<Size> & {
     text: string;
-    baseFontSize?: number;
-    scaleBySize?: number;
-    visibleTimeout?: number;
-    hiddenTimeout?: number;
+    baseFontSize?: number | undefined;
+    scaleBySize?: number | undefined;
+    visibleTimeout?: number | undefined;
+    hiddenTimeout?: number | undefined;
     /** Used with random mode. */
-    updateTimeout?: number;
+    updateTimeout?: number | undefined;
   } & (
     | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement> }
-    | { mode?: 'stripes'; videoRef?: React.RefObject<HTMLVideoElement> }
+    | { mode?: 'stripes' | undefined; videoRef?: React.RefObject<HTMLVideoElement> | undefined }
   );
 
 const useStyles = makeStyles(({ rc }: Theme) => {

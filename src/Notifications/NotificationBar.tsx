@@ -23,12 +23,12 @@ export interface NotificationBarProps<
 > extends FlexComponentProps<'div', { omitProps: true }>,
     HideableProps<TTransition> {
   readonly id: TID;
-  readonly variant?: NotificationVariant;
-  readonly action?: (props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element;
-  readonly onAction?: (id: TID) => void;
-  readonly contentProps?: FlexAllProps<TContent>;
-  readonly actionProps?: FlexAllProps<TAction>;
-  readonly applyClassesToTransition?: boolean;
+  readonly variant?: NotificationVariant | undefined;
+  readonly action?: ((props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element) | undefined;
+  readonly onAction?: ((id: TID) => void) | undefined;
+  readonly contentProps?: FlexAllProps<TContent> | undefined;
+  readonly actionProps?: FlexAllProps<TAction> | undefined;
+  readonly applyClassesToTransition?: boolean | undefined;
 }
 
 const useStyles = makeStyles(({ rc }: Theme) => {

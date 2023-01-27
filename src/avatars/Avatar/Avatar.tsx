@@ -5,8 +5,8 @@ import type { Theme } from '../../theme';
 import UserIcon from './UserIcon';
 
 export interface AvatarProps extends FlexComponentProps<'div'> {
-  img?: string;
-  size?: React.ReactText;
+  img?: string | undefined;
+  size?: React.ReactText | undefined;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({

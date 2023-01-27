@@ -10,16 +10,16 @@ export type TransitionComponent = React.JSXElementConstructor<
 >;
 
 export interface HideableProps<T extends TransitionComponent = TransitionComponent> {
-  readonly hidden?: boolean;
-  readonly appear?: boolean;
-  readonly disposable?: boolean;
-  readonly keepChildren?: boolean;
-  readonly hiddenClassName?: string;
-  readonly onHidden?: VoidFunction;
-  readonly onShown?: VoidFunction;
-  readonly transition?: T;
-  readonly transitionProps?: OmitStrict<React.ComponentProps<T>, 'children'>;
-  readonly transitionDuration?: TransitionProps['timeout'];
+  readonly hidden?: boolean | undefined;
+  readonly appear?: boolean | undefined;
+  readonly disposable?: boolean | undefined;
+  readonly keepChildren?: boolean | undefined;
+  readonly hiddenClassName?: string | undefined;
+  readonly onHidden?: VoidFunction | undefined;
+  readonly onShown?: VoidFunction | undefined;
+  readonly transition?: T | undefined;
+  readonly transitionProps?: OmitStrict<React.ComponentProps<T>, 'children'> | undefined;
+  readonly transitionDuration?: TransitionProps['timeout'] | undefined;
 }
 
 export type TransitionFlexProps<

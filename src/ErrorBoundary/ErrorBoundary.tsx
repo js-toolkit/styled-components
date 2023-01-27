@@ -2,13 +2,13 @@ import React from 'react';
 import DefaultRenderer from './DefaultRenderer';
 
 export interface ErrorBoundaryProps {
-  error?: unknown;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-  renderer: (error: unknown) => React.ReactNode;
+  readonly error?: unknown | undefined;
+  readonly onError?: ((error: Error, errorInfo: React.ErrorInfo) => void) | undefined;
+  readonly renderer: ((error: unknown) => React.ReactNode) | undefined;
 }
 
 interface State {
-  error: unknown;
+  readonly error: unknown;
 }
 
 export default class ErrorBoundary extends React.Component<

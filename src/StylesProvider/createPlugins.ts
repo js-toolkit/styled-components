@@ -74,7 +74,7 @@ export function getDefaultPlugins(): Partial<Record<keyof PluginsFactory, true>>
 }
 
 export type CreatePluginsOptions = {
-  [P in keyof PluginsFactory]?: boolean | Parameters<PluginsFactory[P]>[0];
+  [P in keyof PluginsFactory]?: boolean | Parameters<PluginsFactory[P]>[0] | undefined;
 };
 
 export default function createPlugins(options: CreatePluginsOptions = {}): JssOptions['plugins'] {

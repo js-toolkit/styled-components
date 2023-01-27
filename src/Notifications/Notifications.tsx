@@ -46,13 +46,15 @@ export interface Notification<
     'variant'
   > {
   readonly content: TContent;
-  readonly position?: NotificationPosition;
-  readonly noAction?: boolean;
+  readonly position?: NotificationPosition | undefined;
+  readonly noAction?: boolean | undefined;
   // readonly rootProps?: TransitionFlexProps<TTransition, TRoot>;
-  readonly rootProps?: OmitStrict<
-    NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
-    'id' | 'variant' | 'contentProps' | 'actionProps'
-  >;
+  readonly rootProps?:
+    | OmitStrict<
+        NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
+        'id' | 'variant' | 'contentProps' | 'actionProps'
+      >
+    | undefined;
 }
 
 export type NotificationsProps<
@@ -60,15 +62,19 @@ export type NotificationsProps<
   N extends Notification<any, any, any, any, any>
 > = FlexAllProps<C> & {
   readonly list: readonly N[];
-  readonly defaultPosition?: NotificationPosition;
-  readonly defaultAction?: NotificationBarProps<
-    N extends Notification<infer TID, any, any, any, any> ? TID : string | number
-  >['action'];
-  readonly onAction?: NotificationBarProps<
-    N extends Notification<infer TID, any, any, any, any> ? TID : string | number
-  >['onAction'];
-  readonly containerProps?: FlexComponentProps<'div', { omitProps: true }>;
-  readonly listProps?: FlexComponentProps<'div', { omitProps: true }>;
+  readonly defaultPosition?: NotificationPosition | undefined;
+  readonly defaultAction?:
+    | NotificationBarProps<
+        N extends Notification<infer TID, any, any, any, any> ? TID : string | number
+      >['action']
+    | undefined;
+  readonly onAction?:
+    | NotificationBarProps<
+        N extends Notification<infer TID, any, any, any, any> ? TID : string | number
+      >['onAction']
+    | undefined;
+  readonly containerProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
+  readonly listProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
 };
 
 // These styles take precedence over NotificationBar styles because makeStyles is called later.

@@ -15,11 +15,11 @@ export interface SvgSymbolInfo {
 
 export interface SvgSpriteIconProps<N extends string> extends React.SVGAttributes<SVGSVGElement> {
   name: N;
-  size?: number | string;
-  scaleOnHover?: boolean | number;
-  useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'>;
-  htmlRef?: React.Ref<SVGSVGElement>;
-  componentRef?: this['htmlRef'];
+  size?: number | string | undefined;
+  scaleOnHover?: boolean | number | undefined;
+  useProps?: Omit<React.SVGAttributes<SVGUseElement>, 'xlinkHref'> | undefined;
+  htmlRef?: React.Ref<SVGSVGElement> | undefined;
+  componentRef?: this['htmlRef'] | undefined;
 }
 
 type MakeStylesProps = ExcludeTypes<

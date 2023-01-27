@@ -5,7 +5,7 @@ import { Flex, FlexAllProps } from 'reflexy';
 import type { Theme } from '../theme';
 
 export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllProps<C> & {
-  lines?: number;
+  readonly lines?: number | undefined;
 };
 
 type MakeStylesProps = Pick<TruncatedTextProps, 'lines'>;

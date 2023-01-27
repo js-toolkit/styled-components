@@ -8,23 +8,23 @@ export type SpinnerPosition = 'top' | 'right' | 'left' | 'bottom' | 'center';
 export type SpinnerSize = 'auto' | 'xs' | 's' | 'm' | 'l' | 'xl';
 
 interface LoadableStyleProps {
-  loading?: boolean;
-  disableOnLoading?: boolean;
-  backdrop?: boolean;
-  blur?: boolean;
-  spinnerSize?: SpinnerSize;
-  spinnerPosition?: SpinnerPosition;
+  readonly loading?: boolean | undefined;
+  readonly disableOnLoading?: boolean | undefined;
+  readonly backdrop?: boolean | undefined;
+  readonly blur?: boolean | undefined;
+  readonly spinnerSize?: SpinnerSize | undefined;
+  readonly spinnerPosition?: SpinnerPosition | undefined;
   /** @deprecated Use `animation` */
-  transition?: boolean;
-  animation?: boolean;
+  readonly transition?: boolean | undefined;
+  readonly animation?: boolean | undefined;
 }
 
 export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType> =
   React.PropsWithChildren<
     FlexAllProps<C> &
       LoadableStyleProps & {
-        spinner?: boolean | React.ReactElement;
-        spinnerClassName?: string;
+        spinner?: boolean | React.ReactElement | undefined;
+        spinnerClassName?: string | undefined;
       }
   >;
 

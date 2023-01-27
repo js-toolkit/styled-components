@@ -12,16 +12,16 @@ export interface FieldStates {}
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
 type FlexContent<T extends React.ElementType> = FlexComponentProps<T> & {
-  content?: React.ReactNode;
+  content?: React.ReactNode | undefined;
 };
 
 export interface FieldProps extends FlexComponentProps {
-  label?: React.ReactNode | FlexContent<'label'>;
+  label?: React.ReactNode | FlexContent<'label'> | undefined;
   /** @deprecated Use `controls` */
-  container?: FlexComponentProps<'div'>;
-  controls?: FlexComponentProps<'div'>;
-  helperText?: React.ReactNode | FlexContent<'div'>;
-  state?: FieldState;
+  container?: FlexComponentProps<'div'> | undefined;
+  controls?: FlexComponentProps<'div'> | undefined;
+  helperText?: React.ReactNode | FlexContent<'div'> | undefined;
+  state?: FieldState | undefined;
 }
 
 const useStyles = makeStyles((theme: Theme) => {

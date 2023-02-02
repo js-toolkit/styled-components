@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, FlexComponentProps } from 'reflexy/styled';
 
 export interface DefaultRendererProps extends FlexComponentProps {
-  error: unknown;
+  readonly error: unknown;
 }
 
 export default function DefaultRenderer({ error, ...rest }: DefaultRendererProps): JSX.Element {

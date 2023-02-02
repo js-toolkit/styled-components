@@ -9,21 +9,21 @@ import Button, { ButtonProps } from '../Button';
 export interface TooltipData<D = never> {
   readonly target: HTMLButtonElement;
   readonly title: string;
-  readonly data?: D;
+  readonly data?: D | undefined;
 }
 
 export interface TooltipButtonTooltipProps<D = never> {
-  readonly tooltip?: TooltipData['title'];
-  readonly tooltipDelay?: number;
-  readonly onShowTooltip?: (tooltip: TooltipData<D>) => void;
-  readonly onHideTooltip?: (target: TooltipData['target']) => void;
+  readonly tooltip?: TooltipData['title'] | undefined;
+  readonly tooltipDelay?: number | undefined;
+  readonly onShowTooltip?: ((tooltip: TooltipData<D>) => void) | undefined;
+  readonly onHideTooltip?: ((target: TooltipData['target']) => void) | undefined;
 }
 
 type WithData<D = never> = Exclude<D, undefined> extends never
-  ? { readonly data?: D }
+  ? { readonly data?: D | undefined }
   : unknown extends D // In case tooltip's data has unknown type
-  ? { readonly data?: D }
-  : IfExtends<D, undefined, { readonly data?: D }, { readonly data: D }>;
+  ? { readonly data?: D | undefined }
+  : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
 
 export type TooltipButtonProps<C extends React.ElementType = 'button', D = never> = Omit<
   ButtonProps<C>,
@@ -32,7 +32,7 @@ export type TooltipButtonProps<C extends React.ElementType = 'button', D = never
   TooltipButtonTooltipProps<D> &
   WithData<D> & {
     // readonly data?: D;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>, data: D) => void;
+    onClick?: ((event: React.MouseEvent<HTMLButtonElement>, data: D) => void) | undefined;
   };
 
 export default function TooltipButton<C extends React.ElementType = 'button', D = never>({

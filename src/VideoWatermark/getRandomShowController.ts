@@ -4,10 +4,10 @@ import toInt from '@jstoolkit/utils/toInt';
 import { getShowController, ShowController, ShowControllerOptions } from './getShowController';
 
 export interface RandomShowControllerOptions {
-  readonly updateTimeout?: number;
+  readonly updateTimeout?: number | undefined;
   readonly getBounds: () => Point;
   readonly onUpdate: (coord: Point) => void;
-  readonly showOptions?: ShowControllerOptions;
+  readonly showOptions?: ShowControllerOptions | undefined;
 }
 
 export interface RandomShowController extends ShowController {

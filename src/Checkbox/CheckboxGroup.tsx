@@ -4,15 +4,15 @@ import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import CheckboxContext, { CheckboxContextValue } from './CheckboxContext';
 
 export interface CheckboxGroupChangeEvent<V = unknown> {
-  name?: string;
+  name?: string | undefined;
   value: V;
 }
 
 export interface CheckboxGroupProps<V = unknown>
   extends Omit<FlexComponentProps<'div'>, 'onChange'> {
-  name?: string;
-  value?: CheckboxContextValue<V>['checkedValue'];
-  onChange?: (data: CheckboxGroupChangeEvent<V>) => void;
+  name?: string | undefined;
+  value?: CheckboxContextValue<V>['checkedValue'] | undefined;
+  onChange?: ((data: CheckboxGroupChangeEvent<V>) => void) | undefined;
 }
 
 export default function CheckboxGroup<V = unknown>({

@@ -12,12 +12,20 @@ declare module '@mui/styles/makeStyles' {
     ClassKey extends string = string
   >(
     styles: Styles<Theme, Props, ClassKey>,
-    options?: Omit<WithStylesOptions<Theme>, 'withTheme'>
+    options?: Omit<WithStylesOptions<Theme>, 'withTheme'> | undefined
   ): keyof Props extends never
     ? // `makeStyles` where the passed `styles` do not depend on props
-      (props?: { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>
+      (
+        props?:
+          | { classes?: OptionalToUndefined<Partial<ClassNameMap<ClassKey>>> | undefined }
+          | undefined
+      ) => ClassNameMap<ClassKey>
     : // `makeStyles` where the passed `styles` do depend on props
-      (props: Props & { classes?: Partial<ClassNameMap<ClassKey>> }) => ClassNameMap<ClassKey>;
+      (
+        props: Props & {
+          classes?: OptionalToUndefined<Partial<ClassNameMap<ClassKey>>> | undefined;
+        }
+      ) => ClassNameMap<ClassKey>;
 }
 
 // declare module '@mui/styles/styled' {

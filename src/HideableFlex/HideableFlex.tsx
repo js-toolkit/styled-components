@@ -6,25 +6,25 @@ import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 
 export interface Transition {
-  readonly duration?: Property.TransitionDuration<number>;
-  readonly func?: Property.TransitionTimingFunction;
-  readonly property?: Property.TransitionProperty;
+  readonly duration?: Property.TransitionDuration<number> | undefined;
+  readonly func?: Property.TransitionTimingFunction | undefined;
+  readonly property?: Property.TransitionProperty | undefined;
 }
 
 export interface HideableProps {
-  readonly transitionDuration?: Transition['duration'];
-  readonly transitionFunction?: Transition['func'];
-  readonly transitionProperty?: Transition['property'];
-  readonly transition?: Transition;
+  readonly transitionDuration?: Transition['duration'] | undefined;
+  readonly transitionFunction?: Transition['func'] | undefined;
+  readonly transitionProperty?: Transition['property'] | undefined;
+  readonly transition?: Transition | undefined;
 
-  readonly hidden?: boolean;
-  readonly disposable?: boolean;
-  readonly collapsable?: boolean;
-  readonly keepChildren?: boolean;
-  readonly appear?: boolean;
-  readonly hiddenClassName?: string;
-  readonly onHidden?: VoidFunction;
-  readonly onShown?: VoidFunction;
+  readonly hidden?: boolean | undefined;
+  readonly disposable?: boolean | undefined;
+  readonly collapsable?: boolean | undefined;
+  readonly keepChildren?: boolean | undefined;
+  readonly appear?: boolean | undefined;
+  readonly hiddenClassName?: string | undefined;
+  readonly onHidden?: VoidFunction | undefined;
+  readonly onShown?: VoidFunction | undefined;
 }
 
 export type HideableFlexProps<C extends React.ElementType = DefaultComponentType> = FlexAllProps<
@@ -119,6 +119,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
         disposed: disposable && !hiddenProp ? false : prev.disposed,
       };
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [disposable, hiddenProp]
   );
 

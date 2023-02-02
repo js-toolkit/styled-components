@@ -23,262 +23,338 @@ export interface CreateCSSProperties extends BaseCreateCSSProperties {
 export type CSSProperties = CSSPropertiesDeep | CreateCSSProperties;
 
 export type ButtonThemeSizes = {
-  [P in ButtonSize as `size-${P}`]?: CSSProperties;
+  [P in ButtonSize as `size-${P}`]?: CSSProperties | undefined;
 };
 
 export type ButtonThemeVariants = {
-  [P in ButtonVariant as `variant-${P}`]?: CSSProperties;
+  [P in ButtonVariant as `variant-${P}`]?: CSSProperties | undefined;
 };
 
 export interface Theme {
   rc?: {
-    colors?: {
-      error?: string;
-    };
+    colors?:
+      | {
+          error?: string | undefined;
+        }
+      | undefined;
 
-    Badge?: {
-      BadgeIcon?: CSSProperties;
-    };
+    Badge?:
+      | {
+          BadgeIcon?: CSSProperties | undefined;
+        }
+      | undefined;
 
-    Divider?: CSSProperties & { light?: CSSProperties };
+    Divider?: (CSSProperties & { light?: CSSProperties | undefined }) | undefined;
 
-    DropDown?: {
-      root?: CSSProperties;
-    };
+    DropDown?:
+      | {
+          root?: CSSProperties | undefined;
+        }
+      | undefined;
 
-    DropDownLabel?: {
-      root?: CSSProperties;
-    };
+    DropDownLabel?:
+      | {
+          root?: CSSProperties | undefined;
+        }
+      | undefined;
 
-    DropDownBox?: {
-      root?: CSSProperties;
-    };
+    DropDownBox?:
+      | {
+          root?: CSSProperties | undefined;
+        }
+      | undefined;
 
-    Modal?: {
-      root?: CSSProperties;
-      backdrop?: CSSProperties;
+    Modal?:
+      | ({
+          root?: CSSProperties | undefined;
+          backdrop?: CSSProperties | undefined;
 
-      Header?: CSSProperties & { closeIcon?: CSSProperties };
-      Body?: CSSProperties;
-      Footer?: CSSProperties;
-    } & {
-      [P in NonNullable<ModalProps['size']> as `size-${P}`]?: CSSProperties;
-    };
+          Header?: (CSSProperties & { closeIcon?: CSSProperties | undefined }) | undefined;
+          Body?: CSSProperties | undefined;
+          Footer?: CSSProperties | undefined;
+        } & {
+          [P in NonNullable<ModalProps['size']> as `size-${P}`]?: CSSProperties | undefined;
+        })
+      | undefined;
 
     LoadableFlex?: {
-      root?: CSSProperties;
-      backdrop?: CSSProperties;
+      root?: CSSProperties | undefined;
+      backdrop?: CSSProperties | undefined;
 
-      spinner?: CSSProperties;
-      spinnerSizeAuto?: CSSProperties;
-      spinnerSizeXS?: CSSProperties;
-      spinnerSizeS?: CSSProperties;
-      spinnerSizeM?: CSSProperties;
-      spinnerSizeL?: CSSProperties;
-      spinnerSizeXL?: CSSProperties;
-      spinnerPositionCenter?: CSSProperties;
-      spinnerPositionTop?: CSSProperties;
-      spinnerPositionBottom?: CSSProperties;
-      spinnerPositionLeft?: CSSProperties;
-      spinnerPositionRight?: CSSProperties;
+      spinner?: CSSProperties | undefined;
+      spinnerSizeAuto?: CSSProperties | undefined;
+      spinnerSizeXS?: CSSProperties | undefined;
+      spinnerSizeS?: CSSProperties | undefined;
+      spinnerSizeM?: CSSProperties | undefined;
+      spinnerSizeL?: CSSProperties | undefined;
+      spinnerSizeXL?: CSSProperties | undefined;
+      spinnerPositionCenter?: CSSProperties | undefined;
+      spinnerPositionTop?: CSSProperties | undefined;
+      spinnerPositionBottom?: CSSProperties | undefined;
+      spinnerPositionLeft?: CSSProperties | undefined;
+      spinnerPositionRight?: CSSProperties | undefined;
 
-      ring?: CSSProperties;
+      ring?: CSSProperties | undefined;
     };
 
-    Button?: ButtonThemeSizes &
-      ButtonThemeVariants & {
-        root?: CSSProperties;
-      } & {
-        [P in ButtonColor]?: { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ };
-      };
+    Button?:
+      | (ButtonThemeSizes &
+          ButtonThemeVariants & {
+            root?: CSSProperties | undefined;
+          } & {
+            [P in ButtonColor]?:
+              | { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ | undefined }
+              | undefined;
+          })
+      | undefined;
 
-    LoadableButton?: {
-      root?: CSSProperties;
-      spinner?: CSSProperties;
-    };
+    LoadableButton?:
+      | {
+          root?: CSSProperties | undefined;
+          spinner?: CSSProperties | undefined;
+        }
+      | undefined;
 
     Checkbox?: {
-      root?: CSSProperties;
-      shape?: CSSProperties;
-      disabled?: CSSProperties;
+      root?: CSSProperties | undefined;
+      shape?: CSSProperties | undefined;
+      disabled?: CSSProperties | undefined;
 
-      colors?: {
-        hover?: string;
-        checked?: string;
-        unchecked?: string;
-        empty?: string;
-      };
+      colors?:
+        | {
+            hover?: string | undefined;
+            checked?: string | undefined;
+            unchecked?: string | undefined;
+            empty?: string | undefined;
+          }
+        | undefined;
 
-      checkbox?: {
-        root?: CSSProperties;
-        shape?: CSSProperties;
-        checked?: {
-          root?: CSSProperties;
-          shape?: CSSProperties;
-        };
-      };
+      checkbox?:
+        | {
+            root?: CSSProperties | undefined;
+            shape?: CSSProperties | undefined;
+            checked?:
+              | {
+                  root?: CSSProperties | undefined;
+                  shape?: CSSProperties | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
 
-      radio?: {
-        root?: CSSProperties;
-        shape?: CSSProperties;
-        checked?: {
-          root?: CSSProperties;
-          shape?: CSSProperties;
-        };
-      };
+      radio?:
+        | {
+            root?: CSSProperties | undefined;
+            shape?: CSSProperties | undefined;
+            checked?:
+              | {
+                  root?: CSSProperties | undefined;
+                  shape?: CSSProperties | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
 
       switch?: {
-        root?: CSSProperties;
-        shape?: CSSProperties;
-        checked?: {
-          root?: CSSProperties;
-          shape?: CSSProperties;
-        };
-        duration?: string;
-        indent?: string;
+        root?: CSSProperties | undefined;
+        shape?: CSSProperties | undefined;
+        checked?:
+          | {
+              root?: CSSProperties | undefined;
+              shape?: CSSProperties | undefined;
+            }
+          | undefined;
+        duration?: string | undefined;
+        indent?: string | undefined;
       };
     };
 
-    Avatar?: {
-      defaultSize?: number | string;
-      root?: CSSProperties;
-      noImg?: CSSProperties;
-      img?: CSSProperties;
-      fallbackImg?: CSSProperties;
-    };
+    Avatar?:
+      | {
+          defaultSize?: number | string | undefined;
+          root?: CSSProperties | undefined;
+          noImg?: CSSProperties | undefined;
+          img?: CSSProperties | undefined;
+          fallbackImg?: CSSProperties | undefined;
+        }
+      | undefined;
 
     HighlightedText?: {
-      root?: CSSProperties;
+      root?: CSSProperties | undefined;
     };
 
-    TruncatedText?: {
-      root?: CSSProperties;
-      multiline?: CSSProperties;
-    };
+    TruncatedText?:
+      | {
+          root?: CSSProperties | undefined;
+          multiline?: CSSProperties | undefined;
+        }
+      | undefined;
 
-    Field?: {
-      root?: CSSProperties;
-      label?: CSSProperties;
-      controls?: CSSProperties;
-      helperText?: CSSProperties;
-    } & {
-      [P in FieldState]?: Pick<
-        NonNullable<NonNullable<Theme['rc']>['Field']>,
-        'root' | 'label' | 'controls' | 'helperText'
-      >;
-    } & {
-      [P in 'row' | 'column']?: Pick<
-        NonNullable<NonNullable<Theme['rc']>['Field']>,
-        'root' | 'label' | 'controls' | 'helperText'
-      >;
-    };
+    Field?:
+      | ({
+          root?: CSSProperties | undefined;
+          label?: CSSProperties | undefined;
+          controls?: CSSProperties | undefined;
+          helperText?: CSSProperties | undefined;
+        } & {
+          [P in FieldState]?:
+            | Pick<
+                NonNullable<NonNullable<Theme['rc']>['Field']>,
+                'root' | 'label' | 'controls' | 'helperText'
+              >
+            | undefined;
+        } & {
+          [P in 'row' | 'column']?:
+            | Pick<
+                NonNullable<NonNullable<Theme['rc']>['Field']>,
+                'root' | 'label' | 'controls' | 'helperText'
+              >
+            | undefined;
+        })
+      | undefined;
 
-    InputGroup?: {
-      root?: CSSProperties;
-      input?: CSSProperties;
+    InputGroup?:
+      | ({
+          root?: CSSProperties | undefined;
+          input?: CSSProperties | undefined;
 
-      errorIcon?: CSSProperties & {
-        size: 'string';
-        indent: 'string';
-      };
+          errorIcon?:
+            | (CSSProperties & {
+                size: 'string';
+                indent: 'string';
+              })
+            | undefined;
 
-      error?: {
-        root?: CSSProperties;
-        input?: CSSProperties;
-      };
+          error?:
+            | {
+                root?: CSSProperties | undefined;
+                input?: CSSProperties | undefined;
+              }
+            | undefined;
 
-      DropDownLabel?: CSSProperties;
-      DropDownBox?: CSSProperties;
-    } & {
-      [P in FieldState]?: Pick<
-        NonNullable<NonNullable<Theme['rc']>['InputGroup']>,
-        'root' | 'input' | 'DropDownLabel' | 'DropDownBox'
-      >;
-    };
+          DropDownLabel?: CSSProperties | undefined;
+          DropDownBox?: CSSProperties | undefined;
+        } & {
+          [P in FieldState]?:
+            | Pick<
+                NonNullable<NonNullable<Theme['rc']>['InputGroup']>,
+                'root' | 'input' | 'DropDownLabel' | 'DropDownBox'
+              >
+            | undefined;
+        })
+      | undefined;
 
-    VideoWatermark?: {
-      default?: CSSProperties;
-      stripes?: CSSProperties & { field?: { patternTransform?: string } };
-      random?: CSSProperties & { field?: { transitionDuration?: number } };
-    };
+    VideoWatermark?:
+      | {
+          default?: CSSProperties | undefined;
+          stripes?: (CSSProperties & { field?: { patternTransform?: string } }) | undefined;
+          random?: (CSSProperties & { field?: { transitionDuration?: number } }) | undefined;
+        }
+      | undefined;
 
-    SvgSpriteIcon?: {
-      spriteId?: string;
-      defaultSize?: number | string;
-    };
+    SvgSpriteIcon?:
+      | {
+          spriteId?: string | undefined;
+          defaultSize?: number | string | undefined;
+        }
+      | undefined;
 
     MenuList?: {
-      root?: CSSProperties;
-      header?: {
-        root?: CSSProperties;
-        flex?: FlexOnlyProps;
-        backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
-        closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'>;
-        title?: {
-          root?: CSSProperties;
-          flex?: FlexOnlyProps | ((options: { hasIcon: boolean }) => FlexOnlyProps);
-        };
-        action?: {
-          root?: CSSProperties;
-          flex?: FlexOnlyProps;
-        };
-      };
-      list?: {
-        flex?: FlexOnlyProps | ((options: { hasHeader: boolean }) => FlexOnlyProps);
-      };
+      root?: CSSProperties | undefined;
+      header?:
+        | {
+            root?: CSSProperties | undefined;
+            flex?: FlexOnlyProps | undefined;
+            backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
+            closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
+            title?:
+              | {
+                  root?: CSSProperties | undefined;
+                  flex?:
+                    | FlexOnlyProps
+                    | ((options: { hasIcon: boolean }) => FlexOnlyProps)
+                    | undefined;
+                }
+              | undefined;
+            action?:
+              | {
+                  root?: CSSProperties | undefined;
+                  flex?: FlexOnlyProps | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+      list?:
+        | {
+            flex?: FlexOnlyProps | ((options: { hasHeader: boolean }) => FlexOnlyProps) | undefined;
+          }
+        | undefined;
     };
 
     MenuListItem?: {
-      root?: CSSProperties;
-      hover?: CSSProperties;
+      root?: CSSProperties | undefined;
+      hover?: CSSProperties | undefined;
       flex?:
         | FlexOnlyProps
-        | ((options: { hasIcon: boolean; submenu: boolean; checked: boolean }) => FlexOnlyProps);
-      title?: {
-        root?: CSSProperties;
-        flex?:
-          | FlexOnlyProps
-          | ((
-              options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
-                MenuListItemProps<string, string>,
-                'shrinkTitle'
-              >
-            ) => FlexOnlyProps);
-      };
-      subtitle?: {
-        root?: CSSProperties;
-        flex?:
-          | FlexOnlyProps
-          | ((
-              options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
-                MenuListItemProps<string, string>,
-                'shrinkTitle'
-              >
-            ) => FlexOnlyProps);
-      };
-      checkIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps;
-      submenuIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps;
+        | ((options: { hasIcon: boolean; submenu: boolean; checked: boolean }) => FlexOnlyProps)
+        | undefined;
+      title?:
+        | {
+            root?: CSSProperties | undefined;
+            flex?:
+              | FlexOnlyProps
+              | ((
+                  options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
+                    MenuListItemProps<string, string>,
+                    'shrinkTitle'
+                  >
+                ) => FlexOnlyProps)
+              | undefined;
+          }
+        | undefined;
+      subtitle?:
+        | {
+            root?: CSSProperties | undefined;
+            flex?:
+              | FlexOnlyProps
+              | ((
+                  options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
+                    MenuListItemProps<string, string>,
+                    'shrinkTitle'
+                  >
+                ) => FlexOnlyProps)
+              | undefined;
+          }
+        | undefined;
+      checkIcon?: (Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps) | undefined;
+      submenuIcon?: (Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps) | undefined;
     };
 
-    Tooltip?: {
-      style?: CSSProperties;
-      title?: CSSProperties;
-      text?: CSSProperties;
-      arrowColor?: string;
-      space?: SpaceProps;
-      innerSpace?: SpaceProps;
-    };
+    Tooltip?:
+      | {
+          style?: CSSProperties | undefined;
+          title?: CSSProperties | undefined;
+          text?: CSSProperties | undefined;
+          arrowColor?: string | undefined;
+          space?: SpaceProps | undefined;
+          innerSpace?: SpaceProps | undefined;
+        }
+      | undefined;
 
-    Notifications?: {
-      root?: CSSProperties;
-      item?: CSSProperties;
-      itemSpace?: CSSProperties;
-    } & { [P in NotificationPosition]?: CSSProperties };
+    Notifications?:
+      | ({
+          root?: CSSProperties | undefined;
+          item?: CSSProperties | undefined;
+          itemSpace?: CSSProperties | undefined;
+        } & { [P in NotificationPosition]?: CSSProperties | undefined })
+      | undefined;
 
-    NotificationBar?: {
-      root?: CSSProperties;
-      content?: CSSProperties;
-      action?: CSSProperties;
-    } & { [P in NotificationVariant]?: CSSProperties };
+    NotificationBar?:
+      | ({
+          root?: CSSProperties | undefined;
+          content?: CSSProperties | undefined;
+          action?: CSSProperties | undefined;
+        } & { [P in NotificationVariant]?: CSSProperties | undefined })
+      | undefined;
   };
 }

@@ -29,13 +29,15 @@ export interface PictureProps
     | {
         /** Fallback or default src */
         src: string;
-        srcset?: { src: string; type?: string; media?: string }[];
+        srcset?:
+          | { src: string; type?: string | undefined; media?: string | undefined }[]
+          | undefined;
       };
-  crossOrigin?: React.ImgHTMLAttributes<unknown>['crossOrigin'];
-  timeout?: number;
-  onLoadTimeout?: VoidFunction;
-  onLoadCompleted?: VoidFunction;
-  onError?: (error: unknown) => void;
+  crossOrigin?: React.ImgHTMLAttributes<unknown>['crossOrigin'] | undefined;
+  timeout?: number | undefined;
+  onLoadTimeout?: VoidFunction | undefined;
+  onLoadCompleted?: VoidFunction | undefined;
+  onError?: ((error: unknown) => void) | undefined;
 }
 
 export default function Picture({

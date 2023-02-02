@@ -57,25 +57,25 @@ type TooltipAlignY = 'top' | 'middle' | 'bottom';
 export interface TooltipData {
   readonly target: HTMLElement;
 
-  readonly preview?: React.ReactElement | React.CSSProperties;
-  readonly title?: React.ReactNode;
+  readonly preview?: React.ReactElement | React.CSSProperties | undefined;
+  readonly title?: React.ReactNode | undefined;
   readonly text: React.ReactNode;
-  readonly arrow?: boolean;
+  readonly arrow?: boolean | undefined;
 
   readonly x: number;
   readonly y: number;
   readonly alignX: TooltipAlignX;
   readonly alignY: TooltipAlignY;
-  readonly minX?: number;
-  readonly maxX?: number;
-  readonly minY?: number;
-  readonly maxY?: number;
+  readonly minX?: number | undefined;
+  readonly maxX?: number | undefined;
+  readonly minY?: number | undefined;
+  readonly maxY?: number | undefined;
 
-  readonly maxWidth?: number;
-  readonly space?: SpaceProps;
-  readonly innerSpace?: SpaceProps;
+  readonly maxWidth?: number | undefined;
+  readonly space?: SpaceProps | undefined;
+  readonly innerSpace?: SpaceProps | undefined;
 
-  readonly sequence?: boolean;
+  readonly sequence?: boolean | undefined;
 }
 
 export interface TooltipProps

@@ -6,7 +6,7 @@ import InvalidIcon from './InvalidIcon';
 
 export interface InputGroupProps<C extends React.ElementType = 'input'> extends FlexComponentProps {
   input: JSX.Element | FlexAllProps<C>;
-  error?: string | boolean | JSX.Element;
+  error?: string | boolean | JSX.Element | undefined;
 }
 
 const useStyles = makeStyles((theme: Theme) => {

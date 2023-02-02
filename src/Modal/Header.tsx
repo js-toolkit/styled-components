@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 export interface HeaderProps extends FlexComponentProps<'div'> {
-  readonly closeIcon?: boolean | React.ReactNode;
-  readonly onCloseClick?: React.MouseEventHandler<SVGSVGElement>;
+  readonly closeIcon?: boolean | React.ReactNode | undefined;
+  readonly onCloseClick?: React.MouseEventHandler<SVGSVGElement> | undefined;
 }
 
 export default function Header({

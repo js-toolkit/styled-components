@@ -9,17 +9,17 @@ import DropDownContext, { DropDownContextValue } from './DropDownContext';
 export interface DropDownProps
   extends Partial<Pick<OutsideClickListenerProps, 'onOutsideClick'>>,
     Omit<FlexComponentProps<'div'>, keyof React.DOMAttributes<any>> {
-  expanded?: boolean;
-  onToggle?: (expanded: boolean) => void;
+  expanded?: boolean | undefined;
+  onToggle?: ((expanded: boolean) => void) | undefined;
   /** Works only for uncontrolled */
-  onToggled?: (expanded: boolean) => void;
-  expandedClassName?: string;
-  hideOnOutsideClick?: boolean;
+  onToggled?: ((expanded: boolean) => void) | undefined;
+  expandedClassName?: string | undefined;
+  hideOnOutsideClick?: boolean | undefined;
   /**
    * Whether set position `absolute` for DropDownBox.
    * Default `true`.
    */
-  floating?: boolean;
+  floating?: boolean | undefined;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -55,7 +55,7 @@ export default function DropDown({
   isExpandedRef.current = isExpanded;
 
   const toggle = useCallback(
-    (value?: boolean) => {
+    (value?: boolean | undefined) => {
       const nextValue = typeof value === 'boolean' ? value : !isExpandedRef.current;
       if (nextValue === isExpandedRef.current) return;
 

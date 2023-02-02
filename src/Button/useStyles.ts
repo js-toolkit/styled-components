@@ -7,7 +7,7 @@ type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 const useStyles = makeStyles((theme: Theme) => {
   const outlinedBorderWidth = '1px';
 
-  const getBorderWidth = (variant?: MakeStylesProps['variant']): string =>
+  const getBorderWidth = (variant?: MakeStylesProps['variant'] | undefined): string =>
     variant === 'outlined' ? outlinedBorderWidth : '0px';
 
   const {

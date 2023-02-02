@@ -41,15 +41,15 @@ export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<stri
         >
     >,
     AriaAttributes {
-  icon?: I;
+  icon?: I | undefined;
   title: React.ReactNode;
-  subtitle?: React.ReactNode;
-  shrinkTitle?: boolean;
+  subtitle?: React.ReactNode | undefined;
+  shrinkTitle?: boolean | undefined;
   value: V;
-  submenu?: boolean;
-  checked?: boolean;
-  autoFocus?: boolean | number;
-  onSelect?: (value: this['value'], event: React.UIEvent<HTMLDivElement>) => void;
+  submenu?: boolean | undefined;
+  checked?: boolean | undefined;
+  autoFocus?: boolean | number | undefined;
+  onSelect?: ((value: this['value'], event: React.UIEvent<HTMLDivElement>) => void) | undefined;
 }
 
 export default function MenuListItem<V, I extends string | SvgSpriteIconProps<string>>({

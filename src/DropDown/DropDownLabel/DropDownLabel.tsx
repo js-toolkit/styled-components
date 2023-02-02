@@ -7,9 +7,9 @@ import ExpandIcon from './ExpandIcon';
 
 export type DropDownLabelProps<C extends React.ElementType = DefaultComponentType> =
   React.PropsWithChildren<{
-    toggleOnClick?: boolean;
-    expandedClassName?: string;
-    expandIcon?: boolean | React.ReactElement;
+    toggleOnClick?: boolean | undefined;
+    expandedClassName?: string | undefined;
+    expandIcon?: boolean | React.ReactElement | undefined;
   }> &
     FlexAllProps<C>;
 

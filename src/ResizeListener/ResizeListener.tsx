@@ -6,8 +6,8 @@ export interface Size {
 }
 
 export interface ResizeListenerProps {
-  onlyWidth?: boolean;
-  onlyHeight?: boolean;
+  onlyWidth?: boolean | undefined;
+  onlyHeight?: boolean | undefined;
   onSizeChange: (size: Size, domRect: DOMRect) => void;
 }
 

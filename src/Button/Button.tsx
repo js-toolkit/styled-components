@@ -21,9 +21,9 @@ export type ButtonColor = GetOverridedKeys<
 export type ButtonVariant = GetOverridedKeys<'outlined' | 'filled' | 'text', ButtonVariants>;
 
 export interface ButtonStyleProps {
-  size?: ButtonSize;
-  color?: ButtonColor;
-  variant?: ButtonVariant;
+  readonly size?: ButtonSize | undefined;
+  readonly color?: ButtonColor | undefined;
+  readonly variant?: ButtonVariant | undefined;
 }
 
 export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C> &

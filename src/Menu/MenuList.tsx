@@ -39,31 +39,27 @@ export interface MenuListProps<
   I extends string | SvgSpriteIconProps<string>,
   HI extends string | SvgSpriteIconProps<string>
 > extends FlexComponentProps<'div'> {
-  header?: React.ReactChild;
-  headerIcon?: HI;
-  headerAction?: string | React.ReactElement<any, any>;
-  items?: MenuItem<V, I>[];
-  onItemSelect?: MenuListItemProps<V, I>['onSelect'];
-  onItemMouseEnter?: (
-    value: MenuListItemProps<V, I>['value'],
-    event: React.MouseEvent<HTMLDivElement>
-  ) => void;
-  onItemMouseLeave?: (
-    value: MenuListItemProps<V, I>['value'],
-    event: React.MouseEvent<HTMLDivElement>
-  ) => void;
-  onItemFocus?: (
-    value: MenuListItemProps<V, I>['value'],
-    event: React.FocusEvent<HTMLDivElement>
-  ) => void;
-  onItemBlur?: (
-    value: MenuListItemProps<V, I>['value'],
-    event: React.FocusEvent<HTMLDivElement>
-  ) => void;
-  onItemProps?: (itemProps: MenuItem<V, I>) => MenuItem<V, I>;
-  onClose?: () => void;
-  onBack?: () => void;
-  onHeaderAction?: () => void;
+  header?: React.ReactChild | undefined;
+  headerIcon?: HI | undefined;
+  headerAction?: string | React.ReactElement<any, any> | undefined;
+  items?: MenuItem<V, I>[] | undefined;
+  onItemSelect?: MenuListItemProps<V, I>['onSelect'] | undefined;
+  onItemMouseEnter?:
+    | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
+    | undefined;
+  onItemMouseLeave?:
+    | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
+    | undefined;
+  onItemFocus?:
+    | ((value: MenuListItemProps<V, I>['value'], event: React.FocusEvent<HTMLDivElement>) => void)
+    | undefined;
+  onItemBlur?:
+    | ((value: MenuListItemProps<V, I>['value'], event: React.FocusEvent<HTMLDivElement>) => void)
+    | undefined;
+  onItemProps?: ((itemProps: MenuItem<V, I>) => MenuItem<V, I>) | undefined;
+  onClose?: VoidFunction | undefined;
+  onBack?: VoidFunction | undefined;
+  onHeaderAction?: VoidFunction | undefined;
 }
 
 export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.Element {

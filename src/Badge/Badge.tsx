@@ -4,8 +4,8 @@ import { Flex, FlexComponentProps } from 'reflexy/styled';
 import BadgeIcon from './BadgeIcon';
 
 export interface BadgeProps extends FlexComponentProps {
-  count?: React.ReactNode;
-  loading?: boolean;
+  count?: React.ReactNode | undefined;
+  loading?: boolean | undefined;
 }
 
 const useStyles = makeStyles({

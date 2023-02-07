@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'size-m': sizeM,
     'size-l': sizeL,
     'size-xl': sizeXL,
+    css,
     ...restTheme
   } = theme.rc?.Button ?? {};
 
@@ -74,6 +75,9 @@ const useStyles = makeStyles((theme: Theme) => {
         ...(root?.['&:disabled'] as CSSProperties),
       },
     },
+
+    // Custom CSS
+    ...css,
 
     // Sizes
 

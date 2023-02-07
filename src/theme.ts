@@ -1,4 +1,4 @@
-import type { BaseCSSProperties } from '@mui/styles/withStyles';
+import type { BaseCSSProperties, StyleRules } from '@mui/styles/withStyles';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
@@ -101,6 +101,7 @@ export interface Theme {
       | (ButtonThemeSizes &
           ButtonThemeVariants & {
             root?: CSSProperties | undefined;
+            css?: StyleRules | undefined;
           } & {
             [P in ButtonColor]?:
               | { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ | undefined }

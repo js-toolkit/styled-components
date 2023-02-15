@@ -172,10 +172,10 @@ const useStyles = makeStyles((theme: Theme) => {
       },
 
       // https://github.com/cssinjs/jss/issues/1045
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.filled?.['&:active'] as CSSProperties),
       },
     },
 
@@ -193,10 +193,10 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
@@ -213,10 +213,10 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgba(210, 220, 220, 0.7)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.text?.['&:active'] as CSSProperties),
       },
     },
 
@@ -234,10 +234,10 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.filled?.['&:active'] as CSSProperties),
       },
     },
 
@@ -256,11 +256,11 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
@@ -278,11 +278,11 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.text?.['&:active'] as CSSProperties),
       },
     },
 
@@ -300,10 +300,10 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.filled?.['&:active'] as CSSProperties),
       },
     },
 
@@ -322,11 +322,11 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
@@ -344,11 +344,11 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.text?.['&:active'] as CSSProperties),
       },
     },
   };

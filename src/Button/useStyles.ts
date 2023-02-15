@@ -4,6 +4,12 @@ import type { ButtonColor, ButtonProps, ButtonSize, ButtonVariant } from './Butt
 
 type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 
+function excludeHoverRules<T extends AnyObject | undefined>(rules: T): T {
+  if (rules == null) return rules;
+  const { '&:hover': _, '&&:hover': __, ...rest } = rules;
+  return rest as T;
+}
+
 const useStyles = makeStyles((theme: Theme) => {
   const outlinedBorderWidth = '1px';
 
@@ -54,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) => {
   return {
     root: {
       borderRadius: 'var(--rc--border-radius-xs, 3px)',
-      // border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
       border: 'none',
       outline: 'none',
       WebkitTapHighlightColor: 'transparent',
@@ -159,8 +164,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'default-filled': {
       backgroundColor: 'rgb(210, 220, 220)',
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.filled,
-      // ...(colorDefault?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -182,8 +186,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'default-outlined': {
       borderColor: 'rgb(195, 205, 205)',
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.outlined,
-      // ...(colorDefault?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -202,8 +205,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
     'default-text': {
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.text,
-      // ...(colorDefault?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.text),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -223,8 +225,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'primary-filled': {
       backgroundColor: 'rgb(92, 184, 92)',
       color: '#fff',
-      ...colorPrimary?.filled,
-      // ...(colorPrimary?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -244,8 +245,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'primary-outlined': {
       borderColor: 'rgb(92, 184, 92)',
       color: 'rgb(92, 184, 92)',
-      ...colorPrimary?.outlined,
-      // ...(colorPrimary?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -266,8 +266,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
     'primary-text': {
       color: 'rgb(92, 184, 92)',
-      ...colorPrimary?.text,
-      // ...(colorPrimary?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.text),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -289,8 +288,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'secondary-filled': {
       backgroundColor: 'rgb(220, 0, 78)',
       color: '#fff',
-      ...colorSecondary?.filled,
-      // ...(colorSecondary?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -310,8 +308,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'secondary-outlined': {
       borderColor: 'rgb(220, 0, 78)',
       color: 'rgb(220, 0, 78)',
-      ...colorSecondary?.outlined,
-      // ...(colorSecondary?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -332,8 +329,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
     'secondary-text': {
       color: 'rgb(220, 0, 78)',
-      ...colorSecondary?.text,
-      // ...(colorSecondary?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.text),
 
       '@media (hover: hover)': {
         '&:hover': {

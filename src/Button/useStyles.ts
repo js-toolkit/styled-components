@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) => {
       color: 'inherit',
       padding: 0,
       margin: 0,
+      touchAction: 'manipulation',
       ...root,
 
       '&:disabled': {

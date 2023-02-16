@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme: Theme) => {
       backgroundColor: 'transparent',
       color: 'inherit',
       padding: 0,
+      margin: 0,
       ...root,
 
       '&:disabled': {

@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 export interface ViewableListenerProps
   extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
-  onViewable: () => void;
+  onViewable: VoidFunction;
 }
 
 export default function ViewableListener({

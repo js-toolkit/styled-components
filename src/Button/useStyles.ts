@@ -4,6 +4,12 @@ import type { ButtonColor, ButtonProps, ButtonSize, ButtonVariant } from './Butt
 
 type MakeStylesProps = Pick<ButtonProps, 'variant'>;
 
+function excludeHoverRules<T extends AnyObject | undefined>(rules: T): T {
+  if (rules == null) return rules;
+  const { '&:hover': _, '&&:hover': __, ...rest } = rules;
+  return rest as T;
+}
+
 const useStyles = makeStyles((theme: Theme) => {
   const outlinedBorderWidth = '1px';
 
@@ -25,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'size-m': sizeM,
     'size-l': sizeL,
     'size-xl': sizeXL,
+    css,
     ...restTheme
   } = theme.rc?.Button ?? {};
 
@@ -53,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) => {
   return {
     root: {
       borderRadius: 'var(--rc--border-radius-xs, 3px)',
-      // border: ({ variant }: MakeStylesProps) => `${getBorderWidth(variant)} solid transparent`,
       border: 'none',
       outline: 'none',
       WebkitTapHighlightColor: 'transparent',
@@ -65,6 +71,8 @@ const useStyles = makeStyles((theme: Theme) => {
       backgroundColor: 'transparent',
       color: 'inherit',
       padding: 0,
+      margin: 0,
+      touchAction: 'manipulation',
       ...root,
 
       '&:disabled': {
@@ -74,6 +82,9 @@ const useStyles = makeStyles((theme: Theme) => {
         ...(root?.['&:disabled'] as CSSProperties),
       },
     },
+
+    // Custom CSS
+    ...css,
 
     // Sizes
 
@@ -155,8 +166,7 @@ const useStyles = makeStyles((theme: Theme) => {
     'default-filled': {
       backgroundColor: 'rgb(210, 220, 220)',
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.filled,
-      // ...(colorDefault?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -168,18 +178,17 @@ const useStyles = makeStyles((theme: Theme) => {
       },
 
       // https://github.com/cssinjs/jss/issues/1045
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.filled?.['&:active'] as CSSProperties),
       },
     },
 
     'default-outlined': {
       borderColor: 'rgb(195, 205, 205)',
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.outlined,
-      // ...(colorDefault?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -189,17 +198,16 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(210, 220, 220)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
     'default-text': {
       color: 'rgb(70, 80, 80)',
-      ...colorDefault?.text,
-      // ...(colorDefault?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorDefault?.text),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -209,18 +217,17 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgba(210, 220, 220, 0.7)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorDefault?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorDefault?.text?.['&:active'] as CSSProperties),
       },
     },
 
     'primary-filled': {
       backgroundColor: 'rgb(92, 184, 92)',
       color: '#fff',
-      ...colorPrimary?.filled,
-      // ...(colorPrimary?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -230,18 +237,17 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.filled?.['&:active'] as CSSProperties),
       },
     },
 
     'primary-outlined': {
       borderColor: 'rgb(92, 184, 92)',
       color: 'rgb(92, 184, 92)',
-      ...colorPrimary?.outlined,
-      // ...(colorPrimary?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -252,18 +258,17 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
     'primary-text': {
       color: 'rgb(92, 184, 92)',
-      ...colorPrimary?.text,
-      // ...(colorPrimary?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorPrimary?.text),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -274,19 +279,18 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(92, 184, 92)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorPrimary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorPrimary?.text?.['&:active'] as CSSProperties),
       },
     },
 
     'secondary-filled': {
       backgroundColor: 'rgb(220, 0, 78)',
       color: '#fff',
-      ...colorSecondary?.filled,
-      // ...(colorSecondary?.filled?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.filled),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -296,18 +300,17 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.filled?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.filled?.['&:active'] as CSSProperties),
       },
     },
 
     'secondary-outlined': {
       borderColor: 'rgb(220, 0, 78)',
       color: 'rgb(220, 0, 78)',
-      ...colorSecondary?.outlined,
-      // ...(colorSecondary?.outlined?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.outlined),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -318,18 +321,17 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.outlined?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.outlined?.['&:active'] as CSSProperties),
       },
     },
 
     'secondary-text': {
       color: 'rgb(220, 0, 78)',
-      ...colorSecondary?.text,
-      // ...(colorSecondary?.text?.[sizeProp] as CSSProperties),
+      ...excludeHoverRules(colorSecondary?.text),
 
       '@media (hover: hover)': {
         '&:hover': {
@@ -340,11 +342,11 @@ const useStyles = makeStyles((theme: Theme) => {
         },
       },
 
-      '&&:active': {
+      '&:active': {
         backgroundColor: 'rgb(220, 0, 78)',
         color: '#fff',
-        ...(root?.['&&:active'] as CSSProperties),
-        ...(colorSecondary?.text?.['&&:active'] as CSSProperties),
+        ...(root?.['&:active'] as CSSProperties),
+        ...(colorSecondary?.text?.['&:active'] as CSSProperties),
       },
     },
   };

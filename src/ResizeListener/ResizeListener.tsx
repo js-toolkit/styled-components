@@ -1,9 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-
-export interface Size {
-  width: number;
-  height: number;
-}
+import type { Size } from '@jstoolkit/utils/types/utils';
 
 export interface ResizeListenerProps {
   onlyWidth?: boolean | undefined;

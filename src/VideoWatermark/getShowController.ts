@@ -12,6 +12,7 @@ export interface ShowControllerOptions {
 export interface ShowController {
   readonly start: VoidFunction;
   readonly stop: VoidFunction;
+  readonly reset: VoidFunction;
 }
 
 export function getShowController({
@@ -22,13 +23,13 @@ export function getShowController({
   onHide,
 }: ShowControllerOptions): ShowController {
   const show = (): void => {
-    showTimer.stop();
+    showTimer.pause();
     hideTimer.start();
     if (!isVisible()) onShow();
   };
 
   const hide = (): void => {
-    hideTimer.stop();
+    hideTimer.pause();
     showTimer.start();
     if (isVisible()) onHide();
   };
@@ -51,9 +52,14 @@ export function getShowController({
   };
 
   const stop = (): void => {
+    showTimer.pause();
+    hideTimer.pause();
+  };
+
+  const reset = (): void => {
     showTimer.stop();
     hideTimer.stop();
   };
 
-  return { start, stop };
+  return { start, stop, reset };
 }

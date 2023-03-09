@@ -31,7 +31,7 @@ export function getRandomShowController({
   if (showOptions) {
     const { visibleTimeout, hiddenTimeout, isVisible, onShow, onHide } = showOptions;
 
-    const { start, stop } = getShowController({
+    const { start, stop, reset } = getShowController({
       visibleTimeout,
       hiddenTimeout,
       isVisible,
@@ -42,7 +42,7 @@ export function getRandomShowController({
       onHide,
     });
 
-    return { start, stop, update };
+    return { start, stop, update, reset };
   }
 
   const updateTimer = getTimer({
@@ -53,7 +53,8 @@ export function getRandomShowController({
 
   return {
     start: updateTimer.start,
-    stop: updateTimer.stop,
+    stop: updateTimer.pause,
     update,
+    reset: updateTimer.stop,
   };
 }

@@ -173,7 +173,7 @@ export default React.memo(function VideoWatermark({
     return () => {
       video.removeEventListener('play', showController.start);
       video.removeEventListener('pause', showController.stop);
-      showController.stop();
+      showController.reset();
     };
   }, [hiddenTimeout, hideable, mode, videoRef, visibleTimeout]);
 
@@ -213,7 +213,7 @@ export default React.memo(function VideoWatermark({
     return () => {
       video.removeEventListener('play', randomController.start);
       video.removeEventListener('pause', randomController.stop);
-      randomController.stop();
+      randomController.reset();
     };
   }, [
     baseFontSize,

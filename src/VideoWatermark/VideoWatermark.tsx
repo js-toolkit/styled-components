@@ -21,6 +21,7 @@ import { getRandomShowController } from './getRandomShowController';
 export type VideoWatermarkProps = FlexComponentProps &
   Partial<Point> &
   Partial<Size> & {
+    htmlRef?: React.Ref<HTMLDivElement>;
     text: string;
     baseFontSize?: number | undefined;
     scaleBySize?: number | undefined;
@@ -93,6 +94,7 @@ function scaleFontSize(baseFontSize: number, scale: number, width: number, heigh
 }
 
 export default React.memo(function VideoWatermark({
+  htmlRef,
   videoRef,
   text,
   mode = 'stripes',
@@ -111,7 +113,7 @@ export default React.memo(function VideoWatermark({
   const css = useStyles({ classes: { root: className } });
   const rootRef = useRef<HTMLDivElement>(null);
   const forceUpdate = useUpdate();
-  const setRootRef = useRefs(rootRef, forceUpdate);
+  const setRootRef = useRefs(rootRef, htmlRef, forceUpdate);
   const textRef = useRef<HTMLDivElement>(null);
   const [getTextSize, setTextSize] = useRefState({ textWidth: 0, textHeight: 0 });
   const [getCoord, setCoord] = useRefState<Point | undefined>(undefined);

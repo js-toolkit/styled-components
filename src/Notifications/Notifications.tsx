@@ -298,7 +298,7 @@ export default React.memo(function Notifications<
     return (
       // Extra container for correct positioning by center
       <Flex key={pos} justifyContent="center" {...containerProps} className={containerClassName}>
-        <Flex column className={rootClassName} {...rest}>
+        <Flex column className={rootClassName} {...(rest as FlexAllProps<DefaultComponentType>)}>
           {/* Extra container for scrolling */}
           <Flex
             column

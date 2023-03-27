@@ -72,7 +72,7 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
   // }, [highlighted, onHighlight]);
 
   return (
-    <Flex component="span" flex={false} className={css.root} {...rest}>
+    <Flex component="span" flex={false} className={css.root} {...(rest as FlexAllProps<'span'>)}>
       {content}
     </Flex>
   );

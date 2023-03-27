@@ -173,7 +173,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   return (
     <Flex
       className={hidden && hiddenClassName ? `${css.root} ${hiddenClassName}` : css.root}
-      {...rest}
+      {...(rest as FlexAllProps<DefaultComponentType>)}
       onTransitionEnd={transitionEndHandler}
       // eslint-disable-next-line react/no-children-prop
       children={children}

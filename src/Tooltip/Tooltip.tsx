@@ -192,7 +192,7 @@ export default function Tooltip({
               {React.isValidElement(tooltip.preview) ? (
                 tooltip.preview
               ) : (
-                <div style={tooltip.preview} />
+                <div style={tooltip.preview as React.CSSProperties} />
               )}
             </Flex>
           )}

@@ -6,7 +6,7 @@ import type {
   EnterHandler,
   ExitHandler,
 } from 'react-transition-group/Transition';
-import CSSTransition, { CSSTransitionProps } from 'react-transition-group/CSSTransition';
+import CSSTransition, { type CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 
 interface BaseProps

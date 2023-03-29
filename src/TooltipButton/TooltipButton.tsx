@@ -4,7 +4,7 @@ import debounce from '@jstoolkit/utils/debounce';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
-import Button, { ButtonProps } from '../Button';
+import Button, { type ButtonProps } from '../Button';
 
 export interface TooltipData<D = never> {
   readonly target: HTMLButtonElement;

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef, useContext } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { CSSProperties, Theme } from '../theme';
 import CheckboxContext from './CheckboxContext';
 

@@ -3,7 +3,7 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy';
 import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
-import TransitionFlex, { HideableProps } from '../TransitionFlex';
+import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 
 const useStyles = makeStyles({
   root: {

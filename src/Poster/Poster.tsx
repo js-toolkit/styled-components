@@ -5,7 +5,7 @@ import type { FlexComponentProps } from 'reflexy';
 import loadImage from '@jstoolkit/web-utils/loadImage';
 import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
 import { isWebPSupported } from '@jstoolkit/web-utils/isWebPSupported';
-import TransitionFlex, { HideableProps } from '../TransitionFlex';
+import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import type { PictureProps } from '../Picture';
 
 const useStyles = makeStyles({

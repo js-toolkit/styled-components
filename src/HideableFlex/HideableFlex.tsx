@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import type { Property } from 'csstype';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
+import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 

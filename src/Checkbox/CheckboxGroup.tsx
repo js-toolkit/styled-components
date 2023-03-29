@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Flex, FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
-import CheckboxContext, { CheckboxContextValue } from './CheckboxContext';
+import CheckboxContext, { type CheckboxContextValue } from './CheckboxContext';
 
 export interface CheckboxGroupChangeEvent<V = unknown> {
   name?: string | undefined;

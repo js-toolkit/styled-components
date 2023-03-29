@@ -1,7 +1,7 @@
-import React, { AriaAttributes, useEffect, useRef } from 'react';
+import React, { type AriaAttributes, useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
-import { Flex, FlexComponentProps } from 'reflexy';
+import { Flex, type FlexComponentProps } from 'reflexy';
 import noop from '@jstoolkit/utils/noop';
 import preventDefault from '@jstoolkit/web-utils/preventDefault';
 import stopPropagation from '@jstoolkit/web-utils/stopPropagation';
@@ -9,7 +9,7 @@ import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';
 import TruncatedText from '../TruncatedText';
-import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
+import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';
 
 type MakeStylesProps = { clickable: boolean };
 

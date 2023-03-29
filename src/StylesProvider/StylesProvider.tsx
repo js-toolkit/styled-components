@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { create, JssOptions } from 'jss';
+import { create, type JssOptions } from 'jss';
 import MuiStylesProvider, {
-  StylesProviderProps as MuiStylesProviderProps,
+  type StylesProviderProps as MuiStylesProviderProps,
 } from '@mui/styles/StylesProvider';
 import createPlugins from './createPlugins';
 

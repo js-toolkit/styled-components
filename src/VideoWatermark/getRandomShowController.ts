@@ -1,7 +1,11 @@
 import getRandom from '@jstoolkit/utils/getRandom';
 import getTimer from '@jstoolkit/utils/getTimer';
 import toInt from '@jstoolkit/utils/toInt';
-import { getShowController, ShowController, ShowControllerOptions } from './getShowController';
+import {
+  getShowController,
+  type ShowController,
+  type ShowControllerOptions,
+} from './getShowController';
 
 export interface RandomShowControllerOptions {
   readonly updateTimeout?: number | undefined;

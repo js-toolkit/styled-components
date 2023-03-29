@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, FlexAllProps } from 'reflexy/styled';
+import { Flex, type FlexAllProps } from 'reflexy/styled';
 import clsx from 'clsx';
 import type { GetOverridedKeys } from '../types/local';
 import useStyles from './useStyles';

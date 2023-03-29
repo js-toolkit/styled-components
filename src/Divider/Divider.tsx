@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
 import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => {

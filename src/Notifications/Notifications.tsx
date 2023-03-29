@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps, DefaultComponentType, FlexComponentProps, ForwardRef } from 'reflexy';
+import {
+  Flex,
+  ForwardRef,
+  type FlexAllProps,
+  type DefaultComponentType,
+  type FlexComponentProps,
+} from 'reflexy';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
 import clear from '@jstoolkit/utils/clear';
@@ -9,7 +15,7 @@ import useUpdate from '@jstoolkit/react-hooks/useUpdate';
 import type { TransitionComponent /* , TransitionFlexProps */ } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
-import NotificationBar, { NotificationBarProps } from './NotificationBar';
+import NotificationBar, { type NotificationBarProps } from './NotificationBar';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface NotificationPositions {}

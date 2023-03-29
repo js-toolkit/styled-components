@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexComponentProps, FlexAllProps } from 'reflexy';
+import { Flex, type FlexComponentProps, type FlexAllProps } from 'reflexy';
 import type { Theme } from '../theme';
 import InvalidIcon from './InvalidIcon';
 

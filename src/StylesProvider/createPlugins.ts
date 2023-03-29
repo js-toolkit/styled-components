@@ -83,7 +83,9 @@ export default function createPlugins(options: CreatePluginsOptions = {}): JssOp
 
   return Object.entries({ ...getDefaultPlugins(), ...options })
     .filter(([, enabled]) => !!enabled)
-    .sort(([a], [b]) => sortOrderMap[a] - sortOrderMap[b])
+    .sort(([a], [b]) => {
+      return sortOrderMap[a as keyof PluginsFactory] - sortOrderMap[b as keyof PluginsFactory];
+    })
     .map(([plugin, pluginOpts]) => {
       const factory = pluginsFactory[plugin as keyof PluginsFactory];
       if (typeof pluginOpts === 'boolean') return factory();

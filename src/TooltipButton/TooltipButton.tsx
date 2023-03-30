@@ -35,14 +35,16 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
       tooltipDelay={tooltipDelay}
       onShowTooltip={onShowTooltip}
       onHideTooltip={onHideTooltip}
+      onClick={clickHandler}
       component={
         TweakableElementWrapper as React.FC<
           React.ComponentPropsWithRef<typeof TweakableElementWrapper> & {
             ref?: React.Ref<HTMLElement>;
+            onClick?: React.MouseEventHandler<HTMLButtonElement>;
           }
         >
       }
-      element={<Button onClick={clickHandler} {...rest} />}
+      element={<Button {...rest} />}
     />
   );
 }

@@ -36,14 +36,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
       onShowTooltip={onShowTooltip}
       onHideTooltip={onHideTooltip}
       onClick={clickHandler}
-      component={
-        TweakableElementWrapper as React.FC<
-          React.ComponentPropsWithRef<typeof TweakableElementWrapper> & {
-            ref?: React.Ref<HTMLElement>;
-            onClick?: React.MouseEventHandler<HTMLButtonElement>;
-          }
-        >
-      }
+      component={TweakableElementWrapper}
       element={<Button {...rest} />}
     />
   );

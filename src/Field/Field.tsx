@@ -11,7 +11,7 @@ export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
-type FlexContent<T extends React.ElementType> = FlexComponentProps<T> & {
+type FlexContent<T extends React.ElementType> = Omit<FlexComponentProps<T>, 'content'> & {
   content?: React.ReactNode | undefined;
 };
 

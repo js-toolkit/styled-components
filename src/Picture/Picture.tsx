@@ -8,12 +8,18 @@ import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 const useStyles = makeStyles({
   root: {
     pointerEvents: 'none',
+    touchAction: 'none',
+    userSelect: 'none',
 
     '& img': {
       width: '100%',
       height: '100%',
       objectFit: 'cover',
       borderRadius: 'inherit',
+
+      pointerEvents: 'none',
+      touchAction: 'none',
+      userSelect: 'none',
     },
   },
 });
@@ -78,7 +84,7 @@ export default function Picture({
         clearTimeout(timerRef.current);
       },
     ];
-  }, [crossOrigin, srcProp]);
+  }, [crossOrigin, onLoadTimeout, srcProp, timeout]);
 
   // The trick to workaround the WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=190031)
   // to do not load img together with selected source.

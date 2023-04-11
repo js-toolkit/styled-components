@@ -11,6 +11,8 @@ import type { PictureProps } from '../Picture';
 const useStyles = makeStyles({
   root: {
     pointerEvents: 'none',
+    touchAction: 'none',
+    userSelect: 'none',
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',

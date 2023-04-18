@@ -1,5 +1,5 @@
 import makeStyles from '@mui/styles/makeStyles';
-import type { Theme, CSSProperties } from '../theme';
+import type { Theme, ButtonTheme, CSSProperties } from '../theme';
 import type { ButtonColor, ButtonProps, ButtonSize, ButtonVariant } from './Button';
 
 type MakeStylesProps = Pick<ButtonProps, 'variant'>;
@@ -32,28 +32,35 @@ const useStyles = makeStyles((theme: Theme) => {
     'size-l': sizeL,
     'size-xl': sizeXL,
     css,
-    ...restTheme
+    ...rest
   } = theme.rc?.Button ?? {};
+
+  const restTheme = rest as ButtonTheme;
 
   // Build futured classes from theme
   const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
     (acc, p) => {
       if (p.indexOf('size-') === 0) {
-        acc.sizes[p] = { ...(restTheme[p] as CSSProperties) };
+        const size = p as `size-${ButtonSize}`;
+        acc.sizes[size] = { ...(restTheme[size] as CSSProperties) };
       } else if (p.indexOf('variant-') === 0) {
-        acc.variants[p] = { ...(restTheme[p] as CSSProperties) };
+        const variant = p as `variant-${ButtonVariant}`;
+        acc.variants[variant] = { ...(restTheme[variant] as CSSProperties) };
       } else {
-        const colorTheme = restTheme[p] as Record<ButtonVariant, CSSProperties>;
-        Object.getOwnPropertyNames(colorTheme).forEach((variant) => {
-          acc.colors[`${p}-${variant}`] = { ...(colorTheme[variant] as CSSProperties) };
-        });
+        const color = p as ButtonColor;
+        const colorTheme = restTheme[color];
+        colorTheme &&
+          Object.getOwnPropertyNames(colorTheme).forEach((k) => {
+            const variant = k as ButtonVariant;
+            acc.colors[`${color}-${variant}`] = { ...colorTheme[variant] };
+          });
       }
       return acc;
     },
     {
-      sizes: {} as Record<ButtonSize, CSSProperties>,
+      sizes: {} as Record<`size-${ButtonSize}`, CSSProperties>,
       colors: {} as Record<`${ButtonColor}-${ButtonVariant}`, CSSProperties>,
-      variants: {} as Record<ButtonVariant, CSSProperties>,
+      variants: {} as Record<`variant-${ButtonVariant}`, CSSProperties>,
     }
   );
 

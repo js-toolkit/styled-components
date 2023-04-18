@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
-import { Flex, FlexComponentProps } from 'reflexy';
+import { Flex, type FlexComponentProps } from 'reflexy';
 import type { CSSProperties, Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';
@@ -11,7 +11,7 @@ export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
-type FlexContent<T extends React.ElementType> = FlexComponentProps<T> & {
+type FlexContent<T extends React.ElementType> = Omit<FlexComponentProps<T>, 'content'> & {
   content?: React.ReactNode | undefined;
 };
 
@@ -27,16 +27,17 @@ export interface FieldProps extends FlexComponentProps {
 const useStyles = makeStyles((theme: Theme) => {
   const { root, label, controls, helperText, row, column, ...restTheme } = theme.rc?.Field ?? {};
 
-  type StatesTheme = Pick<NonNullable<NonNullable<Theme['rc']>['Field']>, FieldState>;
+  // type StatesTheme = Pick<NonNullable<NonNullable<Theme['rc']>['Field']>, FieldState>;
 
   // Build futured classes from theme
   const themeStateClasses = Object.getOwnPropertyNames(restTheme).reduce(
     (acc, p) => {
-      const stateTheme = restTheme[p] as NonNullable<StatesTheme[keyof StatesTheme]>;
-      acc.root[`state-${p}`] = { ...stateTheme?.root };
-      acc.label[`state-${p}-label`] = { ...stateTheme?.label };
-      acc.controls[`state-${p}-controls`] = { ...stateTheme?.controls };
-      acc.helperText[`state-${p}-helperText`] = { ...stateTheme?.helperText };
+      const state = p as FieldState;
+      const stateTheme = restTheme[state]; // as NonNullable<StatesTheme[keyof StatesTheme]>;
+      acc.root[`state-${state}`] = { ...stateTheme?.root };
+      acc.label[`state-${state}-label`] = { ...stateTheme?.label };
+      acc.controls[`state-${state}-controls`] = { ...stateTheme?.controls };
+      acc.helperText[`state-${state}-helperText`] = { ...stateTheme?.helperText };
       return acc;
     },
     {

@@ -10,7 +10,7 @@ export function isReactElementOfType<
   deep = false
 ): element is React.ReactComponentElement<T, React.ComponentProps<T>> {
   if (React.isValidElement(element)) {
-    if (element['$$typeof'] === ReactIs.Memo) {
+    if ((element as AnyObject)['$$typeof'] === ReactIs.Memo) {
       return isReactElementOfType(element['type'] as React.ElementType<any>, type, deep);
     }
 

@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import type { Property } from 'csstype';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, DefaultComponentType, FlexAllProps } from 'reflexy';
+import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 
@@ -173,7 +173,7 @@ export default function HideableFlex<C extends React.ElementType = DefaultCompon
   return (
     <Flex
       className={hidden && hiddenClassName ? `${css.root} ${hiddenClassName}` : css.root}
-      {...rest}
+      {...(rest as FlexAllProps<DefaultComponentType>)}
       onTransitionEnd={transitionEndHandler}
       // eslint-disable-next-line react/no-children-prop
       children={children}

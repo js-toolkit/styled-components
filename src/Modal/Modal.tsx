@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import '@jstoolkit/utils/types';
 import ReactModal from 'react-modal';
-import { Flex, FlexComponentProps, GetStylesTransformers } from 'reflexy/styled';
+import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
-import HideableFlex, { HideableProps } from '../HideableFlex';
+import HideableFlex, { type HideableProps } from '../HideableFlex';
 import type { CSSProperties, Theme } from '../theme';
 import Header from './Header';
 import Body from './Body';
@@ -48,9 +48,12 @@ const useStyles = makeStyles((theme: Theme) => {
 
   // Build futured classes from theme
   const sizeClasses = Object.getOwnPropertyNames(modal).reduce((acc, p) => {
-    if (p.indexOf('size-') === 0) acc[p] = { ...(modal[p] as CSSProperties) };
+    if (p.indexOf('size-') === 0) {
+      const size = p as `size-${ModalSize}`;
+      acc[size] = { ...modal[size] };
+    }
     return acc;
-  }, {} as Record<ModalSize, CSSProperties>);
+  }, {} as Record<`size-${ModalSize}`, CSSProperties>);
 
   return {
     root: {
@@ -202,7 +205,7 @@ function Modal({
     overlay: backdropStyle,
   };
 
-  const sizeClassName = (css[`size-${size}`] as string) ?? '';
+  const sizeClassName = css[`size-${size}`] ?? '';
 
   return (
     <Flex
@@ -236,7 +239,7 @@ function AsChild({
   ...rest
 }: Pick<ModalProps, 'size'> & FlexComponentProps<'div'>): JSX.Element {
   const css = useStyles({ classes: { root: className } });
-  const sizeClassName = (css[`size-${size}`] as string) ?? '';
+  const sizeClassName = css[`size-${size}`] ?? '';
   return <Flex column className={`${css.root} ${sizeClassName}`} {...rest} />;
 }
 

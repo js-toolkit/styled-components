@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps, FlexComponentProps } from 'reflexy';
+import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
-import TransitionFlex, { HideableProps, TransitionComponent } from '../TransitionFlex';
+import TransitionFlex, { type HideableProps, type TransitionComponent } from '../TransitionFlex';
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
@@ -32,13 +32,15 @@ export interface NotificationBarProps<
 }
 
 const useStyles = makeStyles(({ rc }: Theme) => {
-  const { root, content, action, info, success, warning, error, ...restTheme } =
+  const { root, content, action, info, success, warning, error, ...rest } =
     rc?.NotificationBar ?? {};
+  const restTheme = rest as Record<NotificationVariant, CSSProperties>;
 
   // Build futured classes from theme
   const themeClasses = Object.getOwnPropertyNames(restTheme).reduce((acc, p) => {
-    if (typeof restTheme[p] === 'object') {
-      acc[p] = restTheme[p] as CSSProperties;
+    const variant = p as NotificationVariant;
+    if (typeof restTheme[variant] === 'object') {
+      acc[variant] = restTheme[variant];
     }
     return acc;
   }, {} as Record<NotificationVariant, CSSProperties>);

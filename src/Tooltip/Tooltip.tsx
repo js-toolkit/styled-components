@@ -1,9 +1,9 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
-import { Flex, FlexSimpleProps, SpaceProps } from 'reflexy';
+import { Flex, type FlexSimpleProps, type SpaceProps } from 'reflexy';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
-import TransitionFlex, { TransitionFlexProps } from '../TransitionFlex';
+import TransitionFlex, { type TransitionFlexProps } from '../TransitionFlex';
 import TruncatedText from '../TruncatedText';
 import type { Theme } from '../theme';
 import { calcX, calcY, calcArrowCss, calcXInside } from './utils';
@@ -192,7 +192,7 @@ export default function Tooltip({
               {React.isValidElement(tooltip.preview) ? (
                 tooltip.preview
               ) : (
-                <div style={tooltip.preview} />
+                <div style={tooltip.preview as React.CSSProperties} />
               )}
             </Flex>
           )}

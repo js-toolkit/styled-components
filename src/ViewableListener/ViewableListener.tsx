@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useRefState from '@jstoolkit/react-hooks/useRefState';
-import EventTargetListener from '@jstoolkit/web-utils/EventTargetListener';
+import { EventEmitterListener } from '@jstoolkit/web-utils/EventEmitterListener';
 
 const useStyles = makeStyles({
   root: {
@@ -52,7 +52,7 @@ export default function ViewableListener({
 
   useEffect(() => {
     // Subscribe to window scroll
-    const listener = new EventTargetListener(window);
+    const listener = new EventEmitterListener(window);
     listener.on('scroll', check, { capture: false, passive: true });
 
     // Detect is viewable

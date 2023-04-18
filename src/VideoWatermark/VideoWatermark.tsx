@@ -12,15 +12,19 @@ import useUpdate from '@jstoolkit/react-hooks/useUpdate';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 import useHideableState from '@jstoolkit/react-hooks/useHideableState';
 import useUpdatedRef from '@jstoolkit/react-hooks/useUpdatedRef';
+import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
+import useIncrementalState from '@jstoolkit/react-hooks/useIncrementalState';
 import TransitionFlex from '../TransitionFlex';
 import WatermarkField from '../WatermarkField';
 import type { Theme } from '../theme';
 import { getShowController } from './getShowController';
 import { getRandomShowController } from './getRandomShowController';
+import { getModificationDetector } from './modificationDetector';
 
 export type VideoWatermarkProps = FlexComponentProps &
   Partial<Point> &
   Partial<Size> & {
+    htmlRef?: React.Ref<HTMLDivElement>;
     text: string;
     baseFontSize?: number | undefined;
     scaleBySize?: number | undefined;
@@ -28,6 +32,9 @@ export type VideoWatermarkProps = FlexComponentProps &
     hiddenTimeout?: number | undefined;
     /** Used with random mode. */
     updateTimeout?: number | undefined;
+    // onModificationDetected?: ModificationDetectorOptions['onModified'];
+    modificationDetectionInterval?: number;
+    onModificationDetected?: VoidFunction;
   } & (
     | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement> }
     | { mode?: 'stripes' | undefined; videoRef?: React.RefObject<HTMLVideoElement> | undefined }
@@ -93,6 +100,7 @@ function scaleFontSize(baseFontSize: number, scale: number, width: number, heigh
 }
 
 export default React.memo(function VideoWatermark({
+  htmlRef,
   videoRef,
   text,
   mode = 'stripes',
@@ -106,13 +114,15 @@ export default React.memo(function VideoWatermark({
   width: _width,
   height: _height,
   className,
+  modificationDetectionInterval = 5000,
+  onModificationDetected,
   ...rest
 }: VideoWatermarkProps): JSX.Element {
   const css = useStyles({ classes: { root: className } });
   const rootRef = useRef<HTMLDivElement>(null);
   const forceUpdate = useUpdate();
-  const setRootRef = useRefs(rootRef, forceUpdate);
   const textRef = useRef<HTMLDivElement>(null);
+  const keyState = useIncrementalState();
   const [getTextSize, setTextSize] = useRefState({ textWidth: 0, textHeight: 0 });
   const [getCoord, setCoord] = useRefState<Point | undefined>(undefined);
 
@@ -142,6 +152,28 @@ export default React.memo(function VideoWatermark({
   const sizeRef = useUpdatedRef<Size | undefined>(
     actualWidth && actualHeight ? { width: actualWidth, height: actualHeight } : undefined
   );
+
+  const modificationDetector = useMemoDestructor(
+    () => [
+      modificationDetectionInterval > 0
+        ? getModificationDetector({
+            mode,
+            checkInterval: modificationDetectionInterval,
+            onModified: (type) => {
+              if (type === 'children') {
+                keyState.inc();
+              } else {
+                onModificationDetected && onModificationDetected();
+              }
+            },
+          })
+        : undefined,
+      (d) => d?.destroy(),
+    ],
+    [keyState, mode, modificationDetectionInterval, onModificationDetected]
+  );
+
+  const setRootRef = useRefs(rootRef, htmlRef, modificationDetector?.setNode, forceUpdate);
 
   useLayoutEffect(() => {
     const { current: textEl } = textRef;
@@ -173,7 +205,7 @@ export default React.memo(function VideoWatermark({
     return () => {
       video.removeEventListener('play', showController.start);
       video.removeEventListener('pause', showController.stop);
-      showController.stop();
+      showController.reset();
     };
   }, [hiddenTimeout, hideable, mode, videoRef, visibleTimeout]);
 
@@ -213,7 +245,7 @@ export default React.memo(function VideoWatermark({
     return () => {
       video.removeEventListener('play', randomController.start);
       video.removeEventListener('pause', randomController.stop);
-      randomController.stop();
+      randomController.reset();
     };
   }, [
     baseFontSize,
@@ -230,12 +262,17 @@ export default React.memo(function VideoWatermark({
     visibleTimeout,
   ]);
 
+  if (hideable.hidden && modificationDetector) {
+    modificationDetector.setHidden();
+  }
+
   const { rc } = useTheme<Theme>();
   const { textWidth, textHeight } = getTextSize();
   const coord = getCoord();
 
   return (
     <TransitionFlex
+      key={keyState.value}
       hidden={hideable.hidden}
       componentRef={setRootRef}
       fill
@@ -249,6 +286,7 @@ export default React.memo(function VideoWatermark({
         width: widthProp ?? '100%',
         height: heightProp ?? '100%',
       }}
+      onShown={modificationDetector?.setVisible}
     >
       <span ref={textRef} className={mode === 'random' ? css.textRandom : css.textStripes}>
         {text}

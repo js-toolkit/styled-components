@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps } from 'reflexy';
+import { Flex, type FlexAllProps } from 'reflexy';
 import { escapeRegExp } from '@jstoolkit/utils/escapeRegExp';
 import type { Theme } from '../theme';
 
@@ -72,7 +72,7 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
   // }, [highlighted, onHighlight]);
 
   return (
-    <Flex component="span" flex={false} className={css.root} {...rest}>
+    <Flex component="span" flex={false} className={css.root} {...(rest as FlexAllProps<'span'>)}>
       {content}
     </Flex>
   );

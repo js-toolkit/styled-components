@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useRef, useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { Theme } from '../../theme';
-import DropDownContext, { DropDownContextValue } from '../DropDownContext';
+import DropDownContext, { type DropDownContextValue } from '../DropDownContext';
 
 /** Map of html tags and their selector */
 export type HtmlTagSelectorMap = { [P in keyof JSX.IntrinsicElements]?: string | undefined };
@@ -26,8 +26,9 @@ export interface DropDownBoxProps extends FlexComponentProps<'div'> {
 
 function isShouldClose(el: Element, topNode: Element, map: HtmlTagSelectorMap): boolean {
   const tag = el.nodeName.toLowerCase();
-  if (tag in map && (map[tag] == null || el.matches(map[tag]))) {
-    return true;
+  if (tag in map) {
+    const v = map[tag as keyof typeof map];
+    if (v == null || el.matches(v)) return true;
   }
   if (el === topNode || !el.parentElement) {
     return false;

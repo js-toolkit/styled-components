@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, FlexAllProps, DefaultComponentType } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
 import type { Theme } from '../../theme';
 import DropDownContext from '../DropDownContext';
 import ExpandIcon from './ExpandIcon';

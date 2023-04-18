@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
-import { Flex, FlexComponentProps } from 'reflexy';
+import { Flex, type FlexComponentProps } from 'reflexy';
 import stopPropagation from '@jstoolkit/web-utils/stopPropagation';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
-import SvgSpriteIcon, { SvgSpriteIconProps } from '../SvgSpriteIcon';
+import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';
 import type { Theme } from '../theme';
-import Button, { ButtonProps } from '../Button';
-import MenuListItem, { MenuListItemProps } from './MenuListItem';
+import Button, { type ButtonProps } from '../Button';
+import MenuListItem, { type MenuListItemProps } from './MenuListItem';
 
 const useStyles = makeStyles(({ rc }: Theme) => ({
   root: { ...rc?.MenuList?.root },

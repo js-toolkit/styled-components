@@ -30,6 +30,16 @@ export type ButtonThemeVariants = {
   [P in ButtonVariant as `variant-${P}`]?: CSSProperties | undefined;
 };
 
+export type ButtonTheme = ButtonThemeSizes &
+  ButtonThemeVariants & {
+    root?: CSSProperties | undefined;
+    css?: StyleRules | undefined;
+  } & {
+    [P in ButtonColor]?:
+      | { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ | undefined }
+      | undefined;
+  };
+
 export interface Theme {
   rc?: {
     colors?:
@@ -97,17 +107,7 @@ export interface Theme {
       ring?: CSSProperties | undefined;
     };
 
-    Button?:
-      | (ButtonThemeSizes &
-          ButtonThemeVariants & {
-            root?: CSSProperties | undefined;
-            css?: StyleRules | undefined;
-          } & {
-            [P in ButtonColor]?:
-              | { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ | undefined }
-              | undefined;
-          })
-      | undefined;
+    Button?: ButtonTheme | undefined;
 
     LoadableButton?:
       | {

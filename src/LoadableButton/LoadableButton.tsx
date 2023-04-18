@@ -1,9 +1,9 @@
 import React from 'react';
 import LoadableFlex, {
-  LoadableFlexProps,
-  SpinnerPosition as LoadableSpinnerPosition,
+  type LoadableFlexProps,
+  type SpinnerPosition as LoadableSpinnerPosition,
 } from '../LoadableFlex';
-import Button, { ButtonProps } from '../Button';
+import Button, { type ButtonProps } from '../Button';
 import useStyles from './useStyles';
 
 export type SpinnerPosition = Extract<LoadableSpinnerPosition, 'right' | 'left' | 'center'>;

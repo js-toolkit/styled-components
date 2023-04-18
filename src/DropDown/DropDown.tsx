@@ -2,9 +2,9 @@ import React, { useCallback, useState, useRef, useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled';
 import FlexWithRef from 'reflexy/FlexWithRef';
-import { OutsideClickListener, OutsideClickListenerProps } from 'react-outside-click-listener';
+import { OutsideClickListener, type OutsideClickListenerProps } from 'react-outside-click-listener';
 import type { Theme } from '../theme';
-import DropDownContext, { DropDownContextValue } from './DropDownContext';
+import DropDownContext, { type DropDownContextValue } from './DropDownContext';
 
 export interface DropDownProps
   extends Partial<Pick<OutsideClickListenerProps, 'onOutsideClick'>>,

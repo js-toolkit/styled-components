@@ -2,7 +2,12 @@ import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 import clsx from 'clsx';
-import { DefaultComponentType, FlexAllProps, FlexWithRef } from 'reflexy';
+import {
+  type DefaultComponentType,
+  type FlexAllProps,
+  type FlexComponentProps,
+  FlexWithRef,
+} from 'reflexy';
 import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
 
 export type TransitionComponent = React.JSXElementConstructor<
@@ -75,7 +80,11 @@ export default function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },
-    <FlexWithRef component="div" className={clsx(className, hidden && hiddenClassName)} {...rest}>
+    <FlexWithRef
+      component="div"
+      className={clsx(className, hidden && hiddenClassName)}
+      {...(rest as FlexComponentProps<'div'>)}
+    >
       {children}
     </FlexWithRef>
   );

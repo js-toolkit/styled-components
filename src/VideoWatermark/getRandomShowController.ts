@@ -1,7 +1,11 @@
 import getRandom from '@jstoolkit/utils/getRandom';
 import getTimer from '@jstoolkit/utils/getTimer';
 import toInt from '@jstoolkit/utils/toInt';
-import { getShowController, ShowController, ShowControllerOptions } from './getShowController';
+import {
+  getShowController,
+  type ShowController,
+  type ShowControllerOptions,
+} from './getShowController';
 
 export interface RandomShowControllerOptions {
   readonly updateTimeout?: number | undefined;
@@ -31,7 +35,7 @@ export function getRandomShowController({
   if (showOptions) {
     const { visibleTimeout, hiddenTimeout, isVisible, onShow, onHide } = showOptions;
 
-    const { start, stop } = getShowController({
+    const { start, stop, reset } = getShowController({
       visibleTimeout,
       hiddenTimeout,
       isVisible,
@@ -42,7 +46,7 @@ export function getRandomShowController({
       onHide,
     });
 
-    return { start, stop, update };
+    return { start, stop, update, reset };
   }
 
   const updateTimer = getTimer({
@@ -53,7 +57,8 @@ export function getRandomShowController({
 
   return {
     start: updateTimer.start,
-    stop: updateTimer.stop,
+    stop: updateTimer.pause,
     update,
+    reset: updateTimer.stop,
   };
 }

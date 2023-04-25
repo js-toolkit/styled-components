@@ -81,6 +81,7 @@ export type NotificationsProps<
     | undefined;
   readonly containerProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
   readonly listProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
+  readonly disableTransition?: boolean;
 };
 
 // These styles take precedence over NotificationBar styles because makeStyles is called later.
@@ -240,6 +241,7 @@ export default React.memo(function Notifications<
   className,
   containerProps,
   listProps,
+  disableTransition,
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
   const css = useStyles();
@@ -315,7 +317,12 @@ export default React.memo(function Notifications<
             }
             {...listProps}
           >
-            <TransitionGroup component={null}>{arr}</TransitionGroup>
+            <TransitionGroup
+              component={null}
+              {...(disableTransition && { appear: false, enter: false, exit: false })}
+            >
+              {arr}
+            </TransitionGroup>
           </Flex>
         </Flex>
       </Flex>

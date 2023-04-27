@@ -9,19 +9,17 @@ import type {
 import CSSTransition, { type CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 
-interface BaseProps
+export interface TransitionProps<E extends HTMLElement | undefined>
   extends TransitionActions,
-    TimeoutProps<undefined>,
-    Pick<CSSTransitionProps, 'classNames'> {}
-
-export interface TransitionProps extends BaseProps {
+    TimeoutProps<E>,
+    Pick<CSSTransitionProps<E>, 'classNames'> {
   /** A single child content element. */
   children: React.ReactElement<{ style?: React.CSSProperties | undefined }, any>;
   styles?: Partial<Record<TransitionStatus, React.CSSProperties>> | undefined;
 }
 
 export default React.forwardRef(function Transition(
-  props: TransitionProps,
+  props: TransitionProps<undefined>,
   ref: React.Ref<unknown>
 ): JSX.Element {
   const {
@@ -81,12 +79,8 @@ export default React.forwardRef(function Transition(
     addEndListener(nodeRef.current, next);
   };
 
-  const TransitionComponent = CSSTransition as React.ComponentClass<
-    CSSTransitionProps<HTMLElement | undefined>
-  >;
-
   return (
-    <TransitionComponent
+    <CSSTransition
       appear={appear}
       in={inProp}
       nodeRef={nodeRef}
@@ -109,6 +103,6 @@ export default React.forwardRef(function Transition(
           // ...childProps,
         });
       }}
-    </TransitionComponent>
+    </CSSTransition>
   );
-}) as <E extends HTMLElement>(props: TransitionProps & React.RefAttributes<E>) => JSX.Element;
+}) as <E extends HTMLElement>(props: TransitionProps<E> & React.RefAttributes<E>) => JSX.Element;

@@ -2,12 +2,7 @@ import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 import clsx from 'clsx';
-import {
-  type DefaultComponentType,
-  type FlexAllProps,
-  type FlexComponentProps,
-  FlexWithRef,
-} from 'reflexy';
+import { type DefaultComponentType, type FlexAllProps, FlexWithRef } from 'reflexy';
 import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
 
 export type TransitionComponent = React.JSXElementConstructor<
@@ -50,6 +45,15 @@ export default function TransitionFlex<
   hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
+  // In case if inside TransitionGroup
+  const {
+    in: inProp = !hidden,
+    enter,
+    exit,
+    onExited,
+    ...rootRest
+  } = rest as NonNullable<HideableProps['transitionProps']>;
+
   const { children: childrenProp } = rest as React.PropsWithChildren<unknown>;
 
   const lastChildrenRef = useRef(childrenProp);
@@ -66,15 +70,19 @@ export default function TransitionFlex<
 
   const exitedHandler = useChainRefCallback(
     onHidden && (() => onHidden()),
-    (transitionProps as TransitionProps)?.onExited
+    (transitionProps as TransitionProps)?.onExited,
+    onExited
   );
 
   return React.createElement(
     transition as React.ComponentType<TransitionProps>,
     {
       ...transitionProps,
-      in: !hidden,
+      // in: !hidden,
+      in: inProp,
       appear,
+      enter,
+      exit,
       unmountOnExit: disposable,
       timeout: transitionDuration,
       onEntered: enteredHandler,
@@ -83,7 +91,7 @@ export default function TransitionFlex<
     <FlexWithRef
       component="div"
       className={clsx(className, hidden && hiddenClassName)}
-      {...(rest as FlexComponentProps<'div'>)}
+      {...rootRest}
     >
       {children}
     </FlexWithRef>

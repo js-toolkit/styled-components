@@ -3,7 +3,11 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy';
 import clsx from 'clsx';
-import TransitionFlex, { type HideableProps, type TransitionComponent } from '../TransitionFlex';
+import TransitionFlex, {
+  type HideableProps,
+  type TransitionComponent,
+  type TransitionFlexProps,
+} from '../TransitionFlex';
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
@@ -125,36 +129,11 @@ export default function NotificationBar<
     classes: { content: contentProps?.className, action: actionProps?.className },
   });
 
-  // In case if NotificationBar inside TransitionGroup
-  const {
-    appear,
-    in: inProp,
-    enter,
-    exit,
-    onEnter,
-    onEntering,
-    onEntered,
-    onExit,
-    onExiting,
-    onExited,
-    ...rootRest
-  } = rest as NonNullable<HideableProps['transitionProps']>;
-
   return (
     <TransitionFlex
       alignItems="center"
       className={applyClassesToTransition ? undefined : clsx(css.root, css[variant], className)}
       transitionProps={{
-        appear,
-        in: inProp,
-        enter,
-        exit,
-        onEnter,
-        onEntering,
-        onEntered,
-        onExit,
-        onExiting,
-        onExited,
         ...transitionProps,
         ...(applyClassesToTransition && {
           className: clsx(
@@ -165,7 +144,7 @@ export default function NotificationBar<
           ),
         }),
       }}
-      {...rootRest}
+      {...(rest as TransitionFlexProps)}
     >
       <Flex
         grow

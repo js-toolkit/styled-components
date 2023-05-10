@@ -1,32 +1,21 @@
 import React from 'react';
-import TransitionBase, {
-  type TransitionActions,
-  type TimeoutProps,
-  type TransitionStatus as TransitionStatusOrigin,
-  type EnterHandler,
-  type ExitHandler,
+import type {
+  TransitionActions,
+  TimeoutProps,
+  TransitionStatus,
+  EnterHandler,
+  ExitHandler,
 } from 'react-transition-group/Transition';
-import { clsx } from 'clsx';
+import CSSTransition, { type CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
-import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
-
-export type TransitionClassNames = PartialRecord<
-  ExcludeStrict<TransitionStatusOrigin, 'unmounted'> | 'appearing' | 'appeared',
-  string | undefined
->;
-
-export type TransitionStatus = keyof TransitionClassNames;
 
 export interface TransitionProps<E extends HTMLElement | undefined>
   extends TransitionActions,
-    TimeoutProps<E> {
+    TimeoutProps<E>,
+    Pick<CSSTransitionProps<E>, 'classNames'> {
   /** A single child content element. */
-  children: React.ReactElement<
-    { style?: React.CSSProperties | undefined; className?: string | undefined },
-    any
-  >;
-  classNames?: string | TransitionClassNames | undefined;
+  children: React.ReactElement<{ style?: React.CSSProperties | undefined }, any>;
   styles?: Partial<Record<TransitionStatus, React.CSSProperties>> | undefined;
 }
 
@@ -46,15 +35,6 @@ const normalizedTransitionCallback =
     }
   };
 
-const getClassName = (
-  classNames: string | TransitionClassNames,
-  status: TransitionStatus
-): string => {
-  const isStringClassNames = typeof classNames === 'string';
-  const prefix = isStringClassNames && classNames ? `${classNames}-` : '';
-  return isStringClassNames ? `${prefix}${status}` : classNames[status] ?? '';
-};
-
 export default React.forwardRef(function Transition(
   props: TransitionProps<undefined>,
   ref: React.Ref<unknown>
@@ -71,7 +51,6 @@ export default React.forwardRef(function Transition(
     onExited,
     onExiting,
     styles,
-    classNames = '',
     children,
     ...other
   } = props;
@@ -81,32 +60,14 @@ export default React.forwardRef(function Transition(
   const handleRef = useRefs(
     (children as React.FunctionComponentElement<unknown>).ref,
     ref,
-    props.nodeRef,
     nodeRef
   );
 
-  const appearingRef = React.useRef(false);
-
-  const handleStartTransition = (appearing?: boolean | undefined): void => {
-    appearingRef.current = !!appearing;
-  };
-
-  const handleEnter = useChainRefCallback(
-    handleStartTransition,
-    normalizedTransitionCallback(nodeRef, onEnter)
-  );
-
+  const handleEnter = useRefCallback(normalizedTransitionCallback(nodeRef, onEnter));
   const handleEntering = useRefCallback(normalizedTransitionCallback(nodeRef, onEntering));
-
   const handleEntered = useRefCallback(normalizedTransitionCallback(nodeRef, onEntered));
-
-  const handleExit = useChainRefCallback(
-    handleStartTransition,
-    normalizedTransitionCallback(nodeRef, onExit)
-  );
-
+  const handleExit = useRefCallback(normalizedTransitionCallback(nodeRef, onExit));
   const handleExiting = useRefCallback(normalizedTransitionCallback(nodeRef, onExiting));
-
   const handleExited = useRefCallback(normalizedTransitionCallback(nodeRef, onExited));
 
   const handleAddEndListener = useRefCallback((next: VoidFunction): void => {
@@ -115,11 +76,8 @@ export default React.forwardRef(function Transition(
     addEndListener(nodeRef.current, next);
   });
 
-  // const rootRef = React.useRef<TransitionBase<HTMLElement>>(null);
-
   return (
-    // When prop `nodeRef` is provided `node` is excluded from callbacks
-    <TransitionBase
+    <CSSTransition
       appear={appear}
       in={inProp}
       nodeRef={nodeRef}
@@ -130,39 +88,18 @@ export default React.forwardRef(function Transition(
       onExiting={handleExiting}
       onExited={handleExited}
       addEndListener={handleAddEndListener}
-      // ref={rootRef}
       {...other}
     >
-      {(status0) => {
-        if (status0 === 'unmounted') return null;
-
-        const status =
-          (appearingRef.current &&
-            (((status0 === 'entering' && 'appearing') ||
-              (status0 === 'entered' && 'appeared')) as TransitionStatus)) ||
-          status0;
-
-        const className = clsx(
-          children.props.className,
-          getClassName(classNames, status)
-          // type === 'appear' && phase === 'done' && getClassNames(classNames, 'enter').doneClassName
-        );
-
-        // if ((children.props as AnyObject)['data-test']) {
-        //   console.log(status, className, '-', (children.props as AnyObject).className);
-        //   // console.log(rootRef.current);
-        // }
-
+      {(status /* , childProps */) => {
         return React.cloneElement(children, {
           style: {
             ...children.props.style,
             ...(styles && styles[status]),
           },
-          className,
           ref: handleRef,
           // ...childProps,
         });
       }}
-    </TransitionBase>
+    </CSSTransition>
   );
 }) as <E extends HTMLElement>(props: TransitionProps<E> & React.RefAttributes<E>) => JSX.Element;

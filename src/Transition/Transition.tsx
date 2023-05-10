@@ -8,6 +8,7 @@ import type {
 } from 'react-transition-group/Transition';
 import CSSTransition, { type CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
+import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 
 export interface TransitionProps<E extends HTMLElement | undefined>
   extends TransitionActions,
@@ -17,6 +18,22 @@ export interface TransitionProps<E extends HTMLElement | undefined>
   children: React.ReactElement<{ style?: React.CSSProperties | undefined }, any>;
   styles?: Partial<Record<TransitionStatus, React.CSSProperties>> | undefined;
 }
+
+const normalizedTransitionCallback =
+  (
+    nodeRef: React.RefObject<HTMLElement | undefined>,
+    callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
+  ): ((isAppearing?: boolean | undefined) => void) =>
+  (maybeIsAppearing) => {
+    if (!callback || !nodeRef.current) return;
+    const node = nodeRef.current;
+    // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
+    if (maybeIsAppearing === undefined) {
+      (callback as ExitHandler<undefined>)(node);
+    } else {
+      (callback as EnterHandler<undefined>)(node, maybeIsAppearing);
+    }
+  };
 
 export default React.forwardRef(function Transition(
   props: TransitionProps<undefined>,
@@ -46,38 +63,18 @@ export default React.forwardRef(function Transition(
     nodeRef
   );
 
-  const normalizedTransitionCallback =
-    (
-      callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
-    ): ((isAppearing?: boolean | undefined) => void) =>
-    (maybeIsAppearing) => {
-      if (!callback || !nodeRef.current) return;
-      const node = nodeRef.current;
-      // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
-      if (maybeIsAppearing === undefined) {
-        (callback as ExitHandler<undefined>)(node);
-      } else {
-        (callback as EnterHandler<undefined>)(node, maybeIsAppearing);
-      }
-    };
+  const handleEnter = useRefCallback(normalizedTransitionCallback(nodeRef, onEnter));
+  const handleEntering = useRefCallback(normalizedTransitionCallback(nodeRef, onEntering));
+  const handleEntered = useRefCallback(normalizedTransitionCallback(nodeRef, onEntered));
+  const handleExit = useRefCallback(normalizedTransitionCallback(nodeRef, onExit));
+  const handleExiting = useRefCallback(normalizedTransitionCallback(nodeRef, onExiting));
+  const handleExited = useRefCallback(normalizedTransitionCallback(nodeRef, onExited));
 
-  const handleEnter = normalizedTransitionCallback(onEnter);
-
-  const handleEntering = normalizedTransitionCallback(onEntering);
-
-  const handleEntered = normalizedTransitionCallback(onEntered);
-
-  const handleExit = normalizedTransitionCallback(onExit);
-
-  const handleExiting = normalizedTransitionCallback(onExiting);
-
-  const handleExited = normalizedTransitionCallback(onExited);
-
-  const handleAddEndListener = (next: VoidFunction): void => {
+  const handleAddEndListener = useRefCallback((next: VoidFunction): void => {
     if (!addEndListener || !nodeRef.current) return;
     // Old call signature before `react-transition-group` implemented `nodeRef`
     addEndListener(nodeRef.current, next);
-  };
+  });
 
   return (
     <CSSTransition
@@ -85,11 +82,11 @@ export default React.forwardRef(function Transition(
       in={inProp}
       nodeRef={nodeRef}
       onEnter={handleEnter}
-      onEntered={handleEntered}
       onEntering={handleEntering}
+      onEntered={handleEntered}
       onExit={handleExit}
-      onExited={handleExited}
       onExiting={handleExiting}
+      onExited={handleExited}
       addEndListener={handleAddEndListener}
       {...other}
     >

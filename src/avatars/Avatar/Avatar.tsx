@@ -10,7 +10,7 @@ export interface AvatarProps extends FlexComponentProps<'div'> {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: ({ size = theme.rc?.Avatar?.defaultSize || '48px' }: AvatarProps) => ({
+  root: ({ size = theme.rc?.Avatar?.defaultSize || '48px' }: Pick<AvatarProps, 'size'>) => ({
     position: 'relative',
     borderRadius: '100%',
     ...theme.rc?.Avatar?.root,
@@ -57,7 +57,7 @@ export default function Avatar({
   children,
   ...rest
 }: AvatarProps): JSX.Element {
-  const css = useStyles({ classes: { root: className }, size } as any);
+  const css = useStyles({ classes: { root: className }, size });
 
   const [showFallbackUserIcon, setShowUserIcon] = useState(true);
 

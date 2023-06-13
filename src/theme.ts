@@ -1,4 +1,8 @@
-import type { BaseCSSProperties, StyleRules } from '@mui/styles/withStyles';
+import type {
+  BaseCSSProperties,
+  CSSProperties as CSSPropertiesOrigin,
+  StyleRules,
+} from '@mui/styles/withStyles';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy';
 import type { SvgSpriteIconProps } from './SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
@@ -7,9 +11,9 @@ import type { ModalProps } from './Modal';
 import type { NotificationPosition, NotificationVariant } from './Notifications';
 import type { FieldState } from './Field';
 
-export interface CSSPropertiesDeep extends BaseCSSProperties {
-  [k: string]: any | CSSPropertiesDeep;
-}
+// export interface CSSPropertiesDeep extends BaseCSSProperties {
+//   [k: string]: any | CSSPropertiesDeep;
+// }
 
 export type BaseCreateCSSProperties = {
   [P in keyof BaseCSSProperties]: BaseCSSProperties[P];
@@ -20,7 +24,7 @@ export interface CreateCSSProperties extends BaseCreateCSSProperties {
   [k: string]: BaseCreateCSSProperties[keyof BaseCreateCSSProperties] | CreateCSSProperties;
 }
 
-export type CSSProperties = CSSPropertiesDeep | CreateCSSProperties;
+export type CSSProperties = CSSPropertiesOrigin | CreateCSSProperties;
 
 export type ButtonThemeSizes = {
   [P in ButtonSize as `size-${P}`]?: CSSProperties | undefined;

@@ -3,11 +3,11 @@ import React, { useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import {
   Flex,
-  ForwardRef,
   type FlexAllProps,
   type DefaultComponentType,
   type FlexComponentProps,
-} from 'reflexy';
+} from 'reflexy/styled';
+import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
 import clear from '@jstoolkit/utils/clear';

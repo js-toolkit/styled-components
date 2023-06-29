@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import type { FlexComponentProps } from 'reflexy';
+import type { FlexComponentProps } from 'reflexy/styled';
 import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 

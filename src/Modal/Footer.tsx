@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps } from 'reflexy';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { Theme } from '../theme';
 import { getBodyStyles } from './Body';
 

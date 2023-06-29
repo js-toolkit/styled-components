@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import React, { useEffect, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import type { FlexComponentProps } from 'reflexy';
+import type { FlexComponentProps } from 'reflexy/styled';
 import loadImage from '@jstoolkit/web-utils/loadImage';
 import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
 import { isWebPSupported } from '@jstoolkit/web-utils/isWebPSupported';

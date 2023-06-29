@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
-import { Flex, type FlexComponentProps } from 'reflexy';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import stopPropagation from '@jstoolkit/web-utils/stopPropagation';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';

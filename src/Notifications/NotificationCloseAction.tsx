@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import type { FlexComponentProps } from 'reflexy';
+import type { FlexComponentProps } from 'reflexy/styled';
 import Button from '../Button';
 import CloseIcon from '../Modal/CloseIcon';
 import type { NotificationBarProps } from './NotificationBar';

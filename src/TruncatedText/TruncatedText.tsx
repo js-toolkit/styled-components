@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
-import { Flex, type FlexAllProps } from 'reflexy';
+import { Flex, type FlexAllProps } from 'reflexy/styled';
 import type { Theme } from '../theme';
 
 export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllProps<C> & {

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps } from 'reflexy';
+import { Flex, type FlexAllProps } from 'reflexy/styled';
 import { escapeRegExp } from '@jstoolkit/utils/escapeRegExp';
 import type { Theme } from '../theme';
 

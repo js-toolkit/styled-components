@@ -1,5 +1,5 @@
 import React from 'react';
-import { TweakableElementWrapper } from 'reflexy';
+import TweakableElementWrapper from 'reflexy/TweakableElementWrapper';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
 import Button, { type ButtonProps } from '../Button';
 import Tooltipable, { type TooltipableTooltipProps } from '../Tooltipable';

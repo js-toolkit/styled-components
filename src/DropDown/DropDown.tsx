@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef, useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import type { FlexComponentProps } from 'reflexy/styled';
+import type { FlexComponentProps } from 'reflexy/styled/jss';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import { OutsideClickListener, type OutsideClickListenerProps } from 'react-outside-click-listener';
 import type { Theme } from '../theme';

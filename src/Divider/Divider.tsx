@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled/jss';
 import type { Theme } from '../theme';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -47,7 +47,7 @@ export default function Divider<C extends React.ElementType = DefaultComponentTy
       shrink={0}
       className={`${css.root} ${light ? css.light : css.default}`}
       data-orientation={column ? 'vertical' : 'horizontal'}
-      {...rest}
+      {...(rest as any)}
     />
   );
 }

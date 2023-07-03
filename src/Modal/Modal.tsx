@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import '@jstoolkit/utils/types';
 import ReactModal from 'react-modal';
-import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled';
+import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled/jss';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 import HideableFlex, { type HideableProps } from '../HideableFlex';
 import type { CSSProperties, Theme } from '../theme';
@@ -216,7 +216,7 @@ function Modal({
       styleTransformer={styleTransformer}
       parentSelector={Modal.defaultParentSelector}
       portalClassName="sc-modal-portal"
-      {...rest}
+      {...(rest as any)}
       isOpen={isVisible()}
       closeTimeoutMS={0}
       overlayClassName={backdropClasses}

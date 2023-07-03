@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled/jss';
 import type { Theme, CSSProperties } from '../theme';
 import Ring from './Ring';
 
@@ -249,7 +249,7 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
     <Flex
       className={`${css.root}${backdropAnimation}`}
       data-loading={!!loading || keepShowing || undefined}
-      {...rest}
+      {...(rest as any)}
     >
       {spinnerElement && (!!loading || keepShowing) && (
         <Flex

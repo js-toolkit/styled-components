@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
 import clsx from 'clsx';
 import TransitionFlex, {
   type HideableProps,

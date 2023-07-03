@@ -6,7 +6,7 @@ import {
   type FlexAllProps,
   type DefaultComponentType,
   type FlexComponentProps,
-} from 'reflexy/styled';
+} from 'reflexy/styled/jss';
 import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';

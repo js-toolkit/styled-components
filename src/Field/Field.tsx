@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import type { CSSProperties, Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';

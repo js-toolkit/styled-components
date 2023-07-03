@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/styles/useTheme';
 import Fade from '@mui/material/Fade';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import type { FlexComponentProps } from 'reflexy/styled';
+import type { FlexComponentProps } from 'reflexy/styled/jss';
 import type { Size } from '@jstoolkit/utils/types/utils';
 import toInt from '@jstoolkit/utils/toInt';
 import noop from '@jstoolkit/utils/noop';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@mui/styles/styled';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import type { Theme } from '../../theme';
 
 export interface BadgeIconProps extends FlexComponentProps, Required<React.PropsWithChildren<{}>> {}

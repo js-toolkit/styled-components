@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 
 export interface DefaultRendererProps extends FlexComponentProps {
   readonly error: unknown;

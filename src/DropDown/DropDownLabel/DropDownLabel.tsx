@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled/jss';
 import type { Theme } from '../../theme';
 import DropDownContext from '../DropDownContext';
 import ExpandIcon from './ExpandIcon';
@@ -38,7 +38,7 @@ export default function DropDownLabel<C extends React.ElementType = DefaultCompo
       onClick={toggleOnClick ? toggle : undefined}
       aria-expanded={expanded}
       data-dropdown-label=""
-      {...rest}
+      {...(rest as any)}
     >
       {children}
 

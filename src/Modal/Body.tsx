@@ -1,7 +1,7 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import type { Theme } from '../theme';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useRef, useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import type { Theme } from '../../theme';
 import DropDownContext, { type DropDownContextValue } from '../DropDownContext';
 

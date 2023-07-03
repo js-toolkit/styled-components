@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
+import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
 import noop from '@jstoolkit/utils/noop';
 import debounce from '@jstoolkit/utils/debounce';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
@@ -149,7 +149,7 @@ export default function Tooltipable<
       onTouchStart={touchStartHandler}
       onContextMenu={contextMenuHandler}
       onClick={clickHandler}
-      {...rest}
+      {...(rest as any)}
     />
   );
 }

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import stopPropagation from '@jstoolkit/web-utils/stopPropagation';
 import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';

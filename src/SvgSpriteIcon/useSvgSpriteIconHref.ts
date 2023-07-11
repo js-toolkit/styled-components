@@ -1,4 +1,4 @@
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import type { Theme } from '../theme';
 import SvgSpriteIcon from './SvgSpriteIcon';
 

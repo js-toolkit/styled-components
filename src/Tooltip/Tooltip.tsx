@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexSimpleProps, type SpaceProps } from 'reflexy/styled/jss';
 import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { type TransitionFlexProps } from '../TransitionFlex';

@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import clsx from 'clsx';
 import useRefs from '@jstoolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';

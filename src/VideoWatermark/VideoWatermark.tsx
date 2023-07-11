@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import Fade from '@mui/material/Fade';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import type { FlexComponentProps } from 'reflexy/styled/jss';

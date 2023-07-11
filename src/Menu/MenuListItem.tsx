@@ -1,6 +1,6 @@
 import React, { type AriaAttributes, useEffect, useRef } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useTheme from '@mui/styles/useTheme';
+import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
 import noop from '@jstoolkit/utils/noop';
 import preventDefault from '@jstoolkit/web-utils/preventDefault';

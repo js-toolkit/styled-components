@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
-import clsx from 'clsx';
+// import clsx from 'clsx';
 import { type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
@@ -15,7 +15,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
   readonly appear?: boolean | undefined;
   readonly disposable?: boolean | undefined;
   readonly keepChildren?: boolean | undefined;
-  readonly hiddenClassName?: string | undefined;
+  // readonly hiddenClassName?: string | undefined;
   readonly onHidden?: VoidFunction | undefined;
   readonly onShown?: VoidFunction | undefined;
   readonly transition?: T | undefined;
@@ -25,13 +25,13 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
 
 export type TransitionFlexProps<
   T extends TransitionComponent = TransitionComponent,
-  C extends React.ElementType = DefaultComponentType
+  C extends React.ElementType = DefaultComponentType,
 > = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
 
 /** Default transition is `Fade`. */
 export default function TransitionFlex<
   T extends TransitionComponent = TransitionComponent,
-  C extends React.ElementType = DefaultComponentType
+  C extends React.ElementType = DefaultComponentType,
 >({
   transition = Fade as T,
   transitionProps,
@@ -42,8 +42,8 @@ export default function TransitionFlex<
   keepChildren,
   onHidden,
   onShown,
-  className,
-  hiddenClassName,
+  // className,
+  // hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
   // In case if inside TransitionGroup
@@ -91,7 +91,7 @@ export default function TransitionFlex<
     },
     <FlexWithRef
       component="div"
-      className={clsx(className, hidden && hiddenClassName)}
+      // className={clsx(className, hidden && hiddenClassName)}
       {...rootRest}
     >
       {children}

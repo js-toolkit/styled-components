@@ -28,7 +28,10 @@ export type TransitionFlexProps<
   C extends React.ElementType = DefaultComponentType,
 > = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
 
-/** Default transition is `Fade`. */
+/**
+ * The component must accept `ref` or `componentRef` prop.
+ * Default transition is `Fade`.
+ */
 export default function TransitionFlex<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,

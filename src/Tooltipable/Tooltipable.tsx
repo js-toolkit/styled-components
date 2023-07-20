@@ -33,12 +33,12 @@ export type TooltipableTooltipProps<D = undefined, T extends Element = Element> 
 
 export type TooltipableProps<
   C extends React.ElementType = DefaultComponentType,
-  D = undefined
+  D = undefined,
 > = FlexAllProps<C> & TooltipableTooltipProps<D, GetHtmlType<C>>;
 
 export default function Tooltipable<
   C extends React.ElementType = DefaultComponentType,
-  D = undefined
+  D = undefined,
 >({
   tooltip,
   tooltipDelay = 0,

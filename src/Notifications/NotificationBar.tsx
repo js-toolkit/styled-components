@@ -23,7 +23,7 @@ export interface NotificationBarProps<
   TID extends string | number = string | number,
   TContent extends React.ElementType = any,
   TAction extends React.ElementType = any,
-  TTransition extends TransitionComponent = TransitionComponent
+  TTransition extends TransitionComponent = TransitionComponent,
 > extends FlexComponentProps<'div', { omitProps: true }>,
     HideableProps<TTransition> {
   readonly id: TID;
@@ -41,13 +41,16 @@ const useStyles = makeStyles(({ rc }: Theme) => {
   const restTheme = rest as Record<NotificationVariant, CSSProperties>;
 
   // Build futured classes from theme
-  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce((acc, p) => {
-    const variant = p as NotificationVariant;
-    if (typeof restTheme[variant] === 'object') {
-      acc[variant] = restTheme[variant];
-    }
-    return acc;
-  }, {} as Record<NotificationVariant, CSSProperties>);
+  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
+    (acc, p) => {
+      const variant = p as NotificationVariant;
+      if (typeof restTheme[variant] === 'object') {
+        acc[variant] = restTheme[variant];
+      }
+      return acc;
+    },
+    {} as Record<NotificationVariant, CSSProperties>
+  );
 
   return {
     root: {
@@ -109,7 +112,7 @@ export default function NotificationBar<
   TID extends string | number = string | number,
   TContent extends React.ElementType = any,
   TAction extends React.ElementType = any,
-  TTransition extends TransitionComponent = TransitionComponent
+  TTransition extends TransitionComponent = TransitionComponent,
 >({
   id,
   variant = 'info',

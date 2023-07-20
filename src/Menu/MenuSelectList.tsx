@@ -6,7 +6,7 @@ import MenuList, { type MenuItem, type MenuListProps } from './MenuList';
 export interface MenuSelectListProps<
   V extends React.Key | null,
   I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>
+  HI extends string | SvgSpriteIconProps<string>,
 > extends MenuListProps<V, I, HI> {
   selectedValue: MenuItem<V, I>['value'];
 }
@@ -14,7 +14,7 @@ export interface MenuSelectListProps<
 export default function MenuSelectList<
   V extends React.Key | null,
   I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>
+  HI extends string | SvgSpriteIconProps<string>,
 >({ selectedValue, onItemProps, ...rest }: MenuSelectListProps<V, I, HI>): JSX.Element {
   const itemPropsHandler = useRefCallback<NonNullable<MenuListProps<V, I, HI>['onItemProps']>>(
     (itemProps) => {

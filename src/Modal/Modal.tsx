@@ -47,13 +47,16 @@ const useStyles = makeStyles((theme: Theme) => {
   const modal = theme.rc?.Modal ?? {};
 
   // Build futured classes from theme
-  const sizeClasses = Object.getOwnPropertyNames(modal).reduce((acc, p) => {
-    if (p.indexOf('size-') === 0) {
-      const size = p as `size-${ModalSize}`;
-      acc[size] = { ...modal[size] };
-    }
-    return acc;
-  }, {} as Record<`size-${ModalSize}`, CSSProperties>);
+  const sizeClasses = Object.getOwnPropertyNames(modal).reduce(
+    (acc, p) => {
+      if (p.indexOf('size-') === 0) {
+        const size = p as `size-${ModalSize}`;
+        acc[size] = { ...modal[size] };
+      }
+      return acc;
+    },
+    {} as Record<`size-${ModalSize}`, CSSProperties>
+  );
 
   return {
     root: {

@@ -9,7 +9,7 @@ declare module '@mui/styles/makeStyles' {
   export default function makeStyles<
     Theme = DefaultTheme,
     Props extends AnyObject = object,
-    ClassKey extends string = string
+    ClassKey extends string = string,
   >(
     styles: Styles<Theme, Props, ClassKey>,
     options?: Omit<WithStylesOptions<Theme>, 'withTheme'> | undefined

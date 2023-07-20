@@ -3,7 +3,7 @@ import React from 'react';
 import ReactIs from 'react-is';
 
 export function isReactElementOfType<
-  T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>
+  T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>,
 >(
   element: React.ReactNode | React.ElementType<any>,
   type: T,

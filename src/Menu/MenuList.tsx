@@ -37,7 +37,7 @@ export type MenuItem<V, I extends string | SvgSpriteIconProps<string>> = Omit<
 export interface MenuListProps<
   V,
   I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>
+  HI extends string | SvgSpriteIconProps<string>,
 > extends FlexComponentProps<'div'> {
   header?: React.ReactChild | undefined;
   headerIcon?: HI | undefined;
@@ -81,7 +81,7 @@ export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.El
 export default function MenuList<
   V,
   I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>
+  HI extends string | SvgSpriteIconProps<string>,
 >({
   header,
   headerIcon,

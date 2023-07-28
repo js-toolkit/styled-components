@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 // import clsx from 'clsx';
-import { type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
+import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled/jss';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@jstoolkit/react-hooks/useChainRefCallback';
 

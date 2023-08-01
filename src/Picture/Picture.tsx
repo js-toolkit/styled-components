@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled/jss';
@@ -76,7 +75,7 @@ export default function Picture({
           {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
             <source key={src} srcSet={src} {...srcRest} />
           ))}
-          <img ref={imgRef} crossOrigin={crossOrigin} />
+          <img ref={imgRef} crossOrigin={crossOrigin} alt="" />
         </>,
       ],
 

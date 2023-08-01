@@ -149,6 +149,7 @@ export default function Tooltipable<
       onTouchStart={touchStartHandler}
       onContextMenu={contextMenuHandler}
       onClick={clickHandler}
+      aria-label={tooltip}
       {...(rest as any)}
     />
   );

@@ -1,14 +1,13 @@
 import React from 'react';
 import { Flex, type FlexAllProps } from 'reflexy/styled/jss';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { GetOverridedKeys } from '../types/local';
 import useStyles from './useStyles';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ButtonSizes {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 export interface ButtonColors {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 export interface ButtonVariants {}
 
 export type ButtonSize = GetOverridedKeys<'contain' | 'xs' | 's' | 'm' | 'l' | 'xl', ButtonSizes>;

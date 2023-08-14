@@ -97,7 +97,7 @@ export default function Tooltipable<
     if (!isShowingTooltipRef.current) return;
     if (tooltip) showTooltip();
     else hideTooltip();
-  }, [hideTooltip, showTooltip, tooltip]);
+  }, [hideTooltip, showTooltip, tooltip, data]);
 
   // useEffect(() => {
   //   if (isHover && onShowTooltip && tooltip && element) {

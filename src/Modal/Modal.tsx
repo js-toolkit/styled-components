@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import '@jstoolkit/utils/types';
+import '@js-toolkit/utils/types';
 import ReactModal from 'react-modal';
 import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled/jss';
-import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import HideableFlex, { type HideableProps } from '../HideableFlex';
 import type { CSSProperties, Theme } from '../theme';
 import Header from './Header';

@@ -7,8 +7,8 @@ import type {
   ExitHandler,
 } from 'react-transition-group/Transition';
 import CSSTransition, { type CSSTransitionProps } from 'react-transition-group/CSSTransition';
-import useRefs from '@jstoolkit/react-hooks/useRefs';
-import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
+import useRefs from '@js-toolkit/react-hooks/useRefs';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 export interface TransitionProps<E extends HTMLElement | undefined>
   extends TransitionActions,

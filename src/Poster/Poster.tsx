@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled/jss';
-import loadImage from '@jstoolkit/web-utils/loadImage';
-import { takeSnapshot } from '@jstoolkit/web-utils/takeSnapshot';
-import { isWebPSupported } from '@jstoolkit/web-utils/isWebPSupported';
+import loadImage from '@js-toolkit/web-utils/loadImage';
+import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';
+import { isWebPSupported } from '@js-toolkit/web-utils/isWebPSupported';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import type { PictureProps } from '../Picture';
 

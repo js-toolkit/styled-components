@@ -10,8 +10,8 @@ import {
 import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import clsx from 'clsx';
-import clear from '@jstoolkit/utils/clear';
-import useUpdate from '@jstoolkit/react-hooks/useUpdate';
+import clear from '@js-toolkit/utils/clear';
+import useUpdate from '@js-toolkit/react-hooks/useUpdate';
 import type { TransitionComponent /* , TransitionFlexProps */ } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';

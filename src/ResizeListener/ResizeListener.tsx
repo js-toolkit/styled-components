@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import type { Size } from '@jstoolkit/utils/types/utils';
+import type { Size } from '@js-toolkit/utils/types/utils';
 
 export interface ResizeListenerProps {
   onlyWidth?: boolean | undefined;

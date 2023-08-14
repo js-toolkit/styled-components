@@ -1,7 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import type { FlexComponentProps } from 'reflexy/styled/jss';
-import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
+import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 
 const useStyles = makeStyles({

@@ -1,6 +1,6 @@
-import getRandom from '@jstoolkit/utils/getRandom';
-import getTimer from '@jstoolkit/utils/getTimer';
-import toInt from '@jstoolkit/utils/toInt';
+import getRandom from '@js-toolkit/utils/getRandom';
+import getTimer from '@js-toolkit/utils/getTimer';
+import toInt from '@js-toolkit/utils/toInt';
 import {
   getShowController,
   type ShowController,

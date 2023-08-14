@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import getTimer from '@jstoolkit/utils/getTimer';
+import getTimer from '@js-toolkit/utils/getTimer';
 
 export interface ShowControllerOptions {
   readonly visibleTimeout: number;

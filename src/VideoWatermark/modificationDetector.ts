@@ -1,4 +1,4 @@
-import getTimer from '@jstoolkit/utils/getTimer';
+import getTimer from '@js-toolkit/utils/getTimer';
 import type { VideoWatermarkProps } from './VideoWatermark';
 
 export interface ModificationDetectorOptions {

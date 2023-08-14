@@ -1,8 +1,8 @@
 module.exports = {
   root: true,
   extends: [
-    require.resolve('@jstoolkit/configs/eslint/react'),
-    require.resolve('@jstoolkit/react-hooks/eslint'),
+    require.resolve('@js-toolkit/configs/eslint/react'),
+    require.resolve('@js-toolkit/react-hooks/eslint'),
   ],
   rules: {
     'import/no-extraneous-dependencies': 'off',

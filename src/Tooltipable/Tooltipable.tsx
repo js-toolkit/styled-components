@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
-import noop from '@jstoolkit/utils/noop';
-import debounce from '@jstoolkit/utils/debounce';
-import useRefs from '@jstoolkit/react-hooks/useRefs';
-import useMemoDestructor from '@jstoolkit/react-hooks/useMemoDestructor';
-import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
+import noop from '@js-toolkit/utils/noop';
+import debounce from '@js-toolkit/utils/debounce';
+import useRefs from '@js-toolkit/react-hooks/useRefs';
+import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 type WithData<D = undefined> = Exclude<D, undefined> extends never
   ? { readonly data?: D | undefined }

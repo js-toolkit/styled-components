@@ -2,8 +2,8 @@ import React, { useLayoutEffect } from 'react';
 import type { Property } from 'csstype';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
-import useRefCallback from '@jstoolkit/react-hooks/useRefCallback';
-import useUpdatedRefState from '@jstoolkit/react-hooks/useUpdatedRefState';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 
 export interface Transition {
   readonly duration?: Property.TransitionDuration<number> | undefined;

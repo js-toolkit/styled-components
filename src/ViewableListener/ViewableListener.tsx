@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import useRefState from '@jstoolkit/react-hooks/useRefState';
-import { EventEmitterListener } from '@jstoolkit/web-utils/EventEmitterListener';
+import useRefState from '@js-toolkit/react-hooks/useRefState';
+import { EventEmitterListener } from '@js-toolkit/web-utils/EventEmitterListener';
 
 const useStyles = makeStyles({
   root: {

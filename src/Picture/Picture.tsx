@@ -23,21 +23,25 @@ const useStyles = makeStyles({
   },
 });
 
+export interface PictureSources {
+  /** Fallback or default src */
+  readonly src: string;
+  readonly srcset?:
+    | {
+        readonly src: string;
+        readonly type?: string | undefined;
+        readonly media?: string | undefined;
+      }[]
+    | undefined;
+}
+
 export interface PictureProps
   extends FlexComponentProps,
     Pick<
       HideableProps,
       'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
     > {
-  src:
-    | string
-    | {
-        /** Fallback or default src */
-        src: string;
-        srcset?:
-          | { src: string; type?: string | undefined; media?: string | undefined }[]
-          | undefined;
-      };
+  src: string | PictureSources;
   crossOrigin?: React.ImgHTMLAttributes<unknown>['crossOrigin'] | undefined;
   timeout?: number | undefined;
   onLoadTimeout?: VoidFunction | undefined;

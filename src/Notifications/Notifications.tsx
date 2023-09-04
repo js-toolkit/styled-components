@@ -9,15 +9,14 @@ import {
 } from 'reflexy/styled/jss';
 import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import clsx from 'clsx';
-import clear from '@js-toolkit/utils/clear';
+import { clsx } from 'clsx';
+import { clear } from '@js-toolkit/utils/clear';
 import useUpdate from '@js-toolkit/react-hooks/useUpdate';
 import type { TransitionComponent /* , TransitionFlexProps */ } from '../TransitionFlex';
 import type { Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import NotificationBar, { type NotificationBarProps } from './NotificationBar';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface NotificationPositions {}
 
 export type NotificationPosition = GetOverridedKeys<
@@ -61,6 +60,7 @@ export interface Notification<
         'id' | 'variant' | 'contentProps' | 'actionProps'
       >
     | undefined;
+  readonly timeout?: number | undefined;
 }
 
 export type NotificationsProps<
@@ -78,6 +78,9 @@ export type NotificationsProps<
     | NotificationBarProps<
         N extends Notification<infer TID, any, any, any, any> ? TID : string | number
       >['onAction']
+    | undefined;
+  readonly onTimeout?:
+    | ((id: N extends Notification<infer TID, any, any, any, any> ? TID : string | number) => void)
     | undefined;
   readonly containerProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
   readonly listProps?: FlexComponentProps<'div', { omitProps: true }> | undefined;
@@ -238,6 +241,7 @@ export default React.memo(function Notifications<
   defaultPosition = 'window-top',
   defaultAction,
   onAction,
+  onTimeout,
   className,
   containerProps,
   listProps,
@@ -248,21 +252,30 @@ export default React.memo(function Notifications<
   const update = useUpdate();
 
   // if (list.length === 0) return null;
-  const mapRef = useRef<Map<NotificationPosition, JSX.Element[]>>();
+  const mapRef = useRef(undefined as unknown as Map<NotificationPosition, JSX.Element[]>);
   if (!mapRef.current) {
     mapRef.current = new Map();
   }
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-
     map.forEach(clear);
 
     list.forEach((n) => {
       const position = n.position ?? defaultPosition;
       const arr = map.get(position) ?? [];
       map.set(position, arr);
+
+      const { timeout } = n;
+      let timer = 0;
+      const onShown =
+        onTimeout && timeout && timeout > 0
+          ? () => {
+              timer = window.setTimeout(() => onTimeout(n.id), timeout);
+            }
+          : undefined;
+      const onUnmount = onShown && (() => window.clearTimeout(timer));
+
       arr.push(
         <ForwardRef
           component={NotificationBar}
@@ -277,6 +290,8 @@ export default React.memo(function Notifications<
           onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
           contentProps={n.contentProps}
           actionProps={n.actionProps}
+          onShown={onShown}
+          onUnmount={onUnmount}
           {...(n.rootProps as FlexComponentProps)}
         >
           {n.content}
@@ -285,12 +300,9 @@ export default React.memo(function Notifications<
     });
 
     update();
-  }, [css, defaultAction, defaultPosition, list, onAction, update]);
+  }, [css, defaultAction, defaultPosition, list, onAction, onTimeout, update]);
 
-  const map = mapRef.current;
-  if (!map) return null;
-
-  return Array.from(map.entries(), ([pos, arr]) => {
+  return Array.from(mapRef.current.entries(), ([pos, arr]) => {
     const containerClassName = clsx(
       ((pos.startsWith('window') && css.fixedContainer) ||
         pos === 'top' ||

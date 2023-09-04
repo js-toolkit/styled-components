@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import TransitionFlex, {
   type HideableProps,
   type TransitionComponent,
@@ -11,7 +12,6 @@ import TransitionFlex, {
 import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface NotificationVariants {}
 
 export type NotificationVariant = GetOverridedKeys<
@@ -33,6 +33,7 @@ export interface NotificationBarProps<
   readonly contentProps?: FlexAllProps<TContent> | undefined;
   readonly actionProps?: FlexAllProps<TAction> | undefined;
   readonly applyClassesToTransition?: boolean | undefined;
+  readonly onUnmount?: VoidFunction | undefined;
 }
 
 const useStyles = makeStyles(({ rc }: Theme) => {
@@ -124,6 +125,7 @@ export default function NotificationBar<
   children,
   transitionProps,
   applyClassesToTransition,
+  onUnmount,
   ...rest
 }: React.PropsWithChildren<
   NotificationBarProps<TID, TContent, TAction, TTransition>
@@ -131,6 +133,9 @@ export default function NotificationBar<
   const css = useStyles({
     classes: { content: contentProps?.className, action: actionProps?.className },
   });
+
+  const onUnmountRef = useRefCallback(() => onUnmount && onUnmount());
+  useEffect(() => onUnmountRef, [onUnmountRef]);
 
   return (
     <TransitionFlex

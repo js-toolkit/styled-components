@@ -40,19 +40,20 @@ export interface PictureProps
     Pick<
       HideableProps,
       'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
-    > {
-  src: string | PictureSources;
-  crossOrigin?: React.ImgHTMLAttributes<unknown>['crossOrigin'] | undefined;
-  timeout?: number | undefined;
-  onLoadTimeout?: VoidFunction | undefined;
-  onLoadCompleted?: VoidFunction | undefined;
-  onError?: ((error: unknown) => void) | undefined;
+    >,
+    Pick<React.ImgHTMLAttributes<unknown>, 'crossOrigin' | 'loading'> {
+  readonly src: string | PictureSources;
+  readonly timeout?: number | undefined;
+  readonly onLoadTimeout?: VoidFunction | undefined;
+  readonly onLoadCompleted?: VoidFunction | undefined;
+  readonly onError?: ((error: unknown) => void) | undefined;
 }
 
 export default function Picture({
   hidden,
   src: srcProp,
   crossOrigin,
+  loading,
   timeout,
   transitionProps,
   onLoadTimeout,
@@ -79,7 +80,7 @@ export default function Picture({
           {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
             <source key={src} srcSet={src} {...srcRest} />
           ))}
-          <img ref={imgRef} crossOrigin={crossOrigin} alt="" />
+          <img ref={imgRef} crossOrigin={crossOrigin} alt="" loading={loading} />
         </>,
       ],
 
@@ -87,7 +88,7 @@ export default function Picture({
         clearTimeout(timerRef.current);
       },
     ];
-  }, [crossOrigin, onLoadTimeout, srcProp, timeout]);
+  }, [crossOrigin, loading, onLoadTimeout, srcProp, timeout]);
 
   // The trick to workaround the WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=190031)
   // to do not load img together with selected source.

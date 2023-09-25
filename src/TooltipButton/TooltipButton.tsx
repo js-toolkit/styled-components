@@ -22,7 +22,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
   onHideTooltip,
   ...restProps
 }: TooltipButtonProps<C, D>): JSX.Element {
-  const { onClick, ...rest } = restProps as TooltipButtonProps<'button'>;
+  const { componentRef, onClick, ...rest } = restProps as TooltipButtonProps<'button'>;
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLButtonElement>>((event) => {
     onClick && onClick(event, data as never);
@@ -37,6 +37,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
       onHideTooltip={onHideTooltip}
       onClick={clickHandler}
       component={TweakableElementWrapper}
+      componentRef={componentRef}
       element={<Button {...rest} />}
     />
   );

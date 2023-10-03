@@ -175,7 +175,7 @@ export default function NotificationBar<
         {children}
       </Flex>
       {!!Action && (
-        <Flex {...(actionProps as FlexComponentProps)} className={css.action}>
+        <Flex shrink={0} {...(actionProps as FlexComponentProps)} className={css.action}>
           <Action id={id} variant={variant} onAction={onAction} />
         </Flex>
       )}

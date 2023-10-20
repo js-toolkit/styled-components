@@ -5,8 +5,7 @@ import Fade from '@mui/material/Fade';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import type { FlexComponentProps } from 'reflexy/styled/jss';
 import type { Size } from '@js-toolkit/utils/types/utils';
-import toInt from '@js-toolkit/utils/toInt';
-import noop from '@js-toolkit/utils/noop';
+import { toInt } from '@js-toolkit/utils/toInt';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
 import useUpdate from '@js-toolkit/react-hooks/useUpdate';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
@@ -185,9 +184,9 @@ export default React.memo(function VideoWatermark({
   }, [setTextSize, baseFontSize, fontSize, text]);
 
   useLayoutEffect(() => {
-    if (!videoRef || mode === 'random' || !visibleTimeout || !hiddenTimeout) return noop;
+    if (!videoRef || mode === 'random' || !visibleTimeout || !hiddenTimeout) return undefined;
     const { current: video } = videoRef;
-    if (!video) return noop;
+    if (!video) return undefined;
 
     const showController = getShowController({
       visibleTimeout,
@@ -210,9 +209,9 @@ export default React.memo(function VideoWatermark({
   }, [hiddenTimeout, hideable, mode, videoRef, visibleTimeout]);
 
   useLayoutEffect(() => {
-    if (!videoRef || mode !== 'random' || (baseFontSize && !fontSize) || !text) return noop;
+    if (!videoRef || mode !== 'random' || (baseFontSize && !fontSize) || !text) return undefined;
     const { current: video } = videoRef;
-    if (!video) return noop;
+    if (!video) return undefined;
 
     const randomController = getRandomShowController({
       updateTimeout,

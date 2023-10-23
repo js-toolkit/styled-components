@@ -23,7 +23,7 @@ import { getModificationDetector } from './modificationDetector';
 export type VideoWatermarkProps = FlexComponentProps &
   Partial<Point> &
   Partial<Size> &
-  Pick<WatermarkFieldProps, 'lineHeightScale' | 'textHeightScale'> & {
+  Pick<WatermarkFieldProps, 'lineHeightScale' | 'textHeightScale' | 'textSpacing'> & {
     htmlRef?: React.Ref<HTMLDivElement>;
     text: string;
     baseFontSize?: number | undefined;
@@ -49,7 +49,9 @@ const useStyles = makeStyles(({ rc }: Theme) => {
   };
 
   const themeDefault = rc?.VideoWatermark?.default;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { field: _, ...themeStripes } = rc?.VideoWatermark?.stripes ?? {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { field: __, ...themeRandom } = rc?.VideoWatermark?.random ?? {};
 
   return {
@@ -111,6 +113,7 @@ export default React.memo(function VideoWatermark({
   scaleBySize,
   lineHeightScale,
   textHeightScale,
+  textSpacing,
   visibleTimeout,
   hiddenTimeout,
   x,
@@ -309,6 +312,7 @@ export default React.memo(function VideoWatermark({
           patternTransform={theme?.stripes?.field?.patternTransform ?? 'rotate(-45)'}
           lineHeightScale={lineHeightScale ?? theme?.stripes?.field?.lineHeightScale}
           textHeightScale={textHeightScale ?? theme?.stripes?.field?.textHeightScale}
+          textSpacing={textSpacing ?? theme?.stripes?.field?.textSpacing}
           updateKey={rootFontSize}
           text={text}
           mode="lines"

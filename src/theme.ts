@@ -258,6 +258,7 @@ export interface Theme {
                   patternTransform?: string;
                   lineHeightScale?: number;
                   textHeightScale?: number;
+                  textSpacing?: number;
                 };
               })
             | undefined;

@@ -11,6 +11,8 @@ export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> 
   readonly lineHeightScale?: number | undefined;
   /** Scaled text height. */
   readonly textHeightScale?: number | undefined;
+  /** Rows between text. */
+  readonly textSpacing?: number | undefined;
   readonly onSizeChanged: (size: Size) => void;
 }
 
@@ -22,6 +24,7 @@ export default React.forwardRef(function WatermarkField(
     mode,
     lineHeightScale = 1,
     textHeightScale = 1.5,
+    textSpacing = 0,
     patternUnits = 'userSpaceOnUse',
     patternContentUnits,
     patternTransform,
@@ -56,6 +59,7 @@ export default React.forwardRef(function WatermarkField(
   const { width: textWidth, height: lineHeight } = getSize();
   const lineDY = lineHeight * lineHeightScale;
   const textHeight = lineDY * (lines.length - 1) + lineHeight; // (lineHeight + lineDY / 2)
+  const textSpacingValue = lineDY * textSpacing;
 
   React.useEffect(() => {
     onSizeChanged({ width: textWidth, height: textHeight });
@@ -71,14 +75,18 @@ export default React.forwardRef(function WatermarkField(
         <pattern
           id={patternId}
           width={textWidth * (mode === 'lines' ? 2 : 1.5)}
-          height={textHeight * (mode === 'lines' ? textHeightScale * 2 : 1)}
+          height={
+            mode === 'lines'
+              ? textHeight + textHeight * textHeightScale + textSpacingValue * 2
+              : textHeight
+          }
           patternUnits={patternUnits}
           patternContentUnits={patternContentUnits}
           patternTransform={patternTransform}
         >
           <SvgMultilineText
             x={textWidth * 0.5} // because of textAnchor="middle"
-            y={mode === 'lines' ? (textHeight * textHeightScale) / 2 : lineDY / 2}
+            y={mode === 'lines' ? lineDY / 2 + textSpacingValue / 2 : lineDY / 2}
             lineDY={lineDY}
             dominantBaseline="middle"
             textAnchor="middle"
@@ -88,7 +96,7 @@ export default React.forwardRef(function WatermarkField(
           {mode === 'lines' && (
             <SvgMultilineText
               x={textWidth * 1.5}
-              y={textHeight * textHeightScale * 1.5}
+              y={textHeight * textHeightScale + lineDY / 2 + textSpacingValue * 1.5}
               lineDY={lineDY}
               dominantBaseline="middle"
               textAnchor="middle"

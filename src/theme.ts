@@ -252,8 +252,20 @@ export interface Theme {
     VideoWatermark?:
       | {
           default?: CSSProperties | undefined;
-          stripes?: (CSSProperties & { field?: { patternTransform?: string } }) | undefined;
-          random?: (CSSProperties & { field?: { transitionDuration?: number } }) | undefined;
+          stripes?:
+            | (CSSProperties & {
+                field?: {
+                  patternTransform?: string;
+                  lineHeightScale?: number;
+                  textHeightScale?: number;
+                };
+              })
+            | undefined;
+          random?:
+            | (CSSProperties & {
+                field?: { transitionDuration?: number; lineHeightScale?: number };
+              })
+            | undefined;
         }
       | undefined;
 

@@ -14,6 +14,7 @@ const useStyles = makeStyles({
       width: '100%',
       height: '100%',
       objectFit: 'cover',
+      overflow: 'clip', // https://github.com/WICG/view-transitions/blob/main/debugging_overflow_on_images.md
       borderRadius: 'inherit',
 
       pointerEvents: 'none',

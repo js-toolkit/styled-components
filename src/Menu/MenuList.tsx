@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/system/useTheme';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
+import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
 import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';
@@ -41,8 +41,10 @@ export interface MenuListProps<
 > extends FlexComponentProps<'div'> {
   header?: React.ReactChild | undefined;
   headerIcon?: HI | undefined;
-  headerAction?: string | React.ReactElement<any, any> | undefined;
+  headerAction?: string | React.ReactElement | undefined;
   items?: MenuItem<V, I>[] | undefined;
+  headerProps?: FlexAllProps<'div'> | undefined;
+  listProps?: FlexAllProps<'div'> | undefined;
   onItemSelect?: MenuListItemProps<V, I>['onSelect'] | undefined;
   onItemMouseEnter?:
     | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
@@ -88,6 +90,8 @@ export default function MenuList<
   onBack,
   onClose,
   items,
+  headerProps,
+  listProps,
   onItemSelect,
   onItemMouseEnter,
   onItemMouseLeave,
@@ -102,7 +106,7 @@ export default function MenuList<
   ...rest
 }: MenuListProps<V, I, HI>): JSX.Element {
   const { rc } = useTheme<Theme>();
-  const css = useStyles({ classes: { root: className } });
+  const css = useStyles({ classes: { root: className, header: headerProps?.className } });
 
   const backHandler = useRefCallback<React.MouseEventHandler>((event) => {
     onBack && stopPropagation(event);
@@ -135,11 +139,11 @@ export default function MenuList<
       ? theme.header.title.flex({ hasIcon: !!backIconProps || !!headerIconProps })
       : theme?.header?.title?.flex;
 
-  const listFlex =
+  const listContainerFlex =
     typeof theme?.list?.flex === 'function' ? theme.list.flex({ hasHeader }) : theme?.list?.flex;
 
   const itemsElements = useMemo(() => {
-    if (!items || items.length === 0) return [];
+    if (!items || items.length === 0) return undefined;
     return items.map((itemProps, i) => {
       const {
         value,
@@ -195,6 +199,7 @@ export default function MenuList<
           alignItems="center"
           shrink={0}
           {...theme?.header?.flex}
+          {...headerProps}
           className={css.header}
         >
           <Flex
@@ -241,8 +246,19 @@ export default function MenuList<
         </Flex>
       )}
 
-      <Flex mt={hasHeader ? 'xs' : undefined} column overflowY="auto" {...listFlex}>
-        <Flex column shrink={0}>
+      <Flex
+        mt={hasHeader ? 'xs' : undefined}
+        column
+        overflowY="auto"
+        {...listContainerFlex}
+        {...listProps}
+      >
+        <Flex
+          column
+          shrink={0}
+          // If overflowY is disabled to allow children to be able to be scrollable.
+          vfill
+        >
           {itemsElements}
           {children}
         </Flex>

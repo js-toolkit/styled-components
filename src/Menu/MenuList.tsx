@@ -256,7 +256,7 @@ export default function MenuList<
         <Flex
           column
           shrink={0}
-          // If overflowY is disabled to allow children to be able to be scrollable.
+          // If parent's overflowY is disabled to allow custom children to be able to be scrollable.
           vfill
         >
           {itemsElements}

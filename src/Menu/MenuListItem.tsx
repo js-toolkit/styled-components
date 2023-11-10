@@ -154,6 +154,7 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
       px
       py={iconProps ? 0.375 : 0.625}
       alignItems="center"
+      shrink={0}
       {...rootFlex}
       className={css.root}
       onClick={clickHandler}

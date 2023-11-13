@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled/jss';
+import type { WithFlexComponent } from 'reflexy/types';
 import type { Theme, CSSProperties } from '../theme';
 import Ring from './Ring';
 
@@ -14,19 +15,16 @@ interface LoadableStyleProps {
   readonly blur?: boolean | undefined;
   readonly spinnerSize?: SpinnerSize | undefined;
   readonly spinnerPosition?: SpinnerPosition | undefined;
-  /** @deprecated Use `animation` */
-  readonly transition?: boolean | undefined;
   readonly animation?: boolean | undefined;
 }
 
 export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType> =
-  React.PropsWithChildren<
-    FlexAllProps<C> &
-      LoadableStyleProps & {
-        spinner?: boolean | React.ReactElement | undefined;
-        spinnerClassName?: string | undefined;
-      }
-  >;
+  FlexAllProps<C> &
+    WithFlexComponent &
+    LoadableStyleProps & {
+      readonly spinner?: boolean | React.ReactElement | undefined;
+      readonly spinnerClassName?: string | undefined;
+    };
 
 type MakeStylesProps = LoadableStyleProps & { keepShowing: boolean };
 
@@ -195,6 +193,7 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 export default function LoadableFlex<C extends React.ElementType = DefaultComponentType>({
+  FlexComponent = Flex,
   loading,
   disableOnLoading,
   spinner = true,
@@ -203,12 +202,11 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   spinnerClassName,
   backdrop = true,
   blur,
-  transition = true,
-  animation = transition ?? true,
+  animation = true,
   className,
   children,
   ...rest
-}: LoadableFlexProps<C>): JSX.Element {
+}: React.PropsWithChildren<LoadableFlexProps<C>>): JSX.Element {
   const [keepShowing, setKeepShowing] = useState(false);
   const loadingRef = useRef(false);
   loadingRef.current = !!loading;
@@ -246,21 +244,21 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   const spinnerAnimation = animation ? ` ${loading ? css.showSpinner : css.hideSpinner}` : '';
 
   return (
-    <Flex
+    <FlexComponent
       className={`${css.root}${backdropAnimation}`}
       data-loading={!!loading || keepShowing || undefined}
       {...(rest as any)}
     >
       {spinnerElement && (!!loading || keepShowing) && (
-        <Flex
+        <FlexComponent
           center
           className={`${css.spinner}${spinnerAnimation}`}
           onAnimationEnd={animationEndHandler}
         >
           {spinnerElement}
-        </Flex>
+        </FlexComponent>
       )}
       {children}
-    </Flex>
+    </FlexComponent>
   );
 }

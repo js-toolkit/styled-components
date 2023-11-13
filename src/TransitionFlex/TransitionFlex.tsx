@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 // import clsx from 'clsx';
-import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled/jss';
+import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled';
+import type { WithFlexComponent } from 'reflexy/types';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
@@ -15,7 +16,6 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
   readonly appear?: boolean | undefined;
   readonly disposable?: boolean | undefined;
   readonly keepChildren?: boolean | undefined;
-  // readonly hiddenClassName?: string | undefined;
   readonly onHidden?: VoidFunction | undefined;
   readonly onShown?: VoidFunction | undefined;
   readonly transition?: T | undefined;
@@ -26,7 +26,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
 export type TransitionFlexProps<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,
-> = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
+> = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T> & WithFlexComponent;
 
 /**
  * The component must accept `ref` or `componentRef` prop.
@@ -45,8 +45,6 @@ export default function TransitionFlex<
   keepChildren,
   onHidden,
   onShown,
-  // className,
-  // hiddenClassName,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
   // In case if inside TransitionGroup
@@ -82,7 +80,6 @@ export default function TransitionFlex<
     transition as React.ComponentType<TransitionProps>,
     {
       ...transitionProps,
-      // in: !hidden,
       in: inProp,
       appear,
       enter,
@@ -92,11 +89,7 @@ export default function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },
-    <FlexWithRef
-      component="div"
-      // className={clsx(className, hidden && hiddenClassName)}
-      {...rootRest}
-    >
+    <FlexWithRef component="div" {...rootRest}>
       {children}
     </FlexWithRef>
   );

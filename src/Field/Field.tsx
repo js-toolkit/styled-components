@@ -2,11 +2,11 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
+import type { WithFlexComponent } from 'reflexy/types';
 import type { CSSProperties, Theme } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
@@ -15,7 +15,9 @@ type FlexContent<T extends React.ElementType> = Omit<FlexComponentProps<T>, 'con
   content?: React.ReactNode | undefined;
 };
 
-export interface FieldProps extends FlexComponentProps {
+export interface FieldProps
+  extends FlexComponentProps<'div', { omitProps: true }>,
+    WithFlexComponent {
   label?: React.ReactNode | FlexContent<'label'> | undefined;
   /** @deprecated Use `controls` */
   container?: FlexComponentProps<'div'> | undefined;
@@ -106,6 +108,7 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 export default function Field({
+  FlexComponent = Flex,
   column,
   row = !column,
   label,
@@ -136,7 +139,7 @@ export default function Field({
   const dir = column ? 'column' : 'row';
 
   return (
-    <Flex
+    <FlexComponent
       row={row}
       column={column}
       alignItems={column ? 'flex-start' : 'baseline'}
@@ -147,7 +150,7 @@ export default function Field({
       {...rest}
     >
       {labelContent && (
-        <Flex
+        <FlexComponent
           grow={false}
           shrink={false}
           justifyContent={row ? 'flex-end' : undefined}
@@ -162,10 +165,10 @@ export default function Field({
           )}
         >
           {labelContent}
-        </Flex>
+        </FlexComponent>
       )}
 
-      <Flex
+      <FlexComponent
         column
         shrink={false}
         hfill={column}
@@ -180,7 +183,7 @@ export default function Field({
         {children}
 
         {helperTextContent != null && (
-          <Flex
+          <FlexComponent
             shrink={false}
             data-field-helper-text=""
             {...helperTextProps}
@@ -192,9 +195,9 @@ export default function Field({
             )}
           >
             {helperTextContent}
-          </Flex>
+          </FlexComponent>
         )}
-      </Flex>
-    </Flex>
+      </FlexComponent>
+    </FlexComponent>
   );
 }

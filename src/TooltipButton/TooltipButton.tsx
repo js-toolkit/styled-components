@@ -38,10 +38,8 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
       tooltipDelay={tooltipDelay}
       onShowTooltip={onShowTooltip}
       onHideTooltip={onHideTooltip}
-      onClick={clickHandler}
       component={TweakableElementWrapper}
-      element={<Button />}
-      {...rest}
+      element={<Button onClick={clickHandler} {...rest} />}
     />
   );
 }

@@ -9,14 +9,14 @@ import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 type WithData<D = undefined> = Exclude<D, undefined> extends never
   ? { readonly data?: D | undefined }
   : unknown extends D // In case tooltip's data has unknown type
-  ? { readonly data?: D | undefined }
-  : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
+    ? { readonly data?: D | undefined }
+    : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
 
 type GetHtmlType<C extends React.ElementType, T = React.ElementRef<C>> = T extends never
   ? Element
   : unknown extends T
-  ? Element
-  : T;
+    ? Element
+    : T;
 
 export interface TooltipData<D = undefined, T extends Element = Element> {
   readonly target: T;

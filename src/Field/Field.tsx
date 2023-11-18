@@ -172,6 +172,7 @@ export default function Field({
         column
         shrink={false}
         hfill={column}
+        data-field-controls=""
         {...controls}
         className={clsx(
           css.controls,

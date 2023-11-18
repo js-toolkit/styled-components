@@ -86,8 +86,8 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
   children,
   ...rest
 }: React.PropsWithChildren<InputGroupProps<C>>): JSX.Element {
-  const hasError = error != null && error !== false;
-  const showErrorIcon = error != null && typeof error === 'string' && !!error;
+  const hasError = !!error;
+  const showErrorIcon = hasError && typeof error === 'string';
 
   const css = useStyles({ classes: { root: className }, showErrorIcon });
 

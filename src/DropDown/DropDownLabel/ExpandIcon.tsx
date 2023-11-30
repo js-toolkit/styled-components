@@ -1,15 +1,15 @@
 import React from 'react';
-import styled from '@mui/styles/styled';
+import styled from '@mui/system/styled';
 import type { DropDownContextValue } from '../DropDownContext';
 
-const ExpandIcon = styled(
-  ({
-    expanded,
-    ...rest
-  }: React.HTMLAttributes<HTMLDivElement> & Pick<DropDownContextValue, 'expanded'>) => (
-    <div {...rest} />
-  )
-)(({ expanded }) => ({
+export interface ExpandIconProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    Pick<DropDownContextValue, 'expanded'> {}
+
+export default styled('div', {
+  name: 'ExpandIcon',
+  shouldForwardProp: (key) => key !== 'expanded',
+})(({ expanded }: ExpandIconProps) => ({
   display: 'inline-block',
   width: 0,
   height: 0,
@@ -21,5 +21,3 @@ const ExpandIcon = styled(
   transition: '0.15s transform',
   transform: expanded ? 'rotate(180deg)' : undefined,
 }));
-
-export default ExpandIcon;

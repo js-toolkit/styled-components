@@ -1,9 +1,10 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
 import useTheme from '@mui/system/useTheme';
-import clsx from 'clsx';
+import styled from '@mui/system/styled';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';
+// eslint-disable-next-line import/no-cycle
 import useSvgSpriteIconHref from './useSvgSpriteIconHref';
 
 /** Uses in '*.svg' imports which processed by svg-sprite-loader. */
@@ -22,44 +23,18 @@ export interface SvgSpriteIconProps<N extends string> extends React.SVGAttribute
   componentRef?: this['htmlRef'] | undefined;
 }
 
-type MakeStylesProps = ExcludeTypes<
-  Required<Pick<SvgSpriteIconProps<string>, 'scaleOnHover'>>,
-  false
->;
-
-const useStyles = makeStyles({
-  root: {
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  },
-
-  scalable: {
-    transition: 'transform 0.1s',
-    cursor: 'pointer',
-
-    '&:hover': {
-      transform: ({ scaleOnHover }: MakeStylesProps) => {
-        return typeof scaleOnHover === 'number' ? `scale(${scaleOnHover})` : `scale(1.2)`;
-      },
-    },
-  },
-});
-
 /** Uses with svg-sprite-loader */
 function SvgSpriteIcon<N extends string>({
   name,
   size,
   width,
   height,
-  scaleOnHover,
   useProps,
   htmlRef,
   componentRef,
-  className,
   children,
   ...rest
 }: SvgSpriteIconProps<N>): JSX.Element | null {
-  const css = useStyles({ scaleOnHover: scaleOnHover || 1 });
   const { rc } = useTheme<Theme>();
   const refs = useRefs(htmlRef, componentRef);
 
@@ -70,13 +45,7 @@ function SvgSpriteIcon<N extends string>({
   const h = height ?? size ?? w;
 
   return (
-    <svg
-      ref={refs}
-      width={w}
-      height={h}
-      className={clsx(css.root, scaleOnHover && css.scalable, className)}
-      {...rest}
-    >
+    <svg ref={refs} width={w} height={h} {...rest}>
       <use xlinkHref={href} fill="currentColor" {...useProps} />
       {children}
     </svg>
@@ -85,4 +54,25 @@ function SvgSpriteIcon<N extends string>({
 
 SvgSpriteIcon.spriteId = 'svgsprite';
 
-export default SvgSpriteIcon;
+export default hoistNonReactStatics(
+  styled(SvgSpriteIcon, {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof SvgSpriteIconProps<string>;
+      return prop !== 'scaleOnHover';
+    },
+    name: SvgSpriteIcon.name,
+  })(({ scaleOnHover }) => ({
+    display: 'inline-block',
+    verticalAlign: 'middle',
+
+    ...(scaleOnHover && {
+      transition: 'transform 0.1s',
+      cursor: 'pointer',
+
+      '&:hover': {
+        transform: typeof scaleOnHover === 'number' ? `scale(${scaleOnHover})` : `scale(1.2)`,
+      },
+    }),
+  })),
+  SvgSpriteIcon
+) as typeof SvgSpriteIcon;

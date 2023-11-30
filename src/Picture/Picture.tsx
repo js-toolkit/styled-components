@@ -1,28 +1,8 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import type { FlexComponentProps } from 'reflexy/styled/jss';
+import styled from '@mui/system/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
-
-const useStyles = makeStyles({
-  root: {
-    pointerEvents: 'none',
-    touchAction: 'none',
-    userSelect: 'none',
-
-    '& img': {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      overflow: 'clip', // https://github.com/WICG/view-transitions/blob/main/debugging_overflow_on_images.md
-      borderRadius: 'inherit',
-
-      pointerEvents: 'none',
-      touchAction: 'none',
-      userSelect: 'none',
-    },
-  },
-});
 
 export interface PictureSources {
   /** Fallback or default src */
@@ -50,7 +30,7 @@ export interface PictureProps
   readonly onError?: ((error: unknown) => void) | undefined;
 }
 
-export default function Picture({
+function Picture({
   hidden,
   src: srcProp,
   crossOrigin,
@@ -60,10 +40,8 @@ export default function Picture({
   onLoadTimeout,
   onLoadCompleted,
   onError,
-  className,
   ...rest
 }: PictureProps): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const timerRef = useRef(0);
@@ -118,6 +96,7 @@ export default function Picture({
 
   return (
     <TransitionFlex
+      FlexComponent={Flex}
       hidden={hidden ?? !loaded}
       transitionDuration={250}
       transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}
@@ -125,10 +104,27 @@ export default function Picture({
       flex={false}
       onLoad={loadHandler}
       onError={errorHandler}
-      className={css.root}
       {...rest}
     >
       {variants}
     </TransitionFlex>
   );
 }
+
+export default styled(Picture, { name: Picture.name })({
+  pointerEvents: 'none',
+  touchAction: 'none',
+  userSelect: 'none',
+
+  '& img': {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    overflow: 'clip', // https://github.com/WICG/view-transitions/blob/main/debugging_overflow_on_images.md
+    borderRadius: 'inherit',
+
+    pointerEvents: 'none',
+    touchAction: 'none',
+    userSelect: 'none',
+  },
+});

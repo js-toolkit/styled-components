@@ -376,3 +376,10 @@ export interface Theme {
       | undefined;
   };
 }
+
+type AppTheme = Theme;
+
+declare module '@mui/system/createTheme' {
+  // eslint-disable-next-line no-shadow
+  export interface Theme extends AppTheme {}
+}

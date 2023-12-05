@@ -1,6 +1,6 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
+import styled from '@mui/system/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import BadgeIcon from './BadgeIcon';
 
 export interface BadgeProps extends FlexComponentProps {
@@ -8,43 +8,35 @@ export interface BadgeProps extends FlexComponentProps {
   loading?: boolean | undefined;
 }
 
-const useStyles = makeStyles({
-  root: {
-    position: 'relative',
-  },
+type CountIconProps = Pick<BadgeProps, 'loading' | 'count'>;
 
-  icon: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    transform: 'translate(50%, -50%)',
-    zIndex: 1,
-    animation: ({ loading }: BadgeProps) => (loading ? '$spin 1s infinite linear' : undefined),
-  },
-
-  '@keyframes spin': {
-    '0%': {
-      transform: 'translate(50%, -50%) rotate(0deg)',
+const CountIcon = styled(
+  ({ count, ...rest }: CountIconProps) => <BadgeIcon {...rest}>{count}</BadgeIcon>,
+  {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof CountIconProps;
+      return prop !== 'loading';
     },
-    '100%': {
-      transform: 'translate(50%, -50%) rotate(360deg)',
-    },
-  },
-});
+  }
+)(({ loading }) => ({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  transform: 'translate(50%, -50%)',
+  zIndex: 1,
+  animation: loading ? '$spin 1s infinite linear' : undefined,
+}));
 
-export default function Badge({
+export default styled(function Badge({
   count,
   loading,
-  className,
   children,
   ...rest
 }: React.PropsWithChildren<BadgeProps>): JSX.Element {
-  const css = useStyles({ classes: { root: className }, loading } as any);
-
   return (
-    <Flex className={css.root} {...rest}>
+    <Flex {...rest}>
       {children}
-      {!!count && <BadgeIcon className={css.icon}>{count}</BadgeIcon>}
+      {!!count && <CountIcon count={count} loading={loading} />}
     </Flex>
   );
-}
+})({ position: 'relative' });

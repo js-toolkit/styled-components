@@ -1,11 +1,11 @@
+/* eslint-disable no-use-before-define */
 import React, { useCallback } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import '@js-toolkit/utils/types';
+import styled from '@mui/system/styled';
 import ReactModal from 'react-modal';
-import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled/jss';
+import { clsx } from 'clsx';
+import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
-import HideableFlex, { type HideableProps } from '../HideableFlex';
-import type { CSSProperties, Theme } from '../theme';
+import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
@@ -16,11 +16,7 @@ ReactModal.defaultStyles.overlay = {};
 type ModalSize = 'auto' | 'xs' | 's' | 'm' | 'l';
 
 export interface ModalProps
-  extends ExcludeTypes<
-      RequiredSome<OmitStrict<HideableProps, 'disposable'>, 'hidden'>,
-      string,
-      { pick: 'transitionDuration' }
-    >,
+  extends RequiredSome<OmitStrict<HideableProps, 'disposable'>, 'hidden'>,
     OmitStrict<
       FlexComponentProps<typeof ReactModal>,
       | 'isOpen'
@@ -40,56 +36,6 @@ export interface ModalProps
   readonly lockBodyScroll?: boolean | undefined;
   readonly size?: ModalSize | undefined;
 }
-
-// type MakeStylesProps = Pick<ModalProps, 'blurBackdrop'>;
-
-const useStyles = makeStyles((theme: Theme) => {
-  const modal = theme.rc?.Modal ?? {};
-
-  // Build futured classes from theme
-  const sizeClasses = Object.getOwnPropertyNames(modal).reduce(
-    (acc, p) => {
-      if (p.indexOf('size-') === 0) {
-        const size = p as `size-${ModalSize}`;
-        acc[size] = { ...modal[size] };
-      }
-      return acc;
-    },
-    {} as Record<`size-${ModalSize}`, CSSProperties>
-  );
-
-  return {
-    root: {
-      outline: 'none',
-      borderRadius: 'var(--rc--modal-border-radius, 5px)',
-      boxShadow:
-        'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
-      maxWidth: '100vw',
-      ...modal.root,
-    },
-
-    ...sizeClasses,
-
-    backdrop: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
-      zIndex: 1,
-
-      // backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
-
-      ...modal.backdrop,
-    },
-
-    /* hide scrollbar of body */
-    lockScroll: {
-      overflow: 'hidden',
-    },
-  };
-});
 
 const classNameTransformer: GetStylesTransformers<ReactModal.Props>['classNameTransformer'] = (
   calcClassName,
@@ -114,137 +60,174 @@ const styleTransformer: GetStylesTransformers<ReactModal.Props>['styleTransforme
     : { content: calcStyle };
 };
 
-function Modal({
-  size = 'auto',
-  lockBodyScroll,
-  bodyOpenClassName,
-  className,
-  style,
+const Root = styled(
+  ({
+    lockBodyScroll,
+    bodyOpenClassName,
+    className,
+    style,
 
-  backdropRef,
-  backdropClassName,
-  backdropStyle,
-  disableBackdrop,
-  shouldCloseOnBackdropClick,
+    backdropRef,
+    backdropClassName,
+    backdropStyle,
+    disableBackdrop,
+    shouldCloseOnBackdropClick,
 
-  hidden,
-  collapsable,
-  keepChildren,
-  appear,
-  transitionDuration = 250,
-  transitionFunction,
-  transitionProperty,
-  hiddenClassName,
-  onShown,
-  onHidden,
+    hidden,
+    appear,
+    keepChildren,
+    transition,
+    transitionProps,
+    transitionDuration,
+    onHidden,
+    onShown,
 
-  ...rest
-}: React.PropsWithChildren<ModalProps>): JSX.Element {
-  const css = useStyles({
-    classes: {
-      root: className,
-      backdrop: backdropClassName,
-    },
-  });
-
-  const [isVisible, setVisible] = useUpdatedRefState<boolean>(
-    // Hide only by call update state method.
-    (prev) => !hidden || !!prev,
-    [hidden]
-  );
-
-  const hideHandler = useCallback(() => {
-    setVisible(false);
-    onHidden && onHidden();
-  }, [onHidden, setVisible]);
-
-  const contentElement: NonNullable<ReactModal.Props['contentElement']> = (
-    { ref, ...contentProps },
-    children
-  ) => {
-    return (
-      <HideableFlex
-        componentRef={ref}
-        column
-        hidden={hidden}
-        collapsable={collapsable}
-        keepChildren={keepChildren}
-        appear={appear}
-        transitionDuration={transitionDuration}
-        transitionFunction={transitionFunction}
-        transitionProperty={transitionProperty}
-        hiddenClassName={hiddenClassName}
-        onShown={onShown}
-        onHidden={hideHandler}
-        {...contentProps}
-      >
-        {children}
-      </HideableFlex>
+    parentSelector,
+    ...rest
+  }: React.PropsWithChildren<ModalProps>) => {
+    const [isVisible, setVisible] = useUpdatedRefState<boolean>(
+      // Hide only by call update state method.
+      (prev) => !hidden || !!prev,
+      [hidden]
     );
-  };
 
-  const backdropElement: NonNullable<ModalProps['backdropElement']> =
-    rest.backdropElement && !disableBackdrop
-      ? rest.backdropElement
-      : ({ ref, ...backdropProps }, contentEl) => {
-          if (disableBackdrop) {
-            return contentEl;
-          }
-          return (
-            <Flex componentRef={ref} center overflowX="hidden" overflowY="auto" {...backdropProps}>
-              {contentEl}
-            </Flex>
-          );
-        };
+    const hideHandler = useCallback(() => {
+      setVisible(false);
+      onHidden && onHidden();
+    }, [onHidden, setVisible]);
 
-  const backdropClasses: ReactModal.Classes = {
-    base: css.backdrop,
-    afterOpen: 'open',
-    beforeClose: 'close',
-  };
+    const contentElement: NonNullable<ReactModal.Props['contentElement']> = (
+      { ref, ...contentProps },
+      children
+    ) => {
+      return (
+        <TransitionFlex
+          componentRef={ref}
+          column
+          hidden={hidden}
+          appear={appear}
+          keepChildren={keepChildren}
+          transition={transition}
+          transitionProps={transitionProps}
+          transitionDuration={transitionDuration}
+          onHidden={hideHandler}
+          onShown={onShown}
+          {...contentProps}
+        >
+          {children}
+        </TransitionFlex>
+      );
+    };
 
-  const contentStyles: ReactModal.Styles = {
-    content: style,
-    overlay: backdropStyle,
-  };
+    const backdropElement: NonNullable<ModalProps['backdropElement']> =
+      rest.backdropElement && !disableBackdrop
+        ? rest.backdropElement
+        : ({ ref, ...backdropProps }, contentEl) => {
+            if (disableBackdrop) {
+              return contentEl;
+            }
+            return (
+              <Flex
+                componentRef={ref}
+                center
+                overflowX="hidden"
+                overflowY="auto"
+                {...backdropProps}
+              >
+                {contentEl}
+              </Flex>
+            );
+          };
 
-  const sizeClassName = css[`size-${size}`] ?? '';
+    const backdropClasses: ReactModal.Classes = {
+      base: clsx(`${className}__backdrop`, backdropClassName),
+      afterOpen: 'open',
+      beforeClose: 'close',
+    };
 
-  return (
-    <Flex
-      component={ReactModal}
-      className={`${css.root} ${sizeClassName}`}
-      style={contentStyles}
-      classNameTransformer={classNameTransformer}
-      styleTransformer={styleTransformer}
-      parentSelector={Modal.defaultParentSelector}
-      portalClassName="sc-modal-portal"
-      {...(rest as any)}
-      isOpen={isVisible()}
-      closeTimeoutMS={0}
-      overlayClassName={backdropClasses}
-      bodyOpenClassName={
-        lockBodyScroll && bodyOpenClassName
-          ? `${css.lockScroll} ${bodyOpenClassName}`
-          : (lockBodyScroll && css.lockScroll) || bodyOpenClassName || null
-      }
-      contentElement={contentElement}
-      overlayElement={backdropElement}
-      overlayRef={backdropRef}
-      shouldCloseOnOverlayClick={shouldCloseOnBackdropClick}
-    />
-  );
+    const contentStyles: ReactModal.Styles = {
+      content: style,
+      overlay: backdropStyle,
+    };
+
+    return (
+      <Flex
+        component={ReactModal}
+        className={className}
+        style={contentStyles}
+        classNameTransformer={classNameTransformer}
+        styleTransformer={styleTransformer}
+        portalClassName="sc-modal-portal"
+        {...rest}
+        parentSelector={
+          (parentSelector ?? Modal.defaultParentSelector) as NonNullable<
+            ModalProps['parentSelector']
+          >
+        }
+        isOpen={isVisible()}
+        closeTimeoutMS={0}
+        overlayClassName={backdropClasses}
+        bodyOpenClassName={clsx(lockBodyScroll && `${className}__lockScroll`, bodyOpenClassName)}
+        contentElement={contentElement}
+        overlayElement={backdropElement}
+        overlayRef={backdropRef}
+        shouldCloseOnOverlayClick={shouldCloseOnBackdropClick}
+      />
+    );
+  },
+  {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof ModalProps;
+      return prop !== 'size';
+    },
+  }
+)(({ theme: { rc }, size = 'auto', lockBodyScroll }) => ({
+  outline: 'none',
+  borderRadius: 'var(--rc--modal-border-radius, 5px)',
+  boxShadow:
+    'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
+  maxWidth: '100vw',
+  ...rc?.Modal?.root,
+  ...(size && rc?.Modal?.[`size-${size}`]),
+
+  '&__lockScroll': {
+    /* hide scrollbar of body */
+    overflow: lockBodyScroll ? 'hidden' : undefined,
+  },
+
+  '&__backdrop': {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'var(--rc--backdrop-color, rgba(0, 0, 0, 0.5))',
+    zIndex: 1,
+    // backdropFilter: ({ blurBackdrop }: MakeStylesProps) => (blurBackdrop ? 'blur(3px)' : 'none'),
+    ...rc?.Modal?.backdrop,
+  },
+}));
+
+function Modal(props: ModalProps): React.JSX.Element {
+  return <Root {...props} />;
 }
 
-function AsChild({
-  size = 'auto',
-  className,
-  ...rest
-}: Pick<ModalProps, 'size'> & FlexComponentProps<'div'>): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
-  const sizeClassName = css[`size-${size}`] ?? '';
-  return <Flex column className={`${css.root} ${sizeClassName}`} {...rest} />;
-}
+type AsChildProps = Pick<ModalProps, 'size'> & FlexComponentProps<'div'>;
+
+const AsChild = styled((props: AsChildProps) => <Flex column {...props} />, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof ModalProps;
+    return prop !== 'size';
+  },
+})(({ theme: { rc }, size = 'auto' }) => ({
+  outline: 'none',
+  borderRadius: 'var(--rc--modal-border-radius, 5px)',
+  boxShadow:
+    'var(--rc--modal-shadow, 0 15px 12px 0 rgba(0, 0, 0, 0.2), 0 20px 40px 0 rgba(0, 0, 0, 0.3))',
+  maxWidth: '100vw',
+  ...rc?.Modal?.root,
+  ...(size && rc?.Modal?.[`size-${size}`]),
+}));
 
 Modal.Header = Header;
 Modal.Body = Body;

@@ -1,27 +1,26 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
-import type { Theme } from '../theme';
-import { getBodyStyles } from './Body';
-
-// type MakeStylesProps = Pick<FooterProps, >;
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    ...getBodyStyles().root,
-    borderTop: '1px solid var(--rc--divider-color, rgba(0, 0, 0, 0.1))',
-    color: 'var(--rc--modal-footer-color, #2c7caf)',
-    ...theme.rc?.Modal?.Footer,
-  },
-}));
+import styled from '@mui/system/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 
 export type FooterProps = FlexComponentProps<'div'>;
 
-export default function Footer({
-  p = 'l',
-  className,
-  ...rest
-}: React.PropsWithChildren<FooterProps>): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
-  return <Flex p={p} column className={css.root} {...rest} />;
-}
+export default styled(({ p = 'l', ...rest }: React.PropsWithChildren<FooterProps>) => (
+  <Flex p={p} column {...rest} />
+))(({ theme: { rc } }) => ({
+  boxSizing: 'border-box',
+  backgroundColor: '#fff',
+  borderTop: '1px solid var(--rc--divider-color, rgba(0, 0, 0, 0.1))',
+  color: 'var(--rc--modal-footer-color, #2c7caf)',
+
+  '&:first-of-type': {
+    borderTopLeftRadius: 'inherit',
+    borderTopRightRadius: 'inherit',
+  },
+
+  '&:last-of-type': {
+    borderBottomLeftRadius: 'inherit',
+    borderBottomRightRadius: 'inherit',
+  },
+
+  ...rc?.Modal?.Footer,
+}));

@@ -1,23 +1,12 @@
 /* eslint-disable no-await-in-loop */
 import React, { useEffect, useState } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import type { FlexComponentProps } from 'reflexy/styled/jss';
-import loadImage from '@js-toolkit/web-utils/loadImage';
+import styled from '@mui/system/styled';
+import type { FlexComponentProps } from 'reflexy/styled';
+import { loadImage } from '@js-toolkit/web-utils/loadImage';
 import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';
 import { isWebPSupported } from '@js-toolkit/web-utils/isWebPSupported';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import type { PictureProps } from '../Picture';
-
-const useStyles = makeStyles({
-  root: {
-    pointerEvents: 'none',
-    touchAction: 'none',
-    userSelect: 'none',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-  },
-});
 
 export interface PosterProps
   extends FlexComponentProps,
@@ -30,7 +19,7 @@ export interface PosterProps
       'src' | 'crossOrigin' | 'timeout' | 'onLoadTimeout' | 'onLoadCompleted' | 'onError'
     > {}
 
-export default function Poster({
+export default styled(function Poster({
   hidden,
   src: srcProp,
   crossOrigin,
@@ -39,11 +28,9 @@ export default function Poster({
   onLoadTimeout,
   onLoadCompleted,
   onError,
-  className,
   style,
   ...rest
 }: PosterProps): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
   const [url, setUrl] = useState('');
 
   useEffect(() => {
@@ -110,9 +97,15 @@ export default function Poster({
       hidden={hidden ?? !url}
       transitionDuration={250}
       transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}
-      className={css.root}
       style={url ? { ...style, backgroundImage: `url('${url}')` } : style}
       {...rest}
     />
   );
-}
+})({
+  pointerEvents: 'none',
+  touchAction: 'none',
+  userSelect: 'none',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center center',
+  backgroundRepeat: 'no-repeat',
+});

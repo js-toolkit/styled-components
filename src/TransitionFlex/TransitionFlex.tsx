@@ -16,11 +16,11 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
   readonly appear?: boolean | undefined;
   readonly disposable?: boolean | undefined;
   readonly keepChildren?: boolean | undefined;
-  readonly onHidden?: VoidFunction | undefined;
-  readonly onShown?: VoidFunction | undefined;
   readonly transition?: T | undefined;
   readonly transitionProps?: OmitStrict<React.ComponentProps<T>, 'children'> | undefined;
   readonly transitionDuration?: TransitionProps['timeout'] | undefined;
+  readonly onHidden?: VoidFunction | undefined;
+  readonly onShown?: VoidFunction | undefined;
 }
 
 export type TransitionFlexProps<

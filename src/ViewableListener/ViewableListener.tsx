@@ -1,31 +1,14 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
 import { EventEmitterListener } from '@js-toolkit/web-utils/EventEmitterListener';
-
-const useStyles = makeStyles({
-  root: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -1,
-    opacity: 0,
-  },
-});
 
 export interface ViewableListenerProps
   extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
   onViewable: VoidFunction;
 }
 
-export default function ViewableListener({
-  onViewable,
-  className,
-  style,
-}: ViewableListenerProps): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
+export default styled(function ViewableListener({ onViewable, ...rest }: ViewableListenerProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const raf = useRef(0);
   const [isViewable, setViewable] = useRefState(false);
@@ -64,5 +47,13 @@ export default function ViewableListener({
     };
   }, [check]);
 
-  return <div ref={rootRef} className={css.root} style={style} />;
-}
+  return <div ref={rootRef} {...rest} />;
+})({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  zIndex: -1,
+  opacity: 0,
+});

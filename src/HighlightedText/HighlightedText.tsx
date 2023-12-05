@@ -1,14 +1,7 @@
 import React, { useMemo } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps } from 'reflexy/styled/jss';
+import styled from '@mui/system/styled';
+import { Flex, type FlexAllProps } from 'reflexy/styled';
 import { escapeRegExp } from '@js-toolkit/utils/escapeRegExp';
-import type { Theme } from '../theme';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    ...theme.rc?.HighlightedText?.root,
-  },
-}));
 
 export type HighlightedTextProps<C extends React.ElementType = 'span'> = {
   ignoreCase?: boolean | undefined;
@@ -25,16 +18,13 @@ function normalizeArray<T>(array: T | T[] | undefined): T[] | undefined {
   return (Array.isArray(array) ? array.length > 0 && array : array != null && [array]) || undefined;
 }
 
-export default function HighlightedText<C extends React.ElementType = 'span'>({
+function HighlightedText<C extends React.ElementType = 'span'>({
   highlight,
   // onHighlight,
   children: text,
   ignoreCase = true,
-  className,
   ...rest
 }: HighlightedTextProps<C>): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
-
   const [content, _highlighted] = useMemo(() => {
     if (!highlight || !text) return [text, undefined];
 
@@ -72,8 +62,12 @@ export default function HighlightedText<C extends React.ElementType = 'span'>({
   // }, [highlighted, onHighlight]);
 
   return (
-    <Flex component="span" flex={false} className={css.root} {...(rest as FlexAllProps<'span'>)}>
+    <Flex component="span" flex={false} {...(rest as FlexAllProps<'span'>)}>
       {content}
     </Flex>
   );
 }
+
+export default styled(HighlightedText)(({ theme: { rc } }) => ({
+  ...rc?.HighlightedText?.root,
+})) as typeof HighlightedText;

@@ -4,7 +4,7 @@ import type {
   StyleRules,
 } from '@mui/styles/withStyles';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled/jss';
-import type { SvgSpriteIconProps } from './SvgSpriteIcon';
+import type { SvgSpriteIconProps } from './svg/SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';

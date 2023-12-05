@@ -9,7 +9,7 @@ import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import type { Theme } from '../theme';
 import TruncatedText from '../TruncatedText';
-import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';
+import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
 
 type MakeStylesProps = { clickable: boolean };
 

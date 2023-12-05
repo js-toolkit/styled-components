@@ -4,7 +4,7 @@ import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
 import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import SvgSpriteIcon, { type SvgSpriteIconProps } from '../SvgSpriteIcon';
+import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
 import type { Theme } from '../theme';
 import Button, { type ButtonProps } from '../Button';
 import MenuListItem, { type MenuListItemProps } from './MenuListItem';

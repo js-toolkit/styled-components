@@ -1,6 +1,6 @@
 import React from 'react';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import type { SvgSpriteIconProps } from '../SvgSpriteIcon';
+import type { SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
 import MenuList, { type MenuItem, type MenuListProps } from './MenuList';
 
 export interface MenuSelectListProps<

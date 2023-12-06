@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import CheckboxContext, { type CheckboxContextValue } from './CheckboxContext';
 

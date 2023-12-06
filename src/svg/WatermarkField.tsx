@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Size } from '@js-toolkit/utils/types/utils';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
-import SvgMultilineText from '../svg/SvgMultilineText';
+import SvgMultilineText from './SvgMultilineText';
 
 export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> {
   readonly updateKey?: string | number | undefined;

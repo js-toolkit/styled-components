@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled/jss';
-import noop from '@js-toolkit/utils/noop';
-import debounce from '@js-toolkit/utils/debounce';
+import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
+import { noop } from '@js-toolkit/utils/noop';
+import { debounce } from '@js-toolkit/utils/debounce';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';

@@ -1,10 +1,12 @@
 import React from 'react';
+import styled from '@mui/system/styled';
+import { clsx } from 'clsx';
 import LoadableFlex, {
   type LoadableFlexProps,
   type SpinnerPosition as LoadableSpinnerPosition,
 } from '../LoadableFlex';
 import Button, { type ButtonProps } from '../Button';
-import useStyles from './useStyles';
+import type { CSSProperties } from '../theme';
 
 export type SpinnerPosition = Extract<LoadableSpinnerPosition, 'right' | 'left' | 'center'>;
 
@@ -14,30 +16,44 @@ export type LoadableButtonProps<C extends React.ElementType = 'button'> = Omit<
 > &
   ButtonProps<C> & { spinnerPosition?: SpinnerPosition | undefined };
 
-export default function LoadableButton<C extends React.ElementType = 'button'>({
-  component = Button as C,
-  loading,
-  spinnerPosition = 'center',
-  spinnerClassName,
-  className,
-  ...rest
-}: LoadableButtonProps<C>): JSX.Element {
-  const css = useStyles({
-    classes: { root: className, spinner: spinnerClassName },
-    loading,
-    spinnerPosition,
-  });
-
-  return (
+const Root = styled(
+  ({ loading, spinnerPosition, spinnerClassName, ...rest }: LoadableButtonProps) => (
     <LoadableFlex
       center
       shrink={false}
-      className={css.root}
-      component={component}
+      component={Button}
       loading={loading}
       spinnerPosition={spinnerPosition}
-      spinnerClassName={css.spinner}
+      spinnerClassName={clsx(`${rest.className}__spinner`, spinnerClassName)}
       {...(rest as any)}
     />
-  );
+  )
+)(({ theme: { rc }, loading, spinnerPosition }) => ({
+  ...rc?.LoadableButton?.root,
+
+  // Space for spinner
+  '&::after': {
+    content: loading && spinnerPosition !== 'center' ? '""' : 'unset',
+    width: '1.5em',
+    ...(rc?.LoadableButton?.root?.['&::after'] as CSSProperties),
+  },
+
+  '&__spinner': {
+    width: '1.5em',
+    left: spinnerPosition === 'left' ? '0.75em' : undefined,
+    right: spinnerPosition === 'right' ? '0.75em' : undefined,
+    order: spinnerPosition === 'left' ? -1 : undefined,
+    ...rc?.LoadableButton?.spinner,
+
+    '& > svg': {
+      left: spinnerPosition !== 'center' ? 0 : undefined,
+      ...(rc?.LoadableButton?.spinner?.['& > svg'] as CSSProperties),
+    },
+  },
+}));
+
+export default function LoadableButton<C extends React.ElementType = 'button'>(
+  props: LoadableButtonProps<C>
+): JSX.Element {
+  return <Root {...props} />;
 }

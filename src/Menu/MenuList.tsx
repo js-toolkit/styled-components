@@ -1,32 +1,12 @@
 import React, { useMemo } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
-import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
-import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
+import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
+import { stopPropagation } from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
-import type { Theme } from '../theme';
 import Button, { type ButtonProps } from '../Button';
 import MenuListItem, { type MenuListItemProps } from './MenuListItem';
-
-const useStyles = makeStyles(({ rc }: Theme) => ({
-  root: { ...rc?.MenuList?.root },
-
-  clickable: {
-    cursor: 'pointer',
-  },
-
-  header: { ...rc?.MenuList?.header?.root },
-
-  headerTitle: {
-    fontWeight: 500,
-    ...rc?.MenuList?.header?.title?.root,
-  },
-
-  headerAction: {
-    ...rc?.MenuList?.header?.action?.root,
-  },
-}));
 
 export type MenuItem<V, I extends string | SvgSpriteIconProps<string>> = Omit<
   MenuListItemProps<V, I>,
@@ -64,9 +44,8 @@ export interface MenuListProps<
   onHeaderAction?: VoidFunction | undefined;
 }
 
-export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.Element {
-  const { rc } = useTheme<Theme>();
-  const css = useStyles({ classes: { headerAction: className } });
+export const DefaultHeaderAction = styled((props: ButtonProps) => {
+  const { rc } = useTheme();
   return (
     <Button
       ml
@@ -74,11 +53,38 @@ export function DefaultHeaderAction({ className, ...rest }: ButtonProps): JSX.El
       size="contain"
       color="none"
       {...rc?.MenuList?.header?.action?.flex}
-      className={css.headerAction}
-      {...rest}
+      {...props}
     />
   );
-}
+})(({ theme: { rc } }) => ({
+  ...rc?.MenuList?.header?.action?.root,
+}));
+
+const Root = styled((props: React.PropsWithChildren<FlexComponentProps<'div'>>) => (
+  <Flex column role="menu" {...props} />
+))(({ theme: { rc } }) => ({
+  ...rc?.MenuList?.root,
+}));
+
+const HeaderRoot = styled((props: React.PropsWithChildren<FlexComponentProps>) => {
+  return <Flex alignItems="center" shrink={0} {...props} />;
+})(({ theme: { rc } }) => ({
+  ...rc?.MenuList?.header?.root,
+}));
+
+const HeaderTitleContainer = styled((props: React.PropsWithChildren<FlexComponentProps<'div'>>) => {
+  return <Flex grow alignItems="center" {...props} />;
+})(({ theme: { rc }, onClick }) => ({
+  cursor: onClick ? 'pointer' : undefined,
+  ...rc?.MenuList?.header?.root,
+}));
+
+const HeaderTitle = styled((props: React.PropsWithChildren<FlexComponentProps>) => {
+  return <Flex {...props} />;
+})(({ theme: { rc } }) => ({
+  fontWeight: 500,
+  ...rc?.MenuList?.header?.title?.root,
+}));
 
 export default function MenuList<
   V,
@@ -101,12 +107,11 @@ export default function MenuList<
   headerAction,
   onHeaderAction,
   children,
-  className,
   onKeyDown,
   ...rest
 }: MenuListProps<V, I, HI>): JSX.Element {
-  const { rc } = useTheme<Theme>();
-  const css = useStyles({ classes: { root: className, header: headerProps?.className } });
+  const { rc } = useTheme();
+  // const css = useStyles({ classes: { root: className, header: headerProps?.className } });
 
   const backHandler = useRefCallback<React.MouseEventHandler>((event) => {
     onBack && stopPropagation(event);
@@ -190,60 +195,31 @@ export default function MenuList<
     ));
 
   return (
-    <Flex column className={css.root} role="menu" onKeyDown={keyDownHandler} {...rest}>
+    <Root onKeyDown={keyDownHandler} {...rest}>
       {hasHeader && (
-        <Flex
-          py="xs"
-          pl="s"
-          pr
-          alignItems="center"
-          shrink={0}
-          {...theme?.header?.flex}
-          {...headerProps}
-          className={css.header}
-        >
-          <Flex
-            grow
-            alignItems="center"
-            className={onBack ? css.clickable : undefined}
-            onClick={onBack ? backHandler : undefined}
-          >
+        <HeaderRoot py="xs" pl="s" pr {...theme?.header?.flex} {...headerProps}>
+          <HeaderTitleContainer grow alignItems="center" onClick={onBack ? backHandler : undefined}>
             {!!backIconProps && <SvgSpriteIcon size="1.5em" {...backIconProps} />}
             {!!headerIconProps && <SvgSpriteIcon {...headerIconProps} />}
 
-            <Flex
+            <HeaderTitle
               ml={!backIconProps && !headerIconProps ? 's' : 'xs'}
               py="xs"
               grow
               {...headerTitleFlex}
-              className={css.headerTitle}
             >
               {header}
-            </Flex>
-          </Flex>
+            </HeaderTitle>
+          </HeaderTitleContainer>
 
           {headerActionElement}
-
-          {/* {!!headerAction && (
-            <Button
-              ml
-              shrink={0}
-              size="contain"
-              color="none"
-              {...headerActionFlex}
-              className={css.headerAction}
-              onClick={headerActionHandler}
-            >
-              {headerAction}
-            </Button>
-          )} */}
 
           {!!closeIconProps && (
             <Button shrink={0} size="contain" color="none" onClick={closeHandler}>
               <SvgSpriteIcon size="0.875em" {...closeIconProps} />
             </Button>
           )}
-        </Flex>
+        </HeaderRoot>
       )}
 
       <Flex
@@ -263,6 +239,6 @@ export default function MenuList<
           {children}
         </Flex>
       </Flex>
-    </Flex>
+    </Root>
   );
 }

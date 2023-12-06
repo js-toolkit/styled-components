@@ -2,7 +2,7 @@ import React from 'react';
 import DefaultRenderer from './DefaultRenderer';
 
 export interface ErrorBoundaryProps {
-  readonly error?: unknown | undefined;
+  readonly error?: unknown;
   readonly onError?: ((error: Error, errorInfo: React.ErrorInfo) => void) | undefined;
   readonly renderer: ((error: unknown) => React.ReactNode) | undefined;
 }

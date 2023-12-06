@@ -1,32 +1,14 @@
 import React, { type AriaAttributes, useEffect, useRef } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import noop from '@js-toolkit/utils/noop';
 import preventDefault from '@js-toolkit/web-utils/preventDefault';
 import stopPropagation from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
-import type { Theme } from '../theme';
-import TruncatedText from '../TruncatedText';
+import TruncatedText, { type TruncatedTextProps } from '../TruncatedText';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
-
-type MakeStylesProps = { clickable: boolean };
-
-const useStyles = makeStyles(({ rc }: Theme) => ({
-  root: {
-    cursor: ({ clickable }: MakeStylesProps) => (clickable ? 'pointer' : ''),
-    ...rc?.MenuListItem?.root,
-  },
-
-  title: {
-    ...rc?.MenuListItem?.title?.root,
-  },
-
-  subtitle: {
-    ...rc?.MenuListItem?.subtitle?.root,
-  },
-}));
 
 export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
   extends FlexComponentProps<'div', { omitProps: true }>,
@@ -52,6 +34,33 @@ export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<stri
   onSelect?: ((value: this['value'], event: React.UIEvent<HTMLDivElement>) => void) | undefined;
 }
 
+type RootProps = React.PropsWithChildren<FlexComponentProps<'div'> & { clickable: boolean }>;
+
+const Root = styled(
+  (props: RootProps) => <Flex role="menuitem" alignItems="center" shrink={0} {...props} />,
+  {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof RootProps;
+      return prop !== 'clickable';
+    },
+  }
+)(({ theme: { rc }, clickable }) => ({
+  cursor: clickable ? 'pointer' : undefined,
+  ...rc?.MenuListItem?.root,
+}));
+
+const Title = styled((props: TruncatedTextProps) => <TruncatedText {...props} />)(
+  ({ theme: { rc } }) => ({
+    ...rc?.MenuListItem?.title?.root,
+  })
+);
+
+const Subtitle = styled((props: TruncatedTextProps) => <TruncatedText {...props} />)(
+  ({ theme: { rc } }) => ({
+    ...rc?.MenuListItem?.subtitle?.root,
+  })
+);
+
 export default function MenuListItem<V, I extends string | SvgSpriteIconProps<string>>({
   icon,
   title,
@@ -61,15 +70,13 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   checked = false,
   autoFocus,
   shrinkTitle = (!subtitle && !!(checked || submenu)) || (!subtitle && !checked && !submenu),
-  className,
   onSelect,
   onClick,
   onKeyDown,
   componentRef,
   ...rest
 }: MenuListItemProps<V, I>): JSX.Element {
-  const css = useStyles({ classes: { root: className }, clickable: !!onSelect });
-  const { rc } = useTheme<Theme>();
+  const { rc } = useTheme();
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
     onClick && onClick(event);
@@ -147,16 +154,13 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
   const submenuIconProps = submenu ? theme?.submenuIcon : undefined;
 
   return (
-    <Flex
+    <Root
+      clickable={!!onSelect}
       aria-haspopup={submenu || undefined}
-      role="menuitem"
       componentRef={rootRefs}
       px
       py={iconProps ? 0.375 : 0.625}
-      alignItems="center"
-      shrink={0}
       {...rootFlex}
-      className={css.root}
       onClick={clickHandler}
       onKeyDown={keyDownHandler}
       {...rest}
@@ -164,23 +168,17 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
       {!!iconProps && <SvgSpriteIcon {...iconProps} />}
 
       {title && typeof title !== 'object' ? (
-        <TruncatedText
-          ml={iconProps ? 'xs' : undefined}
-          grow
-          shrink={shrinkTitle}
-          {...titleFlex}
-          className={css.title}
-        >
+        <Title ml={iconProps ? 'xs' : undefined} grow shrink={shrinkTitle} {...titleFlex}>
           {title}
-        </TruncatedText>
+        </Title>
       ) : (
         title
       )}
 
       {!!subtitle && (
-        <TruncatedText ml shrink={!shrinkTitle} {...subtitleFlex} className={css.subtitle}>
+        <Subtitle ml shrink={!shrinkTitle} {...subtitleFlex}>
           {subtitle}
-        </TruncatedText>
+        </Subtitle>
       )}
 
       {!!checkIconProps && (
@@ -190,6 +188,6 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
       {!!submenuIconProps && (
         <Flex ml shrink={0} component={SvgSpriteIcon} size="0.6em" {...submenuIconProps} />
       )}
-    </Flex>
+    </Root>
   );
 }

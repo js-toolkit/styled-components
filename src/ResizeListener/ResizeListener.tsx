@@ -35,8 +35,7 @@ export default function ResizeListener({
 
   useEffect(() => {
     const { current: root } = rootRef;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    if (!root) return () => {};
+    if (!root) return undefined;
 
     const resizeHandler = (): void => {
       const checkWidth = onlyWidth == null ? !onlyHeight : onlyWidth;

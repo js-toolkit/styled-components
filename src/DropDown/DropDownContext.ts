@@ -1,4 +1,5 @@
 import React from 'react';
+import noop from '@js-toolkit/utils/noop';
 
 export interface ToggleHandler {
   (expanded: boolean): void;
@@ -14,6 +15,5 @@ export interface DropDownContextValue {
 export default React.createContext<DropDownContextValue>({
   expanded: false,
   floating: true,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  toggle: () => {},
+  toggle: noop,
 });

@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useRef, useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
-import type { Theme } from '../../theme';
-import DropDownContext, { type DropDownContextValue } from '../DropDownContext';
+import type { Theme } from '../theme';
+import DropDownContext, { type DropDownContextValue } from './DropDownContext';
 
 /** Map of html tags and their selector */
 export type HtmlTagSelectorMap = { [P in keyof JSX.IntrinsicElements]?: string | undefined };

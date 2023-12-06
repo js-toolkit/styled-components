@@ -1,7 +1,6 @@
-export type GetFilteredKeys<T extends AnyObject> = Extract<
-  { [P in keyof T]: true extends T[P] ? P : never }[keyof T],
-  string
->;
+type Filtered<T extends AnyObject> = { [P in keyof T]: true extends T[P] ? P : never };
+
+export type GetFilteredKeys<T extends AnyObject> = Extract<keyof Filtered<T>, string>;
 
 export type GetOverridedKeys<
   T extends string | number,

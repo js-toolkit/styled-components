@@ -1,9 +1,9 @@
 import type {
   BaseCSSProperties,
   CSSProperties as CSSPropertiesOrigin,
-  StyleRules,
+  // StyleRules,
 } from '@mui/styles/withStyles';
-import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled/jss';
+import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled';
 import type { SvgSpriteIconProps } from './svg/SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
@@ -34,14 +34,16 @@ export type ButtonThemeVariants = {
   [P in ButtonVariant as `variant-${P}`]?: CSSProperties | undefined;
 };
 
+type ButtonStyles = {
+  root?: CSSProperties | undefined;
+  hover?: CSSProperties | undefined;
+  active?: CSSProperties | undefined;
+};
+
 export type ButtonTheme = ButtonThemeSizes &
-  ButtonThemeVariants & {
-    root?: CSSProperties | undefined;
-    css?: StyleRules | undefined;
-  } & {
-    [P in ButtonColor]?:
-      | { [K in ButtonVariant]?: CSSProperties /* & ButtonThemeSizes */ | undefined }
-      | undefined;
+  ButtonThemeVariants &
+  ButtonStyles & {
+    [P in ButtonColor]?: { [K in ButtonVariant]?: ButtonStyles | undefined } | undefined;
   };
 
 export interface Theme {

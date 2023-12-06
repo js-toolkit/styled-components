@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
-// import clsx from 'clsx';
 import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled';
 import type { WithFlexComponent } from 'reflexy/types';
 import FlexWithRef from 'reflexy/FlexWithRef';

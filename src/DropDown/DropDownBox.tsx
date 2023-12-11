@@ -1,8 +1,7 @@
 import React, { useCallback, useContext, useRef, useEffect } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps } from 'reflexy/styled/jss';
-import type { Theme } from '../theme';
-import DropDownContext, { type DropDownContextValue } from './DropDownContext';
+import styled from '@mui/system/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import DropDownContext from './DropDownContext';
 
 /** Map of html tags and their selector */
 export type HtmlTagSelectorMap = { [P in keyof JSX.IntrinsicElements]?: string | undefined };
@@ -36,35 +35,40 @@ function isShouldClose(el: Element, topNode: Element, map: HtmlTagSelectorMap): 
   return isShouldClose(el.parentElement, topNode, map);
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: ({ floating, prerender }: DropDownContextValue & DropDownBoxProps) => ({
-    '&[hidden]': prerender ? { display: 'none' } : undefined,
+type RootProps = RequiredSome<DropDownBoxProps, 'prerender'> & { floating: boolean };
 
-    ...(floating
-      ? {
-          cursor: 'default',
-          zIndex: 1,
-          position: 'absolute',
-          top: '100%',
-          minWidth: '100%',
-        }
-      : undefined),
+const Root = styled(Flex, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof RootProps;
+    return prop !== 'prerender' && prop !== 'floating';
+  },
+})<RootProps>(({ theme: { rc }, prerender, floating }) => ({
+  '&[hidden]': {
+    display: prerender ? 'none' : undefined,
+  },
 
-    ...theme.rc?.DropDownBox?.root,
-  }),
+  ...(floating
+    ? {
+        cursor: 'default',
+        zIndex: 1,
+        position: 'absolute',
+        top: '100%',
+        minWidth: '100%',
+      }
+    : undefined),
+
+  ...rc?.DropDownBox?.root,
 }));
 
-export default function DropDownBox({
+export default styled(function DropDownBox({
   closeOnClick,
-  prerender,
-  className,
+  prerender = false,
   ...rest
 }: React.PropsWithChildren<DropDownBoxProps>): JSX.Element | null {
   const selfNodeRef = useRef<HTMLDivElement>(null);
   const closeOnClickRef = useRef(closeOnClick);
 
   const { expanded, floating, toggle } = useContext(DropDownContext);
-  const css = useStyles({ classes: { root: className }, floating, prerender } as any);
 
   useEffect(() => {
     closeOnClickRef.current = closeOnClick;
@@ -95,16 +99,17 @@ export default function DropDownBox({
   if (!expanded && !prerender) return null;
 
   return (
-    <Flex
+    <Root
       column
       component="div"
       componentRef={selfNodeRef}
-      className={css.root}
       onClick={clickHandler}
       hidden={!expanded}
+      floating={floating}
+      prerender={prerender}
       aria-expanded={expanded}
       data-dropdown-box=""
       {...rest}
     />
   );
-}
+});

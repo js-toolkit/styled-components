@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useRef, useMemo } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
+import { clsx } from 'clsx';
 import type { FlexComponentProps } from 'reflexy/styled';
 import type { WithFlexComponent } from 'reflexy/types';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import { OutsideClickListener, type OutsideClickListenerProps } from 'react-outside-click-listener';
-import type { Theme } from '../theme';
 import DropDownContext, { type DropDownContextValue } from './DropDownContext';
 
 export interface DropDownProps
@@ -24,16 +24,7 @@ export interface DropDownProps
   floating?: boolean | undefined;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    position: 'relative',
-    cursor: 'pointer',
-    userSelect: 'none',
-    ...theme.rc?.DropDown?.root,
-  },
-}));
-
-export default function DropDown({
+export default styled(function DropDown({
   expanded,
   onToggle,
   onToggled,
@@ -90,12 +81,6 @@ export default function DropDown({
     [onOutsideClick, toggle]
   );
 
-  const css = useStyles({
-    classes: {
-      root: `${className || ''} ${(isExpandedRef.current && expandedClassName) || ''}`.trim(),
-    },
-  });
-
   return (
     <DropDownContext.Provider value={contextValue}>
       <OutsideClickListener
@@ -105,7 +90,7 @@ export default function DropDown({
         <FlexWithRef
           component="div"
           column
-          className={css.root}
+          className={clsx(className, isExpandedRef.current && expandedClassName)}
           aria-expanded={isExpandedRef.current}
           data-dropdown=""
           {...rest}
@@ -115,4 +100,9 @@ export default function DropDown({
       </OutsideClickListener>
     </DropDownContext.Provider>
   );
-}
+})(({ theme: { rc } }) => ({
+  position: 'relative',
+  cursor: 'pointer',
+  userSelect: 'none',
+  ...rc?.DropDown?.root,
+}));

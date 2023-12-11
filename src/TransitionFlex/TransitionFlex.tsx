@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
 import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled';
-import type { WithFlexComponent } from 'reflexy/types';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
@@ -25,7 +24,7 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
 export type TransitionFlexProps<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,
-> = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T> & WithFlexComponent;
+> = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
 
 /**
  * The component must accept `ref` or `componentRef` prop.

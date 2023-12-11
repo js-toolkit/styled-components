@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled/jss';
-import type { Theme } from '../../theme';
+import styled from '@mui/system/styled';
+import { clsx } from 'clsx';
+import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
 import DropDownContext from '../DropDownContext';
 import ExpandIcon from './ExpandIcon';
 
@@ -13,11 +13,7 @@ export type DropDownLabelProps<C extends React.ElementType = DefaultComponentTyp
   }> &
     FlexAllProps<C>;
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: theme.rc?.DropDownLabel?.root ?? {},
-}));
-
-export default function DropDownLabel<C extends React.ElementType = DefaultComponentType>({
+function DropDownLabel<C extends React.ElementType = DefaultComponentType>({
   toggleOnClick = true,
   expandIcon = true,
   expandedClassName,
@@ -26,15 +22,12 @@ export default function DropDownLabel<C extends React.ElementType = DefaultCompo
   ...rest
 }: DropDownLabelProps<C>): JSX.Element {
   const { expanded, toggle } = useContext(DropDownContext);
-  const css = useStyles({
-    classes: { root: `${className || ''} ${(expanded && expandedClassName) || ''}`.trim() },
-  });
 
   return (
     <Flex
       shrink={false}
       alignItems="center"
-      className={css.root}
+      className={clsx(className, expanded && expandedClassName)}
       onClick={toggleOnClick ? toggle : undefined}
       aria-expanded={expanded}
       data-dropdown-label=""
@@ -48,3 +41,7 @@ export default function DropDownLabel<C extends React.ElementType = DefaultCompo
     </Flex>
   );
 }
+
+export default styled(DropDownLabel)(({ theme: { rc } }) => ({
+  ...rc?.DropDownLabel?.root,
+})) as typeof DropDownLabel;

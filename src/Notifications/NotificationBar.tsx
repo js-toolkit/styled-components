@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled/jss';
+import styled from '@mui/system/styled';
+import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import { clsx } from 'clsx';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import TransitionFlex, {
@@ -9,7 +9,6 @@ import TransitionFlex, {
   type TransitionComponent,
   type TransitionFlexProps,
 } from '../TransitionFlex';
-import type { Theme, CSSProperties } from '../theme';
 import type { GetOverridedKeys } from '../types/local';
 
 export interface NotificationVariants {}
@@ -36,78 +35,77 @@ export interface NotificationBarProps<
   readonly onUnmount?: VoidFunction | undefined;
 }
 
-const useStyles = makeStyles(({ rc }: Theme) => {
-  const { root, content, action, info, success, warning, error, ...rest } =
-    rc?.NotificationBar ?? {};
-  const restTheme = rest as Record<NotificationVariant, CSSProperties>;
+type RootProps = TransitionFlexProps &
+  RequiredSome<Pick<NotificationBarProps, 'variant' | 'applyClassesToTransition'>, 'variant'>;
 
-  // Build futured classes from theme
-  const themeClasses = Object.getOwnPropertyNames(restTheme).reduce(
-    (acc, p) => {
-      const variant = p as NotificationVariant;
-      if (typeof restTheme[variant] === 'object') {
-        acc[variant] = restTheme[variant];
-      }
-      return acc;
+const Root = styled(
+  ({ applyClassesToTransition, className, transitionProps, ...props }: RootProps) => (
+    <TransitionFlex
+      className={applyClassesToTransition ? undefined : className}
+      transitionProps={{
+        ...transitionProps,
+        ...(applyClassesToTransition && {
+          className: clsx(transitionProps?.className, className),
+        }),
+      }}
+      {...props}
+    />
+  ),
+  {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof RootProps;
+      return prop !== 'variant';
     },
-    {} as Record<NotificationVariant, CSSProperties>
-  );
+  }
+)(({ theme: { rc }, variant }) => ({
+  boxSizing: 'border-box',
+  padding: '0.75em 1.25em',
+  borderRadius: '2px',
+  ...rc?.NotificationBar?.root,
 
-  return {
-    root: {
-      boxSizing: 'border-box',
-      padding: '0.75em 1.25em',
-      borderRadius: '2px',
-      ...root,
-    },
+  ...(variant === 'info' && {
+    backgroundColor: 'rgb(100, 200, 255)',
+    color: 'rgb(0, 80, 100)',
+  }),
 
-    textRight: {
-      textAlign: 'right',
-    },
+  ...(variant === 'success' && {
+    backgroundColor: 'rgb(120, 220, 125)',
+    color: 'rgb(30, 90, 30)',
+  }),
 
-    textCenter: {
-      textAlign: 'center',
-    },
+  ...(variant === 'warning' && {
+    backgroundColor: 'rgb(255, 200, 50)',
+    color: 'rgb(130, 80, 0)',
+  }),
 
-    content: {
-      userSelect: 'none',
-      whiteSpace: 'pre-line',
-      wordBreak: 'break-word',
-      ...content,
-    },
+  ...(variant === 'error' && {
+    backgroundColor: 'rgb(255, 100, 90)',
+    color: 'rgb(125, 0, 0)',
+  }),
 
-    action: {
-      marginLeft: '1em',
-      ...action,
-    },
+  ...(variant && rc?.NotificationBar?.[variant]),
+}));
 
-    ...themeClasses,
+const ContentContainer = styled(Flex)(({ theme: { rc }, ...props }) => ({
+  userSelect: 'none',
+  whiteSpace: 'pre-line',
+  wordBreak: 'break-word',
+  texAlign:
+    (((props.column && props.alignItems === 'flex-end') ||
+      (!props.column && props.justifyContent === 'flex-end')) &&
+      'right') ||
+    ((props.center ||
+      (props.column && props.alignItems === 'center') ||
+      (!props.column && props.justifyContent === 'center')) &&
+      'center') ||
+    undefined,
+  ...rc?.NotificationBar?.content,
+}));
 
-    info: {
-      backgroundColor: 'rgb(100, 200, 255)',
-      color: 'rgb(0, 80, 100)',
-      ...info,
-    },
-
-    success: {
-      backgroundColor: 'rgb(120, 220, 125)',
-      color: 'rgb(30, 90, 30)',
-      ...success,
-    },
-
-    warning: {
-      backgroundColor: 'rgb(255, 200, 50)',
-      color: 'rgb(130, 80, 0)',
-      ...warning,
-    },
-
-    error: {
-      backgroundColor: 'rgb(255, 100, 90)',
-      color: 'rgb(125, 0, 0)',
-      ...error,
-    },
-  };
-});
+const ActionContainer = styled(Flex)(({ theme: { rc } }) => ({
+  marginLeft: '1em',
+  ...rc?.NotificationBar?.action,
+}));
 
 export default function NotificationBar<
   TID extends string | number = string | number,
@@ -119,66 +117,28 @@ export default function NotificationBar<
   variant = 'info',
   action: Action,
   onAction,
-  className,
   contentProps,
   actionProps,
   children,
-  transitionProps,
-  applyClassesToTransition,
   onUnmount,
   ...rest
 }: React.PropsWithChildren<
   NotificationBarProps<TID, TContent, TAction, TTransition>
 >): JSX.Element {
-  const css = useStyles({
-    classes: { content: contentProps?.className, action: actionProps?.className },
-  });
-
   const onUnmountRef = useRefCallback(() => onUnmount && onUnmount());
   useEffect(() => onUnmountRef, [onUnmountRef]);
 
   return (
-    <TransitionFlex
-      alignItems="center"
-      className={applyClassesToTransition ? undefined : clsx(css.root, css[variant], className)}
-      transitionProps={{
-        ...transitionProps,
-        ...(applyClassesToTransition && {
-          className: clsx(
-            css.root,
-            css[variant],
-            (transitionProps as HideableProps['transitionProps'])?.className,
-            className
-          ),
-        }),
-      }}
-      {...(rest as TransitionFlexProps)}
-    >
-      <Flex
-        grow
-        {...(contentProps as FlexComponentProps)}
-        className={
-          contentProps
-            ? clsx(
-                ((contentProps.column && contentProps.alignItems === 'flex-end') ||
-                  (!contentProps.column && contentProps.justifyContent === 'flex-end')) &&
-                  css.textRight,
-                (contentProps.center ||
-                  (contentProps.column && contentProps.alignItems === 'center') ||
-                  (!contentProps.column && contentProps.justifyContent === 'center')) &&
-                  css.textCenter,
-                css.content
-              )
-            : css.content
-        }
-      >
+    <Root variant={variant} alignItems="center" {...(rest as TransitionFlexProps)}>
+      <ContentContainer grow {...(contentProps as FlexComponentProps)}>
         {children}
-      </Flex>
+      </ContentContainer>
+
       {!!Action && (
-        <Flex shrink={0} {...(actionProps as FlexComponentProps)} className={css.action}>
+        <ActionContainer shrink={0} {...(actionProps as FlexComponentProps)}>
           <Action id={id} variant={variant} onAction={onAction} />
-        </Flex>
+        </ActionContainer>
       )}
-    </TransitionFlex>
+    </Root>
   );
 }

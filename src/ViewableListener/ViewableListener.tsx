@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import styled from '@mui/system/styled';
-import useRefState from '@js-toolkit/react-hooks/useRefState';
 import { EventEmitterListener } from '@js-toolkit/web-utils/EventEmitterListener';
+import useRefState from '@js-toolkit/react-hooks/useRefState';
 
 export interface ViewableListenerProps
   extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {

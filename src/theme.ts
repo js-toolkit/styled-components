@@ -60,7 +60,9 @@ export interface Theme {
         }
       | undefined;
 
-    Divider?: (CSSProperties & { light?: CSSProperties | undefined }) | undefined;
+    Divider?:
+      | { default?: CSSProperties | undefined; light?: CSSProperties | undefined }
+      | undefined;
 
     DropDown?:
       | {
@@ -124,8 +126,8 @@ export interface Theme {
 
     Checkbox?: {
       root?: CSSProperties | undefined;
-      shape?: CSSProperties | undefined;
       disabled?: CSSProperties | undefined;
+      shape?: (CSSProperties & { hover?: CSSProperties | undefined }) | undefined;
 
       colors?:
         | {
@@ -139,7 +141,7 @@ export interface Theme {
       checkbox?:
         | {
             root?: CSSProperties | undefined;
-            shape?: CSSProperties | undefined;
+            shape?: (CSSProperties & { hover?: CSSProperties | undefined }) | undefined;
             checked?:
               | {
                   root?: CSSProperties | undefined;
@@ -152,7 +154,7 @@ export interface Theme {
       radio?:
         | {
             root?: CSSProperties | undefined;
-            shape?: CSSProperties | undefined;
+            shape?: (CSSProperties & { hover?: CSSProperties | undefined }) | undefined;
             checked?:
               | {
                   root?: CSSProperties | undefined;
@@ -164,7 +166,7 @@ export interface Theme {
 
       switch?: {
         root?: CSSProperties | undefined;
-        shape?: CSSProperties | undefined;
+        shape?: (CSSProperties & { hover?: CSSProperties | undefined }) | undefined;
         checked?:
           | {
               root?: CSSProperties | undefined;

@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
 import {
   Flex,
   type FlexAllProps,
   type DefaultComponentType,
   type FlexComponentProps,
-} from 'reflexy/styled/jss';
+} from 'reflexy/styled';
 import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { clsx } from 'clsx';
 import { clear } from '@js-toolkit/utils/clear';
 import useUpdate from '@js-toolkit/react-hooks/useUpdate';
-import type { TransitionComponent /* , TransitionFlexProps */ } from '../TransitionFlex';
-import type { Theme } from '../theme';
+import type { TransitionComponent } from '../TransitionFlex';
 import type { GetOverridedKeys } from '../types/local';
+import type { CSSProperties } from '../theme';
 import NotificationBar, { type NotificationBarProps } from './NotificationBar';
 
 export interface NotificationPositions {}
@@ -88,150 +88,138 @@ export type NotificationsProps<
 };
 
 // These styles take precedence over NotificationBar styles because makeStyles is called later.
-const useStyles = makeStyles(({ rc }: Theme) => {
-  const {
-    root,
-    item,
-    itemSpace,
-    static: staticPos,
-    'sticky-top': stickyTop,
-    'sticky-bottom': stickyBottom,
-    top,
-    bottom,
-    'left-top': leftTop,
-    'left-middle': leftMiddle,
-    'left-bottom': leftBottom,
-    'right-top': rightTop,
-    'right-middle': rightMiddle,
-    'right-bottom': rightBottom,
-    'window-top': windowTop,
-    'window-bottom': windowBottom,
-  } = rc?.Notifications ?? {};
 
-  return {
-    fixedContainer: {
-      position: 'fixed',
-      left: 0,
-      top: '-1px',
-      width: '100%',
-      height: 0,
-      overflow: 'hidden',
-      zIndex: 999,
+type RootProps = React.PropsWithChildren<
+  FlexComponentProps &
+    Pick<NotificationsProps<any, any>, 'containerProps'> & {
+      variant: 'absolute' | 'fixed' | undefined;
+      position: NotificationPosition;
+    }
+>;
+
+const Root = styled(
+  ({ className, containerProps, ...rest }: RootProps) => (
+    // Extra container for correct positioning by center
+    <Flex
+      justifyContent="center"
+      {...containerProps}
+      className={clsx(`${className}__container`, containerProps?.className)}
+    >
+      <Flex column className={className} {...rest} />
+    </Flex>
+  ),
+  {
+    shouldForwardProp: (key) => {
+      const prop = key as keyof RootProps;
+      return prop !== 'variant' && prop !== 'position';
     },
-
-    absoluteContainer: {
-      position: 'absolute',
-      left: 0,
-      width: '100%',
-      height: 0,
-      zIndex: 999,
-    },
-
-    root: {
-      zIndex: 999,
-      ...root,
-    },
-
-    static: {
+  }
+)(({ theme: { rc }, variant, position }) => {
+  const pos: CSSProperties = {
+    ...(position === 'static' && {
       position: 'static',
-      ...staticPos,
-    },
-
-    'sticky-top': {
+    }),
+    ...(position === 'sticky-top' && {
       position: 'sticky',
       top: 0,
-      ...stickyTop,
-    },
-
-    'sticky-bottom': {
+    }),
+    ...(position === 'sticky-bottom' && {
       position: 'sticky',
       bottom: 0,
-      ...stickyBottom,
-    },
-
-    top: {
+    }),
+    ...(position === 'top' && {
       position: 'absolute',
       top: 0,
       // left: '50%',
       // transform: 'translateX(-50%)',
-      ...top,
-    },
-
-    bottom: {
+    }),
+    ...(position === 'bottom' && {
       position: 'absolute',
       bottom: 0,
       // left: '50%',
       // transform: 'translateX(-50%)',
-      ...bottom,
-    },
-
-    'left-top': {
+    }),
+    ...(position === 'left-top' && {
       position: 'absolute',
       left: 0,
       top: 0,
-      ...leftTop,
-    },
-
-    'left-middle': {
+    }),
+    ...(position === 'left-middle' && {
       position: 'absolute',
       left: 0,
       top: '50%',
       transform: 'translateY(-50%)',
-      ...leftMiddle,
-    },
-
-    'left-bottom': {
+    }),
+    ...(position === 'left-bottom' && {
       position: 'absolute',
       left: 0,
       bottom: 0,
-      ...leftBottom,
-    },
-
-    'right-top': {
+    }),
+    ...(position === 'right-top' && {
       position: 'absolute',
       right: 0,
       top: 0,
-      ...rightTop,
-    },
-
-    'right-middle': {
+    }),
+    ...(position === 'right-middle' && {
       position: 'absolute',
       right: 0,
       top: '50%',
       transform: 'translateY(-50%)',
-      ...rightMiddle,
-    },
-
-    'right-bottom': {
+    }),
+    ...(position === 'right-bottom' && {
       position: 'absolute',
       right: 0,
       bottom: 0,
-      ...rightBottom,
-    },
-
-    'window-top': {
+    }),
+    ...(position === 'window-top' && {
       position: 'fixed',
       top: '0.75rem',
       // width: '100%',
-      ...windowTop,
-    },
-
-    'window-bottom': {
+    }),
+    ...(position === 'window-bottom' && {
       position: 'fixed',
       bottom: '0.75rem',
       // width: '100%',
-      ...windowBottom,
-    },
+    }),
+    ...(position && rc?.Notifications?.[position]),
+  };
 
-    item: {
-      ...item,
-      '& + &': {
-        marginTop: '0.75em',
-        ...itemSpace,
-      },
+  return {
+    zIndex: 999,
+    ...rc?.Notifications?.root,
+    ...pos,
+
+    '&__container': {
+      ...(variant === 'fixed' && {
+        position: 'fixed',
+        left: 0,
+        top: '-1px',
+        width: '100%',
+        height: 0,
+        overflow: 'hidden',
+        zIndex: 999,
+      }),
+
+      ...(variant === 'absolute' && {
+        position: 'absolute',
+        left: 0,
+        width: '100%',
+        height: 0,
+        zIndex: 999,
+      }),
+
+      ...pos,
     },
   };
 });
+
+const StyledNotificationBar = styled(NotificationBar)(({ theme: { rc } }) => ({
+  ...rc?.Notifications?.item,
+  '& + &': {
+    marginTop: '0.75em',
+    ...rc?.Notifications?.itemSpace,
+  },
+}));
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,
@@ -242,13 +230,10 @@ export default React.memo(function Notifications<
   defaultAction,
   onAction,
   onTimeout,
-  className,
-  containerProps,
   listProps,
   disableTransition,
   ...rest
 }: NotificationsProps<C, N>): JSX.Element | null {
-  const css = useStyles();
   const update = useUpdate();
 
   // if (list.length === 0) return null;
@@ -278,14 +263,13 @@ export default React.memo(function Notifications<
 
       arr.push(
         <ForwardRef
-          component={NotificationBar}
+          component={StyledNotificationBar}
           key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
           id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
           variant={n.variant}
           shrink={false}
           justifyContent="center"
           // mt={map[position].length > 0 ? 0.75 : undefined}
-          className={css.item}
           action={n.noAction ? undefined : (defaultAction as NotificationBarProps['action'])}
           onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
           contentProps={n.contentProps}
@@ -300,44 +284,35 @@ export default React.memo(function Notifications<
     });
 
     update();
-  }, [css, defaultAction, defaultPosition, list, onAction, onTimeout, update]);
+  }, [defaultAction, defaultPosition, list, onAction, onTimeout, update]);
 
   return Array.from(mapRef.current.entries(), ([pos, arr]) => {
-    const containerClassName = clsx(
-      ((pos.startsWith('window') && css.fixedContainer) ||
-        pos === 'top' ||
-        pos === 'bottom' ||
-        pos.startsWith('left') ||
-        pos.startsWith('right')) &&
-        css.absoluteContainer,
-      css[pos],
-      containerProps?.className
-    );
-    const rootClassName = clsx(css.root, css[pos], className);
+    const variant: RootProps['variant'] =
+      (pos.startsWith('window') && 'fixed') ||
+      ((pos === 'top' || pos === 'bottom' || pos.startsWith('left') || pos.startsWith('right')) &&
+        'absolute') ||
+      undefined;
 
     return (
-      // Extra container for correct positioning by center
-      <Flex key={pos} justifyContent="center" {...containerProps} className={containerClassName}>
-        <Flex column className={rootClassName} {...(rest as FlexAllProps<DefaultComponentType>)}>
-          {/* Extra container for scrolling */}
-          <Flex
-            column
-            alignItems={
-              (pos.startsWith('left') && 'flex-start') ||
-              (pos.startsWith('right') && 'flex-end') ||
-              undefined
-            }
-            {...listProps}
+      <Root key={pos} variant={variant} position={pos} {...rest}>
+        {/* Extra container for scrolling */}
+        <Flex
+          column
+          alignItems={
+            (pos.startsWith('left') && 'flex-start') ||
+            (pos.startsWith('right') && 'flex-end') ||
+            undefined
+          }
+          {...listProps}
+        >
+          <TransitionGroup
+            component={null}
+            {...(disableTransition && { appear: false, enter: false, exit: false })}
           >
-            <TransitionGroup
-              component={null}
-              {...(disableTransition && { appear: false, enter: false, exit: false })}
-            >
-              {arr}
-            </TransitionGroup>
-          </Flex>
+            {arr}
+          </TransitionGroup>
         </Flex>
-      </Flex>
+      </Root>
     );
   }) as unknown as JSX.Element;
 });

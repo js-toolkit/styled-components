@@ -1,6 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import styled from '@mui/system/styled';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import type { FlexComponentProps } from 'reflexy/styled';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 
@@ -96,7 +96,6 @@ function Picture({
 
   return (
     <TransitionFlex
-      FlexComponent={Flex}
       hidden={hidden ?? !loaded}
       transitionDuration={250}
       transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}

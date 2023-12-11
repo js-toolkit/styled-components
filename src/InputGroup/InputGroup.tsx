@@ -1,7 +1,6 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Flex, type FlexComponentProps, type FlexAllProps } from 'reflexy/styled/jss';
-import type { Theme } from '../theme';
+import styled from '@mui/system/styled';
+import { Flex, type FlexComponentProps, type FlexAllProps } from 'reflexy/styled';
 import InvalidIcon from './InvalidIcon';
 
 export interface InputGroupProps<C extends React.ElementType = 'input'> extends FlexComponentProps {
@@ -9,27 +8,36 @@ export interface InputGroupProps<C extends React.ElementType = 'input'> extends 
   error?: string | boolean | JSX.Element | undefined;
 }
 
-const useStyles = makeStyles((theme: Theme) => {
-  const errorIconSize = theme.rc?.InputGroup?.errorIcon?.size || '1em';
-  const errorIconIndent = theme.rc?.InputGroup?.errorIcon?.indent || '0.75em';
-  const errorColor = theme.rc?.colors?.error || 'var(--rc--color-invalid, #a94442)';
+type RootProps = FlexComponentProps & { showErrorIcon: boolean };
+
+const Root = styled(Flex, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof RootProps;
+    return prop !== 'showErrorIcon';
+  },
+})<RootProps>(({ theme: { rc }, showErrorIcon }) => {
+  const theme = rc?.InputGroup ?? {};
+  const errorIconSize = theme.errorIcon?.size || '1em';
+  const errorIconIndent = theme.errorIcon?.indent || '0.75em';
+  const errorColor = rc?.colors?.error || 'var(--rc--color-invalid, #a94442)';
 
   return {
     root: {
-      ...theme.rc?.InputGroup?.root,
+      ...theme.root,
 
       "&[data-invalid='true']": {
         color: errorColor,
-        ...theme.rc?.InputGroup?.error?.root,
+        ...theme.error?.root,
 
         '& [data-input]:not([data-dropdown]), & [data-dropdown-label]': {
-          paddingRight: ({ showErrorIcon }: { showErrorIcon: boolean }) =>
-            showErrorIcon ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)` : undefined,
+          paddingRight: showErrorIcon
+            ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)`
+            : undefined,
 
           // color: errorColor,
           borderColor: errorColor,
 
-          ...theme.rc?.InputGroup?.error?.input,
+          ...theme.error?.input,
         },
 
         // DropDownBox
@@ -51,18 +59,18 @@ const useStyles = makeStyles((theme: Theme) => {
       '& [data-input]': {
         width: '100%',
         maxWidth: '100%',
-        ...theme.rc?.InputGroup?.input,
+        ...theme.input,
       },
 
       // DropDownLabel
       '& [data-dropdown-label]': {
         border: '1px solid transparent',
-        ...theme.rc?.InputGroup?.DropDownLabel,
+        ...theme.DropDownLabel,
       },
       // DropDownBox
       '& [data-dropdown-box]': {
         border: `1px solid transparent`,
-        ...theme.rc?.InputGroup?.DropDownBox,
+        ...theme.DropDownBox,
       },
 
       '& [data-icon-error]': {
@@ -73,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => {
         marginLeft: `calc((${errorIconSize} + ${errorIconIndent}) * -1)`,
         marginRight: errorIconIndent,
         zIndex: 0,
-        ...theme.rc?.InputGroup?.errorIcon,
+        ...theme.errorIcon,
       },
     },
   };
@@ -82,15 +90,11 @@ const useStyles = makeStyles((theme: Theme) => {
 export default function InputGroup<C extends React.ElementType = 'input'>({
   input,
   error,
-  className,
   children,
   ...rest
 }: React.PropsWithChildren<InputGroupProps<C>>): JSX.Element {
   const hasError = !!error;
   const showErrorIcon = hasError && typeof error === 'string';
-
-  const css = useStyles({ classes: { root: className }, showErrorIcon });
-
   const stateAttrs = { 'data-invalid': hasError || undefined };
 
   const inputComponent = React.isValidElement<typeof stateAttrs & { 'data-input': '' }>(input) ? (
@@ -100,7 +104,13 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
   );
 
   return (
-    <Flex alignItems="center" className={css.root} {...stateAttrs} {...rest} data-input-group="">
+    <Root
+      showErrorIcon={showErrorIcon}
+      alignItems="center"
+      {...stateAttrs}
+      {...rest}
+      data-input-group=""
+    >
       {inputComponent}
 
       {showErrorIcon && (
@@ -112,6 +122,6 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
       {!!error && React.isValidElement(error) && error}
 
       {children && React.Children.only(children)}
-    </Flex>
+    </Root>
   );
 }

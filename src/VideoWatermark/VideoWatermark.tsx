@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
 import Fade from '@mui/material/Fade';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
@@ -31,6 +31,7 @@ export type VideoWatermarkProps = FlexComponentProps &
     visibleTimeout?: number | undefined;
     hiddenTimeout?: number | undefined;
     updateTimeout?: number | undefined;
+    redraw?: boolean | undefined;
     modificationDetectionInterval?: number;
     onModificationDetected?: VoidFunction;
   } & (
@@ -38,70 +39,33 @@ export type VideoWatermarkProps = FlexComponentProps &
     | { mode?: 'stripes' | undefined; videoRef?: React.RefObject<HTMLVideoElement> | undefined }
   );
 
-const useStyles = makeStyles(({ rc }: Theme) => {
-  const textStyles: React.CSSProperties = {
-    position: 'absolute',
-    visibility: 'hidden',
-    opacity: 0,
-    zIndex: -1,
-    whiteSpace: 'pre',
-    display: 'inline-block',
-  };
-
-  const themeDefault = rc?.VideoWatermark?.default;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { field: _, ...themeStripes } = rc?.VideoWatermark?.stripes ?? {};
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { field: __, ...themeRandom } = rc?.VideoWatermark?.random ?? {};
-
-  return {
-    root: {
-      // '&::before': {
-      //   ...Watermark,
-      //   position: 'absolute',
-      //   top: '50%',
-      //   left: '50%',
-      //   width: ({ width, height }: MakeStylesProps) => getHipotenuza(width, height),
-      //   height: ({ width, height }: MakeStylesProps) => getTriangleHeight(width, height) * 2,
-      //   transform: ({ width, height }: MakeStylesProps) =>
-      //     `translate(-50%, -50%) rotate(-${getAngleA(width, height)}deg)`,
-      //   backgroundImage: ({ image }: MakeStylesProps) => image,
-      //   content: '""',
-      // },
-      position: 'absolute',
-      fontSize: 'inherit',
-    },
-
-    textStripes: {
-      ...themeDefault,
-      ...themeStripes,
-      ...textStyles,
-    },
-
-    textRandom: {
-      ...themeDefault,
-      ...themeRandom,
-      ...textStyles,
-    },
-
-    stripes: {
-      ...themeDefault,
-      ...themeStripes,
-    },
-
-    random: {
-      // transition: 'left 0.2s linear, top 0.2s linear',
-      ...themeDefault,
-      ...themeRandom,
-      position: 'absolute',
-    },
-  };
-});
-
 function scaleFontSize(baseFontSize: number, scale: number, width: number, height: number): number {
   const minSize = Math.min(width, height);
   return Math.floor(baseFontSize * ((minSize / 100) * scale));
 }
+
+const Root = styled(TransitionFlex)({
+  // '&::before': {
+  //   ...Watermark,
+  //   position: 'absolute',
+  //   top: '50%',
+  //   left: '50%',
+  //   width: ({ width, height }: MakeStylesProps) => getHipotenuza(width, height),
+  //   height: ({ width, height }: MakeStylesProps) => getTriangleHeight(width, height) * 2,
+  //   transform: ({ width, height }: MakeStylesProps) =>
+  //     `translate(-50%, -50%) rotate(-${getAngleA(width, height)}deg)`,
+  //   backgroundImage: ({ image }: MakeStylesProps) => image,
+  //   content: '""',
+  // },
+  position: 'absolute',
+  fontSize: 'inherit',
+});
+
+const StyledWatermarkField = styled(WatermarkField)(({ theme: { rc }, mode }) => ({
+  ...rc?.VideoWatermark?.default,
+  ...(mode === 'lines' && rc?.VideoWatermark?.stripes),
+  ...(mode === 'single' && { ...rc?.VideoWatermark?.random, position: 'absolute' }),
+}));
 
 export default React.memo(function VideoWatermark({
   htmlRef,
@@ -120,12 +84,11 @@ export default React.memo(function VideoWatermark({
   y,
   width: _width,
   height: _height,
-  className,
+  redraw = true,
   modificationDetectionInterval = 5_000,
   onModificationDetected,
   ...rest
 }: VideoWatermarkProps): JSX.Element {
-  const css = useStyles({ classes: { root: className } });
   const rootRef = useRef<HTMLDivElement>(null);
   const forceUpdate = useUpdate();
   const keyState = useIncrementalState();
@@ -201,7 +164,10 @@ export default React.memo(function VideoWatermark({
       visibleTimeout,
       hiddenTimeout,
       isVisible: () => rootState.visible,
-      onShow: rootState.show,
+      onShow: () => {
+        redraw && keyState.inc();
+        rootState.show();
+      },
       onHide: rootState.hide,
     });
 
@@ -215,7 +181,7 @@ export default React.memo(function VideoWatermark({
       video.removeEventListener('pause', showController.stop);
       showController.reset();
     };
-  }, [hiddenTimeout, rootState, mode, videoRef, visibleTimeout]);
+  }, [hiddenTimeout, keyState, mode, redraw, rootState, videoRef, visibleTimeout]);
 
   // Random
   useLayoutEffect(() => {
@@ -239,7 +205,10 @@ export default React.memo(function VideoWatermark({
         const maxY = height - textHeight;
         return { x: maxX, y: maxY };
       },
-      onUpdate: setCoord,
+      onUpdate: (coord) => {
+        redraw && keyState.inc();
+        setCoord(coord);
+      },
       showOptions:
         visibleTimeout && hiddenTimeout
           ? {
@@ -269,14 +238,16 @@ export default React.memo(function VideoWatermark({
     fontSize,
     getTextSize,
     hiddenTimeout,
-    rootState,
+    keyState,
     mode,
+    redraw,
+    rootState,
     setCoord,
     text,
     textSizeInitialized,
-    updateTimeout,
     videoRef,
     visibleTimeout,
+    updateTimeout,
   ]);
 
   if (rootState.hidden && modificationDetector) {
@@ -290,13 +261,12 @@ export default React.memo(function VideoWatermark({
   const actualRootSize = actualRootSizeRef.current;
 
   return (
-    <TransitionFlex
+    <Root
       key={keyState.value}
       fill
       {...rest}
       componentRef={setRootRef}
       hidden={rootState.hidden}
-      className={css.root}
       style={{
         ...rest.style,
         fontSize: rootFontSize,
@@ -308,7 +278,7 @@ export default React.memo(function VideoWatermark({
       onShown={modificationDetector?.setVisible}
     >
       {mode === 'stripes' && (
-        <WatermarkField
+        <StyledWatermarkField
           patternTransform={theme?.stripes?.field?.patternTransform ?? 'rotate(-45)'}
           lineHeightScale={lineHeightScale ?? theme?.stripes?.field?.lineHeightScale}
           textHeightScale={textHeightScale ?? theme?.stripes?.field?.textHeightScale}
@@ -316,7 +286,6 @@ export default React.memo(function VideoWatermark({
           updateKey={rootFontSize}
           text={text}
           mode="lines"
-          className={css.stripes}
           onSizeChanged={setTextSize}
         />
       )}
@@ -327,20 +296,19 @@ export default React.memo(function VideoWatermark({
             key={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}-${coord.y}`}
             timeout={theme?.random?.field?.transitionDuration}
           >
-            <WatermarkField
+            <StyledWatermarkField
               id={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}-${coord.y}`}
               lineHeightScale={lineHeightScale ?? theme?.random?.field?.lineHeightScale}
               updateKey={rootFontSize}
               text={text}
               mode="single"
               {...getTextSize()}
-              className={css.random}
               onSizeChanged={setTextSize}
               style={{ left: coord.x, top: coord.y }}
             />
           </Fade>
         </TransitionGroup>
       )}
-    </TransitionFlex>
+    </Root>
   );
 });

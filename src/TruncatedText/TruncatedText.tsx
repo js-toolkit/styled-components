@@ -6,20 +6,12 @@ export type TruncatedTextProps<C extends React.ElementType = 'span'> = FlexAllPr
   readonly lines?: number | undefined;
 };
 
-export default styled(
-  function TruncatedText<C extends React.ElementType = 'span'>({
-    component = 'span' as C,
-    ...rest
-  }: TruncatedTextProps<C>): JSX.Element {
-    return <Flex flex={false} component={component} {...(rest as any)} />;
+const Root = styled(Flex, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof TruncatedTextProps;
+    return prop !== 'lines';
   },
-  {
-    shouldForwardProp: (key) => {
-      const prop = key as keyof TruncatedTextProps;
-      return prop !== 'lines';
-    },
-  }
-)(({ theme: { rc }, lines }) => ({
+})<TruncatedTextProps>(({ theme: { rc }, lines }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -35,3 +27,10 @@ export default styled(
       ...rc?.TruncatedText?.multiline,
     }),
 }));
+
+export default function TruncatedText<C extends React.ElementType = 'span'>({
+  component = 'span' as C,
+  ...rest
+}: TruncatedTextProps<C>): JSX.Element {
+  return <Root flex={false} component={component} {...(rest as any)} />;
+}

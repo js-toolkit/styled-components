@@ -1,9 +1,9 @@
-import getTimer from '@js-toolkit/utils/getTimer';
+import { getTimer } from '@js-toolkit/utils/getTimer';
 import type { VideoWatermarkProps } from './VideoWatermark';
 
 export interface ModificationDetectorOptions {
   readonly mode: NonNullable<VideoWatermarkProps['mode']>;
-  readonly checkInterval?: number;
+  readonly checkInterval: number;
   readonly onModified: (type: 'children' | 'root') => void;
 }
 
@@ -20,7 +20,7 @@ export interface ModificationDetector {
 
 export function getModificationDetector({
   mode: _,
-  checkInterval = 5000,
+  checkInterval,
   onModified,
 }: ModificationDetectorOptions): ModificationDetector {
   let visible = false;
@@ -30,7 +30,7 @@ export function getModificationDetector({
 
   const observer = new MutationObserver((mutations) => {
     if (mutations.some((m) => m.type === 'childList' || m.target !== rootNode)) {
-      // console.log(mutations);
+      // console.log('*', mutations);
       onModified('children');
     }
   });
@@ -75,7 +75,7 @@ export function getModificationDetector({
       // attributes: true,
       // attributeFilter: [], // There are many children attrs changes by theme, user theming, fullscreen, so modification detection appeares.
       // attributeFilter: [
-      //   // 'class', // class names are unstable with JSS
+      //   'class', // class names are unstable with JSS
       //   'style',
       //   'width',
       //   'height',
@@ -89,8 +89,21 @@ export function getModificationDetector({
     timer.start();
   };
 
-  const setup = (node: HTMLElement): void => {
-    if (!node || node === rootNode) return;
+  const stop = (): void => {
+    timer.stop();
+    observer.disconnect();
+    visible = false;
+    rootStyle = undefined;
+    rootNode = undefined;
+    parentNode = undefined;
+  };
+
+  const setup = (node: HTMLElement | undefined): void => {
+    if (!node) {
+      stop();
+      return;
+    }
+    if (node === rootNode) return;
 
     rootNode = node;
     parentNode = node.parentElement;
@@ -111,41 +124,6 @@ export function getModificationDetector({
       visible = false;
     },
     setNode: setup,
-    // check: checkRoot,
-    // start: (node, immediately) => {
-    //   console.log('start');
-
-    //   setup(node);
-    //   timer.start({ immediately });
-    //   // observer.observe(node, {
-    //   //   childList: true,
-    //   //   attributes: true,
-    //   //   subtree: true,
-    //   //   attributeFilter: [
-    //   //     'class',
-    //   //     'style',
-    //   //     'hidden',
-    //   //     'width',
-    //   //     'height',
-    //   //     'fill',
-    //   //     'color',
-    //   //     'x',
-    //   //     'y',
-    //   //     'viewBox',
-    //   //   ],
-    //   // });
-    // },
-    // startTimer: () => timer.start({ immediately: true }),
-    // stopTimer: timer.pause,
-    destroy: () => {
-      // console.log('destroy');
-      // stop();
-      timer.stop();
-      observer.disconnect();
-      visible = false;
-      rootStyle = undefined;
-      rootNode = undefined;
-      parentNode = undefined;
-    },
+    destroy: stop,
   };
 }

@@ -7,7 +7,6 @@ import type { FlexComponentProps } from 'reflexy/styled';
 import type { Size } from '@js-toolkit/utils/types/utils';
 import { toInt } from '@js-toolkit/utils/toInt';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
-import useUpdate from '@js-toolkit/react-hooks/useUpdate';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import useHideableState from '@js-toolkit/react-hooks/useHideableState';
 import useUpdatedRefValue from '@js-toolkit/react-hooks/useUpdatedRefValue';
@@ -82,23 +81,22 @@ export default React.memo(function VideoWatermark({
   hiddenTimeout,
   x,
   y,
-  width: _width,
-  height: _height,
+  width: widthProp,
+  height: heightProp,
   redraw = true,
   modificationDetectionInterval = 5_000,
   onModificationDetected,
   ...rest
 }: VideoWatermarkProps): JSX.Element {
   const rootRef = useRef<HTMLDivElement>(null);
-  const forceUpdate = useUpdate();
   const keyState = useIncrementalState();
   const rootState = useHideableState({ enabled: true, visible: true });
   const [getTextSize, setTextSize] = useRefState<Size>({ width: 0, height: 0 });
   const [getCoord, setCoord] = useRefState<Point>({ x: 0, y: 0 });
 
   const rootSizeRef = useUpdatedRefValue<OptionalToUndefined<Partial<Size>>>(
-    () => ({ width: _width && toInt(_width), height: _height && toInt(_height) }),
-    [_width, _height]
+    () => ({ width: widthProp && toInt(widthProp), height: heightProp && toInt(heightProp) }),
+    [widthProp, heightProp]
   );
 
   const actualRootSizeRef = useUpdatedRefValue<OptionalToUndefined<Partial<Size>>>(
@@ -151,7 +149,7 @@ export default React.memo(function VideoWatermark({
     [keyState, mode, modificationDetectionInterval, onModificationDetected]
   );
 
-  const setRootRef = useRefs(rootRef, htmlRef, modificationDetector?.setNode, forceUpdate);
+  const setRootRef = useRefs(rootRef, htmlRef, modificationDetector?.setNode);
 
   // Stripes
   useLayoutEffect(() => {

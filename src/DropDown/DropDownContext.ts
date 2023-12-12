@@ -1,5 +1,5 @@
 import React from 'react';
-import noop from '@js-toolkit/utils/noop';
+import { noop } from '@js-toolkit/utils/noop';
 
 export interface ToggleHandler {
   (expanded: boolean): void;

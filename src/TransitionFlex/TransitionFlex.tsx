@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import type { TransitionProps } from '@mui/material/transitions/transition';
 import Fade from '@mui/material/Fade';
+import type { TransitionProps } from '@mui/material/transitions/transition';
 import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
@@ -50,11 +50,11 @@ export default function TransitionFlex<
     in: inProp = !hidden,
     enter,
     exit,
+    onEntered,
     onExited,
+    children: childrenProp,
     ...rootRest
-  } = rest as NonNullable<HideableProps['transitionProps']>;
-
-  const { children: childrenProp } = rest as React.PropsWithChildren<unknown>;
+  } = rest as React.PropsWithChildren<NonNullable<HideableProps['transitionProps']>>;
 
   const lastChildrenRef = useRef(childrenProp);
   if (keepChildren && !hidden) {
@@ -65,7 +65,8 @@ export default function TransitionFlex<
 
   const enteredHandler = useChainRefCallback(
     onShown && (() => onShown()),
-    (transitionProps as TransitionProps)?.onEntered
+    (transitionProps as TransitionProps)?.onEntered,
+    onEntered
   );
 
   const exitedHandler = useChainRefCallback(
@@ -75,7 +76,7 @@ export default function TransitionFlex<
   );
 
   return React.createElement(
-    transition as React.ComponentType<TransitionProps>,
+    transition as React.FC<TransitionProps>,
     {
       ...transitionProps,
       in: inProp,

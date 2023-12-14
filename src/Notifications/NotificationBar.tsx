@@ -83,10 +83,17 @@ const Root = styled(
     color: 'rgb(125, 0, 0)',
   }),
 
-  ...(variant && rc?.NotificationBar?.[variant]),
+  ...rc?.NotificationBar?.[variant]?.root,
 }));
 
-const ContentContainer = styled(Flex)(({ theme: { rc }, ...props }) => ({
+type ContentContainerProps = FlexComponentProps & Required<Pick<RootProps, 'variant'>>;
+
+const ContentContainer = styled(Flex, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof ContentContainerProps;
+    return prop !== 'variant';
+  },
+})<ContentContainerProps>(({ theme: { rc }, variant, ...props }) => ({
   userSelect: 'none',
   whiteSpace: 'pre-line',
   wordBreak: 'break-word',
@@ -100,11 +107,18 @@ const ContentContainer = styled(Flex)(({ theme: { rc }, ...props }) => ({
       'center') ||
     undefined,
   ...rc?.NotificationBar?.content,
+  ...rc?.NotificationBar?.[variant]?.content,
 }));
 
-const ActionContainer = styled(Flex)(({ theme: { rc } }) => ({
+const ActionContainer = styled(Flex, {
+  shouldForwardProp: (key) => {
+    const prop = key as keyof ContentContainerProps;
+    return prop !== 'variant';
+  },
+})<ContentContainerProps>(({ theme: { rc }, variant }) => ({
   marginLeft: '1em',
   ...rc?.NotificationBar?.action,
+  ...rc?.NotificationBar?.[variant]?.action,
 }));
 
 export default function NotificationBar<
@@ -130,12 +144,12 @@ export default function NotificationBar<
 
   return (
     <Root variant={variant} alignItems="center" {...(rest as TransitionFlexProps)}>
-      <ContentContainer grow {...(contentProps as FlexComponentProps)}>
+      <ContentContainer grow variant={variant} {...(contentProps as FlexComponentProps)}>
         {children}
       </ContentContainer>
 
       {!!Action && (
-        <ActionContainer shrink={0} {...(actionProps as FlexComponentProps)}>
+        <ActionContainer shrink={0} variant={variant} {...(actionProps as FlexComponentProps)}>
           <Action id={id} variant={variant} onAction={onAction} />
         </ActionContainer>
       )}

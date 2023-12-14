@@ -376,7 +376,13 @@ export interface Theme {
           root?: CSSProperties | undefined;
           content?: CSSProperties | undefined;
           action?: CSSProperties | undefined;
-        } & { [P in NotificationVariant]?: CSSProperties | undefined })
+        } & {
+          [P in NotificationVariant]?: {
+            root?: CSSProperties | undefined;
+            content?: CSSProperties | undefined;
+            action?: CSSProperties | undefined;
+          };
+        })
       | undefined;
   };
 }

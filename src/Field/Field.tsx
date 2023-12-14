@@ -100,7 +100,7 @@ const Controls = styled(
   ...rc?.Field?.[state]?.controls,
 }));
 
-const HelperText = styled(
+const HelperTextContainer = styled(
   ({ state, direction, ...rest }: FieldElementProps) => {
     return <Flex shrink={false} data-field-helper-text="" {...rest} />;
   },
@@ -153,9 +153,9 @@ export default function Field({
         {children}
 
         {helperTextContent != null && (
-          <HelperText direction={direction} state={state} {...helperTextProps}>
+          <HelperTextContainer direction={direction} state={state} {...helperTextProps}>
             {helperTextContent}
-          </HelperText>
+          </HelperTextContainer>
         )}
       </Controls>
     </Root>

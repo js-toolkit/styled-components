@@ -115,7 +115,7 @@ const Root = styled(
     },
   }
 )(({ theme: { rc }, variant, position }) => {
-  const pos: CSSProperties = {
+  const positionStyles: CSSProperties = {
     ...(position === 'static' && {
       position: 'static',
     }),
@@ -181,13 +181,13 @@ const Root = styled(
       bottom: '0.75rem',
       // width: '100%',
     }),
-    ...(position && rc?.Notifications?.[position]),
   };
 
   return {
     zIndex: 999,
     ...rc?.Notifications?.root,
-    ...pos,
+    ...positionStyles,
+    ...rc?.Notifications?.[position]?.root,
 
     '&__container': {
       ...(variant === 'fixed' && {
@@ -208,7 +208,9 @@ const Root = styled(
         zIndex: 999,
       }),
 
-      ...pos,
+      ...rc?.Notifications?.rootContainer,
+      ...positionStyles,
+      ...rc?.Notifications?.[position]?.rootContainer,
     },
   };
 });
@@ -256,7 +258,7 @@ export default React.memo(function Notifications<
       const onShown =
         onTimeout && timeout && timeout > 0
           ? () => {
-              timer = window.setTimeout(() => onTimeout(n.id), timeout);
+              timer = window.setTimeout(() => onTimeout(n.id as N['id']), timeout);
             }
           : undefined;
       const onUnmount = onShown && (() => window.clearTimeout(timer));

@@ -2,6 +2,7 @@
 /* eslint-disable no-use-before-define */
 import React from 'react';
 import styled from '@mui/system/styled';
+import type { MUIStyledCommonProps } from '@mui/system';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';
@@ -10,13 +11,12 @@ export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;
 
-type FlexContent<T extends React.ElementType> = Omit<FlexComponentProps<T>, 'content'> & {
-  content?: React.ReactNode | undefined;
-};
+type FlexContent<T extends React.ElementType> = Omit<FlexComponentProps<T>, 'content'> &
+  OmitStrict<MUIStyledCommonProps, 'as'> & { content?: React.ReactNode | undefined };
 
 export interface FieldProps extends FlexComponentProps<'div', { omitProps: true }> {
   label?: React.ReactNode | FlexContent<'label'> | undefined;
-  controls?: FlexComponentProps<'div'> | undefined;
+  controls?: (FlexComponentProps<'div'> & OmitStrict<MUIStyledCommonProps, 'as'>) | undefined;
   helperText?: React.ReactNode | FlexContent<'div'> | undefined;
   state?: FieldState | undefined;
 }

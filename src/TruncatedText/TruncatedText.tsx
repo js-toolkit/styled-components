@@ -22,6 +22,8 @@ const Root = styled(Flex, {
       wordBreak: 'break-word',
       // hyphens: 'auto',
       display: '-webkit-box',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: lines,
       boxOrient: 'vertical',
       lineClamp: lines,
       ...rc?.TruncatedText?.multiline,

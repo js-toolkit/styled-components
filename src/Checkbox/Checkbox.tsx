@@ -34,123 +34,121 @@ const Root = styled(Flex)(({ theme: { rc } }) => {
     theme.switch?.shape?.width || theme.switch?.shape?.height || defaultShapeSize;
 
   return {
-    root: {
-      position: 'relative',
-      cursor: 'pointer',
-      lineHeight: 1,
-      ...theme.root,
+    position: 'relative',
+    cursor: 'pointer',
+    lineHeight: 1,
+    ...theme.root,
 
-      "&[aria-disabled='true']": {
-        opacity: 'var(--rc--disabled-opacity, 0.5)',
-        pointerEvents: 'none',
-        ...theme.disabled,
-      },
+    "&[aria-disabled='true']": {
+      opacity: 'var(--rc--disabled-opacity, 0.5)',
+      pointerEvents: 'none',
+      ...theme.disabled,
+    },
+
+    '&::before': {
+      content: '""',
+      width: defaultShapeSize,
+      height: defaultShapeSize,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...theme.shape,
+    },
+
+    // '&:not(:empty)::before': {
+    //   marginRight: `calc(${shapeSize} / 2)`,
+    //   ...checkboxTheme.root?.['&:not(:empty)::before'],
+    // },
+
+    // Checkbox
+    "&[role='checkbox']": {
+      ...theme.checkbox?.root,
 
       '&::before': {
-        content: '""',
-        width: defaultShapeSize,
-        height: defaultShapeSize,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        ...theme.shape,
+        border: `1px solid ${uncheckedColor}`,
+        ...theme.checkbox?.shape,
       },
 
-      // '&:not(:empty)::before': {
-      //   marginRight: `calc(${shapeSize} / 2)`,
-      //   ...checkboxTheme.root?.['&:not(:empty)::before'],
-      // },
-
-      // Checkbox
-      "&[role='checkbox']": {
-        ...theme.checkbox?.root,
+      "&[aria-checked='true']": {
+        ...theme.checkbox?.checked?.root,
 
         '&::before': {
-          border: `1px solid ${uncheckedColor}`,
-          ...theme.checkbox?.shape,
-        },
-
-        "&[aria-checked='true']": {
-          ...theme.checkbox?.checked?.root,
-
-          '&::before': {
-            content: '"\u2714"',
-            color: checkedColor,
-            ...theme.checkbox?.checked?.shape,
-          },
+          content: '"\u2714"',
+          color: checkedColor,
+          ...theme.checkbox?.checked?.shape,
         },
       },
+    },
 
-      // Radio
-      "&[role='radio']": {
-        ...theme.radio?.root,
+    // Radio
+    "&[role='radio']": {
+      ...theme.radio?.root,
+
+      '&::before': {
+        border: `1px solid ${uncheckedColor}`,
+        borderRadius: '100%',
+        ...theme.radio?.shape,
+      },
+
+      "&[aria-checked='true']": {
+        ...theme.radio?.checked?.root,
 
         '&::before': {
-          border: `1px solid ${uncheckedColor}`,
-          borderRadius: '100%',
-          ...theme.radio?.shape,
-        },
-
-        "&[aria-checked='true']": {
-          ...theme.radio?.checked?.root,
-
-          '&::before': {
-            borderColor: checkedColor,
-            backgroundColor: `radial-gradient(ellipse at center, ${checkedColor} 0, ${checkedColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
-            ...theme.radio?.checked?.shape,
-          },
+          borderColor: checkedColor,
+          backgroundColor: `radial-gradient(ellipse at center, ${checkedColor} 0, ${checkedColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
+          ...theme.radio?.checked?.shape,
         },
       },
+    },
 
-      // Switch
-      "&[role='switch']": {
-        userSelect: 'none',
-        minWidth: `calc((${switchShapeSize} * 2) + (${switchIndentAbs} * 2))`,
-        height: `calc(${switchShapeSize} + (${switchIndentAbs} * 2))`,
-        borderRadius: switchShapeSize,
-        backgroundColor: uncheckedColor,
-        transition: `background-color ${switchDuration}`,
-        ...theme.switch?.root,
+    // Switch
+    "&[role='switch']": {
+      userSelect: 'none',
+      minWidth: `calc((${switchShapeSize} * 2) + (${switchIndentAbs} * 2))`,
+      height: `calc(${switchShapeSize} + (${switchIndentAbs} * 2))`,
+      borderRadius: switchShapeSize,
+      backgroundColor: uncheckedColor,
+      transition: `background-color ${switchDuration}`,
+      ...theme.switch?.root,
+
+      '&::before': {
+        position: 'absolute',
+        border: 'none',
+        borderRadius: '100%',
+        backgroundColor: emptyColor,
+        transition: `margin-left ${switchDuration}`,
+        marginLeft: switchIndent,
+        ...theme.switch?.shape,
+      },
+
+      "&[aria-checked='true']": {
+        backgroundColor: checkedColor,
+        ...theme.switch?.checked?.root,
 
         '&::before': {
-          position: 'absolute',
-          border: 'none',
-          borderRadius: '100%',
-          backgroundColor: emptyColor,
-          transition: `margin-left ${switchDuration}`,
-          marginLeft: switchIndent,
-          ...theme.switch?.shape,
-        },
-
-        "&[aria-checked='true']": {
-          backgroundColor: checkedColor,
-          ...theme.switch?.checked?.root,
-
-          '&::before': {
-            marginLeft: `calc(100% - ${switchShapeSize} - ${switchIndent})`,
-            ...theme.switch?.checked?.shape,
-          },
+          marginLeft: `calc(100% - ${switchShapeSize} - ${switchIndent})`,
+          ...theme.switch?.checked?.shape,
         },
       },
+    },
 
-      '@media (hover: hover)': {
-        '&:hover::before': {
-          ...theme.shape?.hover,
-        },
+    '@media (hover: hover)': {
+      '&:hover::before': {
+        ...theme.shape?.hover,
+      },
 
-        "&[role='checkbox']:hover::before": {
-          ...theme.checkbox?.shape?.hover,
-        },
+      "&[role='checkbox']:hover::before": {
+        ...theme.checkbox?.shape?.hover,
+      },
 
-        "&[role='radio']:hover::before": {
-          borderColor: hoverColor,
-          backgroundColor: `radial-gradient(ellipse at center, ${hoverColor} 0, ${hoverColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
-          ...theme.radio?.shape?.hover,
-        },
+      "&[role='radio']:hover::before": {
+        borderColor: hoverColor,
+        backgroundColor: `radial-gradient(ellipse at center, ${hoverColor} 0, ${hoverColor} 50%, ${emptyColor} 60%, ${emptyColor} 100%)`,
+        ...theme.radio?.shape?.hover,
+      },
 
-        "&[role='switch']:hover::before": {
-          ...theme.switch?.shape?.hover,
-        },
+      "&[role='switch']:hover::before": {
+        ...theme.switch?.shape?.hover,
       },
     },
   };

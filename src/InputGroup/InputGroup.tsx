@@ -22,67 +22,65 @@ const Root = styled(Flex, {
   const errorColor = rc?.colors?.error || 'var(--rc--color-invalid, #a94442)';
 
   return {
-    root: {
-      ...theme.root,
+    ...theme.root,
 
-      "&[data-invalid='true']": {
-        color: errorColor,
-        ...theme.error?.root,
+    "&[data-invalid='true']": {
+      color: errorColor,
+      ...theme.error?.root,
 
-        '& [data-input]:not([data-dropdown]), & [data-dropdown-label]': {
-          paddingRight: showErrorIcon
-            ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)`
-            : undefined,
+      '& [data-input]:not([data-dropdown]), & [data-dropdown-label]': {
+        paddingRight: showErrorIcon
+          ? `calc(${errorIconSize} + ${errorIconIndent} + 0.35em)`
+          : undefined,
 
-          // color: errorColor,
-          borderColor: errorColor,
+        // color: errorColor,
+        borderColor: errorColor,
 
-          ...theme.error?.input,
-        },
-
-        // DropDownBox
-        '& [data-dropdown-box]': {
-          borderColor: errorColor,
-        },
-
-        // Checkbox
-        "& [role='checkbox'], & [role='radio']": {
-          '&::before': {
-            borderColor: errorColor,
-          },
-        },
-        "& [role='switch']": {
-          background: errorColor,
-        },
+        ...theme.error?.input,
       },
 
-      '& [data-input]': {
-        width: '100%',
-        maxWidth: '100%',
-        ...theme.input,
-      },
-
-      // DropDownLabel
-      '& [data-dropdown-label]': {
-        border: '1px solid transparent',
-        ...theme.DropDownLabel,
-      },
       // DropDownBox
       '& [data-dropdown-box]': {
-        border: `1px solid transparent`,
-        ...theme.DropDownBox,
+        borderColor: errorColor,
       },
 
-      '& [data-icon-error]': {
-        color: errorColor,
-        fill: 'currentColor',
-        width: errorIconSize,
-        height: errorIconSize,
-        marginLeft: `calc((${errorIconSize} + ${errorIconIndent}) * -1)`,
-        marginRight: errorIconIndent,
-        zIndex: 0,
-        ...theme.errorIcon,
+      // Checkbox
+      "& [role='checkbox'], & [role='radio']": {
+        '&::before': {
+          borderColor: errorColor,
+        },
       },
+      "& [role='switch']": {
+        background: errorColor,
+      },
+    },
+
+    '& [data-input]': {
+      width: '100%',
+      maxWidth: '100%',
+      ...theme.input,
+    },
+
+    // DropDownLabel
+    '& [data-dropdown-label]': {
+      border: '1px solid transparent',
+      ...theme.DropDownLabel,
+    },
+    // DropDownBox
+    '& [data-dropdown-box]': {
+      border: `1px solid transparent`,
+      ...theme.DropDownBox,
+    },
+
+    '& [data-icon-error]': {
+      color: errorColor,
+      fill: 'currentColor',
+      width: errorIconSize,
+      height: errorIconSize,
+      marginLeft: `calc((${errorIconSize} + ${errorIconIndent}) * -1)`,
+      marginRight: errorIconIndent,
+      zIndex: 0,
+      ...theme.errorIcon,
     },
   };
 });

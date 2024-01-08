@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { styled, keyframes } from '@mui/system';
 import {
@@ -91,7 +92,7 @@ const Root = styled(
     }),
   },
 
-  // eslint-disable-next-line no-use-before-define, @typescript-eslint/restrict-template-expressions
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   [`& > *:not(${SpinnerContainer})`]: {
     filter: blur ? `blur(${typeof blur === 'number' ? blur : 2}px)` : undefined,
   },
@@ -110,7 +111,8 @@ const SpinnerContainer = styled<React.FC<React.PropsWithChildren<SpinnerContaine
       prop !== 'spinnerPosition'
     );
   },
-  name: 'Spinner',
+  name: LoadableFlex.name,
+  slot: 'spinner',
 })(({ theme: { rc }, loading, animation, spinnerSize, spinnerPosition }) => ({
   position: 'absolute',
   zIndex: 1000,

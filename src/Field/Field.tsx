@@ -39,7 +39,7 @@ const Root = styled(
       />
     );
   },
-  { name: `${Field.name}Root` }
+  { name: Field.name }
 )(({ theme: { rc }, direction, state }) => ({
   ...rc?.Field?.root,
   ...(direction === 'column' ? rc?.Field?.column?.root : rc?.Field?.row?.root),
@@ -63,7 +63,7 @@ const Label = styled(
       />
     );
   },
-  { name: `${Field.name}Label` }
+  { name: Field.name, slot: 'label' }
 )(({ theme: { rc }, direction, state }) => ({
   ...rc?.Field?.label,
 
@@ -93,7 +93,7 @@ const Controls = styled(
       />
     );
   },
-  { name: `${Field.name}Controls` }
+  { name: Field.name, slot: 'controls' }
 )(({ theme: { rc }, direction, state }) => ({
   ...rc?.Field?.controls,
   ...rc?.Field?.[direction]?.controls,
@@ -104,7 +104,7 @@ const HelperTextContainer = styled(
   ({ state, direction, ...rest }: FieldElementProps) => {
     return <Flex shrink={false} data-field-helper-text="" {...rest} />;
   },
-  { name: `${Field.name}HelperText` }
+  { name: Field.name, slot: 'helperText' }
 )(({ theme: { rc }, direction, state }) => ({
   cursor: 'default',
   marginTop: '0.5em',

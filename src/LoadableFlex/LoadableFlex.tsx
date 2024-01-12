@@ -101,7 +101,7 @@ const Root = styled(
 type SpinnerContainerProps = FlexComponentProps<'div'> &
   Required<Pick<RootProps, 'animation' | 'loading' | 'spinnerSize' | 'spinnerPosition'>>;
 
-const SpinnerContainer = styled<React.FC<React.PropsWithChildren<SpinnerContainerProps>>>(Flex, {
+const SpinnerContainer = styled(Flex, {
   shouldForwardProp: (key) => {
     const prop = key as keyof SpinnerContainerProps;
     return (
@@ -113,106 +113,108 @@ const SpinnerContainer = styled<React.FC<React.PropsWithChildren<SpinnerContaine
   },
   name: LoadableFlex.name,
   slot: 'spinner',
-})(({ theme: { rc }, loading, animation, spinnerSize, spinnerPosition }) => ({
-  position: 'absolute',
-  zIndex: 1000,
-  opacity: animation ? +!!loading : undefined,
-  ...rc?.LoadableFlex?.spinner,
+})<SpinnerContainerProps>(
+  ({ theme: { rc }, loading, animation, spinnerSize, spinnerPosition }) => ({
+    position: 'absolute',
+    zIndex: 1000,
+    opacity: animation ? +!!loading : undefined,
+    ...rc?.LoadableFlex?.spinner,
 
-  // Size
-  ...(() => {
-    if (spinnerSize === 'auto') {
-      return {
-        width: 'var(--rc--spinner-size-auto, 5%)',
-        minWidth: '1em',
-        maxWidth: 'var(--rc--spinner-size-auto-maxwidth, calc(50px + (20 * (1vw / 20))))', // flexible size by view port
-        ...rc?.LoadableFlex?.spinnerSizeAuto,
-      };
-    }
-    if (spinnerSize === 'xs') {
-      return {
-        width: 'var(--rc--spinner-size-xs, 1em)',
-        ...rc?.LoadableFlex?.spinnerSizeXS,
-      };
-    }
-    if (spinnerSize === 's') {
-      return {
-        width: 'var(--rc--spinner-size-s, 2em)',
-        ...rc?.LoadableFlex?.spinnerSizeS,
-      };
-    }
-    if (spinnerSize === 'm') {
-      return {
-        width: 'var(--rc--spinner-size-m, 3em)',
-        ...rc?.LoadableFlex?.spinnerSizeM,
-      };
-    }
-    if (spinnerSize === 'l') {
-      return {
-        width: 'var(--rc--spinner-size-l, 4em)',
-        ...rc?.LoadableFlex?.spinnerSizeL,
-      };
-    }
-    if (spinnerSize === 'xl') {
-      return {
-        width: 'var(--rc--spinner-size-xl, 5em)',
-        ...rc?.LoadableFlex?.spinnerSizeXL,
-      };
-    }
-    return undefined;
-  })(),
+    // Size
+    ...(() => {
+      if (spinnerSize === 'auto') {
+        return {
+          width: 'var(--rc--spinner-size-auto, 5%)',
+          minWidth: '1em',
+          maxWidth: 'var(--rc--spinner-size-auto-maxwidth, calc(50px + (20 * (1vw / 20))))', // flexible size by view port
+          ...rc?.LoadableFlex?.spinnerSizeAuto,
+        };
+      }
+      if (spinnerSize === 'xs') {
+        return {
+          width: 'var(--rc--spinner-size-xs, 1em)',
+          ...rc?.LoadableFlex?.spinnerSizeXS,
+        };
+      }
+      if (spinnerSize === 's') {
+        return {
+          width: 'var(--rc--spinner-size-s, 2em)',
+          ...rc?.LoadableFlex?.spinnerSizeS,
+        };
+      }
+      if (spinnerSize === 'm') {
+        return {
+          width: 'var(--rc--spinner-size-m, 3em)',
+          ...rc?.LoadableFlex?.spinnerSizeM,
+        };
+      }
+      if (spinnerSize === 'l') {
+        return {
+          width: 'var(--rc--spinner-size-l, 4em)',
+          ...rc?.LoadableFlex?.spinnerSizeL,
+        };
+      }
+      if (spinnerSize === 'xl') {
+        return {
+          width: 'var(--rc--spinner-size-xl, 5em)',
+          ...rc?.LoadableFlex?.spinnerSizeXL,
+        };
+      }
+      return undefined;
+    })(),
 
-  // Position
-  ...(() => {
-    if (spinnerPosition === 'center') {
-      return {
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        ...rc?.LoadableFlex?.spinnerPositionCenter,
-      };
-    }
-    if (spinnerPosition === 'top') {
-      return {
-        left: '50%',
-        top: '5%',
-        transform: 'translate(-50%, 0)',
-        ...rc?.LoadableFlex?.spinnerPositionTop,
-      };
-    }
-    if (spinnerPosition === 'left') {
-      return {
-        left: '5%',
-        top: '50%',
-        transform: 'translate(0, -50%)',
-        ...rc?.LoadableFlex?.spinnerPositionLeft,
-      };
-    }
-    if (spinnerPosition === 'right') {
-      return {
-        right: '5%',
-        top: '50%',
-        transform: 'translate(0, -50%)',
-        ...rc?.LoadableFlex?.spinnerPositionRight,
-      };
-    }
-    if (spinnerPosition === 'bottom') {
-      return {
-        left: '50%',
-        bottom: '5%',
-        transform: 'translate(-50%, 0)',
-        ...rc?.LoadableFlex?.spinnerPositionBottom,
-      };
-    }
-    return undefined;
-  })(),
+    // Position
+    ...(() => {
+      if (spinnerPosition === 'center') {
+        return {
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          ...rc?.LoadableFlex?.spinnerPositionCenter,
+        };
+      }
+      if (spinnerPosition === 'top') {
+        return {
+          left: '50%',
+          top: '5%',
+          transform: 'translate(-50%, 0)',
+          ...rc?.LoadableFlex?.spinnerPositionTop,
+        };
+      }
+      if (spinnerPosition === 'left') {
+        return {
+          left: '5%',
+          top: '50%',
+          transform: 'translate(0, -50%)',
+          ...rc?.LoadableFlex?.spinnerPositionLeft,
+        };
+      }
+      if (spinnerPosition === 'right') {
+        return {
+          right: '5%',
+          top: '50%',
+          transform: 'translate(0, -50%)',
+          ...rc?.LoadableFlex?.spinnerPositionRight,
+        };
+      }
+      if (spinnerPosition === 'bottom') {
+        return {
+          left: '50%',
+          bottom: '5%',
+          transform: 'translate(-50%, 0)',
+          ...rc?.LoadableFlex?.spinnerPositionBottom,
+        };
+      }
+      return undefined;
+    })(),
 
-  ...(animation && {
-    animation: loading
-      ? `${show} 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`
-      : `${hide} 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
-  }),
-}));
+    ...(animation && {
+      animation: loading
+        ? `${show} 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`
+        : `${hide} 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+    }),
+  })
+);
 
 export default function LoadableFlex<C extends React.ElementType = DefaultComponentType>({
   loading = false,

@@ -69,21 +69,23 @@ export default styled(function Poster({
 
     const timer = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
 
-    tryLoad()
-      .then((img) => {
+    tryLoad().then(
+      (img) => {
         clearTimeout(timer);
         if (unmounted) return;
         const dataUrl = takeSnapshot(img, { quality: 1 });
         setUrl(dataUrl);
-      })
-      .catch((ex) => {
+        onLoadCompleted && onLoadCompleted(img.currentSrc);
+      },
+      (ex) => {
         clearTimeout(timer);
         if (!unmounted) {
           if (onError) onError(ex);
           else console.error(ex);
+          onLoadCompleted && onLoadCompleted('');
         }
-      })
-      .finally(() => !unmounted && onLoadCompleted && onLoadCompleted());
+      }
+    );
 
     return () => {
       unmounted = true;

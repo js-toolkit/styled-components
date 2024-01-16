@@ -88,10 +88,10 @@ export default styled(
       onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '');
     });
 
-    const errorHandler = useRefCallback((ev: unknown) => {
+    const errorHandler = useRefCallback<React.ReactEventHandler>((ev) => {
       clearTimeout(timerRef.current);
-      if (onError) onError(ev);
-      else console.error(ev);
+      if (onError) onError(ev.nativeEvent);
+      else console.error(ev.nativeEvent);
       onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '');
     });
 

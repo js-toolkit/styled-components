@@ -215,13 +215,15 @@ const Root = styled(
   };
 });
 
-const StyledNotificationBar = styled(NotificationBar)(({ theme: { rc } }) => ({
-  ...rc?.Notifications?.item,
-  '& + &': {
-    marginTop: '0.75em',
-    ...rc?.Notifications?.itemSpace,
-  },
-}));
+const StyledNotificationBar = styled(NotificationBar, { label: 'NotificationBar' })(
+  ({ theme: { rc } }) => ({
+    ...rc?.Notifications?.item,
+    '& + [class$=-NotificationBar]': {
+      marginTop: '0.75em',
+      ...rc?.Notifications?.itemSpace,
+    },
+  })
+);
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,

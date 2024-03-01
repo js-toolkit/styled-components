@@ -367,12 +367,14 @@ export interface Theme {
       | ({
           rootContainer?: CSSProperties | undefined;
           root?: CSSProperties | undefined;
+          scrollingContainer?: CSSProperties | undefined;
           item?: CSSProperties | undefined;
           itemSpace?: CSSProperties | undefined;
         } & {
           [P in NotificationPosition]?: {
             rootContainer?: CSSProperties | undefined;
             root?: CSSProperties | undefined;
+            scrollingContainer?: CSSProperties | undefined;
           };
         })
       | undefined;

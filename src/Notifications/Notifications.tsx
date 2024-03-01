@@ -15,6 +15,7 @@ import useUpdate from '@js-toolkit/react-hooks/useUpdate';
 import type { TransitionComponent } from '../TransitionFlex';
 import type { GetOverridedKeys } from '../types/local';
 import type { CSSProperties } from '../theme';
+import { excludeProp } from '../utils';
 import NotificationBar, { type NotificationBarProps } from './NotificationBar';
 
 export interface NotificationPositions {}
@@ -184,11 +185,6 @@ const Root = styled(
   };
 
   return {
-    zIndex: 999,
-    ...rc?.Notifications?.root,
-    ...positionStyles,
-    ...rc?.Notifications?.[position]?.root,
-
     '&__container': {
       ...(variant === 'fixed' && {
         position: 'fixed',
@@ -197,7 +193,6 @@ const Root = styled(
         width: '100%',
         height: 0,
         overflow: 'hidden',
-        zIndex: 999,
       }),
 
       ...(variant === 'absolute' && {
@@ -205,15 +200,37 @@ const Root = styled(
         left: 0,
         width: '100%',
         height: 0,
-        zIndex: 999,
       }),
 
+      zIndex: 999,
       ...rc?.Notifications?.rootContainer,
       ...positionStyles,
       ...rc?.Notifications?.[position]?.rootContainer,
     },
+
+    pointerEvents: 'none',
+    zIndex: 'inherit',
+    '& > *': {
+      pointerEvents: 'initial',
+    },
+    ...rc?.Notifications?.root,
+    ...positionStyles,
+    ...rc?.Notifications?.[position]?.root,
   };
 });
+
+type ScrollingContainerProps = Pick<RootProps, 'position'>;
+
+const ScrollingContainer = styled(Flex, {
+  shouldForwardProp: excludeProp<keyof ScrollingContainerProps>(['position']),
+})<ScrollingContainerProps>(({ theme: { rc }, position }) => ({
+  pointerEvents: 'inherit',
+  '& > *': {
+    pointerEvents: 'initial',
+  },
+  ...rc?.Notifications?.scrollingContainer,
+  ...rc?.Notifications?.[position]?.scrollingContainer,
+}));
 
 const StyledNotificationBar = styled(NotificationBar, { label: 'NotificationBar' })(
   ({ theme: { rc } }) => ({
@@ -300,7 +317,8 @@ export default React.memo(function Notifications<
     return (
       <Root key={pos} variant={variant} position={pos} {...rest}>
         {/* Extra container for scrolling */}
-        <Flex
+        <ScrollingContainer
+          position={pos}
           column
           alignItems={
             (pos.startsWith('left') && 'flex-start') ||
@@ -315,7 +333,7 @@ export default React.memo(function Notifications<
           >
             {arr}
           </TransitionGroup>
-        </Flex>
+        </ScrollingContainer>
       </Root>
     );
   }) as unknown as JSX.Element;

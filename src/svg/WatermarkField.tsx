@@ -4,7 +4,7 @@ import useRefState from '@js-toolkit/react-hooks/useRefState';
 import SvgMultilineText from './SvgMultilineText';
 
 export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> {
-  readonly updateKey?: string | number | undefined;
+  readonly updateKey: React.Key | undefined;
   readonly text: string;
   readonly mode: 'lines' | 'single';
   /** Scaled line height. */

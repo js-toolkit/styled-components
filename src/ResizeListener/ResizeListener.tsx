@@ -1,26 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import type { Size } from '@js-toolkit/utils/types/utils';
+import HiddenIFrame from '../HiddenIFrame';
 
 export interface ResizeListenerProps {
   onlyWidth?: boolean | undefined;
   onlyHeight?: boolean | undefined;
   onSizeChange: (size: Size, domRect: DOMRect) => void;
 }
-
-const style: React.CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  background: 'transparent',
-  border: 'none',
-  // Must be visible for FireFox.
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=1295245
-  visibility: 'visible',
-  opacity: 0,
-  zIndex: -1,
-};
 
 /**
  * If used inside iframe with `sandbox` it needs to allow `allow-same-origin`.
@@ -79,6 +65,5 @@ export default function ResizeListener({
     };
   }, [onSizeChange, onlyHeight, onlyWidth]);
 
-  // eslint-disable-next-line jsx-a11y/iframe-has-title
-  return <iframe ref={rootRef} style={style} tabIndex={-1} />;
+  return <HiddenIFrame ref={rootRef} />;
 }

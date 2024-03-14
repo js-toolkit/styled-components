@@ -208,11 +208,9 @@ const Root = styled(
       ...rc?.Notifications?.[position]?.rootContainer,
     },
 
-    pointerEvents: 'none',
     zIndex: 'inherit',
-    '& > *': {
-      pointerEvents: 'initial',
-    },
+    // Enable only on NotificationBar
+    pointerEvents: 'none',
     ...rc?.Notifications?.root,
     ...positionStyles,
     ...rc?.Notifications?.[position]?.root,
@@ -224,16 +222,13 @@ type ScrollingContainerProps = Pick<RootProps, 'position'>;
 const ScrollingContainer = styled(Flex, {
   shouldForwardProp: excludeProp<keyof ScrollingContainerProps>(['position']),
 })<ScrollingContainerProps>(({ theme: { rc }, position }) => ({
-  pointerEvents: 'inherit',
-  '& > *': {
-    pointerEvents: 'initial',
-  },
   ...rc?.Notifications?.scrollingContainer,
   ...rc?.Notifications?.[position]?.scrollingContainer,
 }));
 
 const StyledNotificationBar = styled(NotificationBar, { label: 'NotificationBar' })(
   ({ theme: { rc } }) => ({
+    pointerEvents: 'initial',
     ...rc?.Notifications?.item,
     '& + [class$=-NotificationBar]': {
       marginTop: '0.75em',

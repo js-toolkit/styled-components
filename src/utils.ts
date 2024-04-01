@@ -1,7 +1,7 @@
 import type { StyledOptions } from '@mui/styled-engine';
 
 export function excludeProp<T extends string>(
-  list: UnionToTuple<T>
+  list: readonly T[]
 ): NonNullable<StyledOptions['shouldForwardProp']> {
-  return (prop) => !(list as string[]).includes(prop);
+  return (prop) => !(list as readonly string[]).includes(prop);
 }

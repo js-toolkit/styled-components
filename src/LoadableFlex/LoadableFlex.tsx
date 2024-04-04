@@ -118,6 +118,7 @@ const SpinnerContainer = styled(Flex, {
     position: 'absolute',
     zIndex: 1000,
     opacity: animation ? +!!loading : undefined,
+    pointerEvents: 'none',
     ...rc?.LoadableFlex?.spinner,
 
     // Size

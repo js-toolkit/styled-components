@@ -371,11 +371,10 @@ export interface Theme {
           item?: CSSProperties | undefined;
           itemSpace?: CSSProperties | undefined;
         } & {
-          [P in NotificationPosition]?: {
-            rootContainer?: CSSProperties | undefined;
-            root?: CSSProperties | undefined;
-            scrollingContainer?: CSSProperties | undefined;
-          };
+          [P in NotificationPosition]?: Pick<
+            NonNullable<NonNullable<Theme['rc']>['Notifications']>,
+            'rootContainer' | 'root' | 'scrollingContainer' | 'item' | 'itemSpace'
+          >;
         })
       | undefined;
 

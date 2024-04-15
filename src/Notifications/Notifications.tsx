@@ -226,16 +226,19 @@ const ScrollingContainer = styled(Flex, {
   ...rc?.Notifications?.[position]?.scrollingContainer,
 }));
 
-const StyledNotificationBar = styled(NotificationBar, { label: 'NotificationBar' })(
-  ({ theme: { rc } }) => ({
-    pointerEvents: 'initial',
-    ...rc?.Notifications?.item,
-    '& + [class$=-NotificationBar]': {
-      marginTop: '0.75em',
-      ...rc?.Notifications?.itemSpace,
-    },
-  })
-);
+const StyledNotificationBar = styled(NotificationBar, {
+  shouldForwardProp: excludeProp<keyof ScrollingContainerProps>(['position']),
+  label: 'NotificationBar',
+})<ScrollingContainerProps>(({ theme: { rc }, position }) => ({
+  pointerEvents: 'initial',
+  ...rc?.Notifications?.item,
+  ...rc?.Notifications?.[position]?.item,
+  '& + [class$=-NotificationBar]': {
+    marginTop: '0.75em',
+    ...rc?.Notifications?.itemSpace,
+    ...rc?.Notifications?.[position]?.itemSpace,
+  },
+}));
 
 export default React.memo(function Notifications<
   C extends React.ElementType = DefaultComponentType,
@@ -282,6 +285,7 @@ export default React.memo(function Notifications<
           component={StyledNotificationBar}
           key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
           id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+          position={position}
           variant={n.variant}
           shrink={false}
           justifyContent="center"

@@ -9,6 +9,7 @@ import TransitionFlex, {
   type TransitionComponent,
   type TransitionFlexProps,
 } from '../TransitionFlex';
+import { excludeProp } from '../utils';
 import type { GetOverridedKeys } from '../types/local';
 
 export interface NotificationVariants {}
@@ -51,12 +52,7 @@ const Root = styled(
       {...props}
     />
   ),
-  {
-    shouldForwardProp: (key) => {
-      const prop = key as keyof RootProps;
-      return prop !== 'variant';
-    },
-  }
+  { shouldForwardProp: excludeProp<keyof RootProps>(['variant']) }
 )(({ theme: { rc }, variant }) => ({
   boxSizing: 'border-box',
   padding: '0.75em 1.25em',
@@ -89,15 +85,12 @@ const Root = styled(
 type ContentContainerProps = FlexComponentProps & Required<Pick<RootProps, 'variant'>>;
 
 const ContentContainer = styled(Flex, {
-  shouldForwardProp: (key) => {
-    const prop = key as keyof ContentContainerProps;
-    return prop !== 'variant';
-  },
+  shouldForwardProp: excludeProp<keyof ContentContainerProps>(['variant']),
 })<ContentContainerProps>(({ theme: { rc }, variant, ...props }) => ({
   userSelect: 'none',
   whiteSpace: 'pre-line',
   wordBreak: 'break-word',
-  texAlign:
+  textAlign:
     (((props.column && props.alignItems === 'flex-end') ||
       (!props.column && props.justifyContent === 'flex-end')) &&
       'right') ||
@@ -111,10 +104,7 @@ const ContentContainer = styled(Flex, {
 }));
 
 const ActionContainer = styled(Flex, {
-  shouldForwardProp: (key) => {
-    const prop = key as keyof ContentContainerProps;
-    return prop !== 'variant';
-  },
+  shouldForwardProp: excludeProp<keyof ContentContainerProps>(['variant']),
 })<ContentContainerProps>(({ theme: { rc }, variant }) => ({
   marginLeft: '1em',
   ...rc?.NotificationBar?.action,

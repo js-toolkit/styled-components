@@ -6,11 +6,12 @@ import useRefs from '@js-toolkit/react-hooks/useRefs';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
-type WithData<D = undefined> = Exclude<D, undefined> extends never
-  ? { readonly data?: D | undefined }
-  : unknown extends D // In case tooltip's data has unknown type
+type WithData<D = undefined> =
+  Exclude<D, undefined> extends never
     ? { readonly data?: D | undefined }
-    : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
+    : unknown extends D // In case tooltip's data has unknown type
+      ? { readonly data?: D | undefined }
+      : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
 
 type GetHtmlType<C extends React.ElementType, T = React.ElementRef<C>> = T extends never
   ? Element

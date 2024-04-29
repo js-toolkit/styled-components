@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import Fade from '@mui/material/Fade';
 import type { TransitionProps } from '@mui/material/transitions/transition';
-import type { DefaultComponentType, FlexAllProps } from 'reflexy/styled';
+import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
+import { copyInternalProps } from 'reflexy/utils';
 import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
@@ -30,7 +31,7 @@ export type TransitionFlexProps<
  * The component must accept `ref` or `componentRef` prop.
  * Default transition is `Fade`.
  */
-export default function TransitionFlex<
+function TransitionFlex<
   T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,
 >({
@@ -88,8 +89,10 @@ export default function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },
-    <FlexWithRef component="div" {...rootRest}>
+    <FlexWithRef FlexComponent={Flex} component="div" {...rootRest}>
       {children}
     </FlexWithRef>
   );
 }
+
+export default copyInternalProps(Flex, TransitionFlex);

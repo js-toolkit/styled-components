@@ -230,7 +230,7 @@ const StyledNotificationBar = styled(NotificationBar, {
   shouldForwardProp: excludeProp<keyof ScrollingContainerProps>(['position']),
   label: 'NotificationBar',
 })<ScrollingContainerProps>(({ theme: { rc }, position }) => ({
-  pointerEvents: 'initial',
+  pointerEvents: 'auto',
   ...rc?.Notifications?.item,
   ...rc?.Notifications?.[position]?.item,
   '& + [class$=-NotificationBar]': {

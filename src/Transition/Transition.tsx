@@ -18,9 +18,7 @@ export type TransitionClassNames = PartialRecord<
 
 export type TransitionStatus = keyof TransitionClassNames;
 
-export interface TransitionProps<E extends HTMLElement | undefined>
-  extends TransitionActions,
-    TimeoutProps<E> {
+export interface TransitionProps extends TransitionActions, TimeoutProps<undefined> {
   /** A single child content element. */
   children: React.ReactElement<
     { style?: React.CSSProperties | undefined; className?: string | undefined },
@@ -56,11 +54,11 @@ const getClassName = (
 };
 
 export default React.forwardRef(function Transition(
-  props: TransitionProps<undefined>,
+  props: TransitionProps,
   ref: React.Ref<unknown>
 ): JSX.Element {
   const {
-    nodeRef: _,
+    nodeRef: nodeRefProp,
     appear = true,
     in: inProp,
     addEndListener,
@@ -81,7 +79,7 @@ export default React.forwardRef(function Transition(
   const handleRef = useRefs(
     (children as React.FunctionComponentElement<unknown>).ref,
     ref,
-    props.nodeRef,
+    nodeRefProp,
     nodeRef
   );
 
@@ -165,4 +163,4 @@ export default React.forwardRef(function Transition(
       }}
     </TransitionBase>
   );
-}) as <E extends HTMLElement>(props: TransitionProps<E> & React.RefAttributes<E>) => JSX.Element;
+}) as <E extends HTMLElement>(props: TransitionProps & React.RefAttributes<E>) => JSX.Element;

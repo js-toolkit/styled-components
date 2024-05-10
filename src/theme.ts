@@ -320,6 +320,7 @@ export interface Theme {
         | FlexOnlyProps
         | ((options: { hasIcon: boolean; submenu: boolean; checked: boolean }) => FlexOnlyProps)
         | undefined;
+      icon?: CSSProperties | undefined;
       title?:
         | {
             root?: CSSProperties | undefined;

@@ -9,6 +9,7 @@ import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import TruncatedText from '../TruncatedText';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
+import { excludeProp } from '../utils';
 
 export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
   extends FlexComponentProps<'div', { omitProps: true }>,
@@ -38,12 +39,7 @@ type RootProps = React.PropsWithChildren<FlexComponentProps<'div'> & { clickable
 
 const Root = styled(
   (props: RootProps) => <Flex role="menuitem" alignItems="center" shrink={0} {...props} />,
-  {
-    shouldForwardProp: (key) => {
-      const prop = key as keyof RootProps;
-      return prop !== 'clickable';
-    },
-  }
+  { shouldForwardProp: excludeProp<keyof RootProps>(['clickable']) }
 )(({ theme: { rc }, clickable }) => ({
   cursor: clickable ? 'pointer' : undefined,
   ...rc?.MenuListItem?.root,

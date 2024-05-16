@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import throttleFn from 'lodash.throttle';
 import type { Size } from '@js-toolkit/utils/types/utils';
 import HiddenIFrame from '../HiddenIFrame';
 
 export interface ResizeListenerProps {
+  throttle?: number | undefined;
   onlyWidth?: boolean | undefined;
   onlyHeight?: boolean | undefined;
   onSizeChange: (size: Size, domRect: DOMRect) => void;
@@ -12,6 +14,7 @@ export interface ResizeListenerProps {
  * If used inside iframe with `sandbox` it needs to allow `allow-same-origin`.
  */
 export default function ResizeListener({
+  throttle,
   onlyWidth,
   onlyHeight,
   onSizeChange,
@@ -43,8 +46,10 @@ export default function ResizeListener({
       onSizeChange({ width: root.offsetWidth, height: root.offsetHeight }, nextRect);
     };
 
+    const handler = throttle && throttle > 0 ? throttleFn(resizeHandler, throttle) : resizeHandler;
+
     const setupWindow = (windowToListenOn: Window): void => {
-      windowToListenOn.addEventListener('resize', resizeHandler, { passive: true });
+      windowToListenOn.addEventListener('resize', handler, { passive: true });
       resizeHandler();
     };
 
@@ -60,10 +65,10 @@ export default function ResizeListener({
 
     return () => {
       root.removeEventListener('load', loadHandler);
-      root.contentWindow && root.contentWindow.removeEventListener('resize', resizeHandler);
+      root.contentWindow && root.contentWindow.removeEventListener('resize', handler);
       lastRectRef.current = undefined;
     };
-  }, [onSizeChange, onlyHeight, onlyWidth]);
+  }, [onSizeChange, onlyHeight, onlyWidth, throttle]);
 
   return <HiddenIFrame ref={rootRef} />;
 }

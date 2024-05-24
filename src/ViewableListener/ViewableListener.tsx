@@ -1,51 +1,84 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
-import { EventEmitterListener } from '@js-toolkit/web-utils/EventEmitterListener';
-import useRefState from '@js-toolkit/react-hooks/useRefState';
+import throttleFn from 'lodash.throttle';
 
 export interface ViewableListenerProps
   extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
-  onViewable: VoidFunction;
+  /** Visibility part to detect state as viewable. */
+  visiblePart?: boolean | number | undefined;
+  throttle?: number | undefined;
+  documentVisibility?: boolean | undefined;
+  onChange: (viewable: boolean) => void;
 }
 
-export default styled(function ViewableListener({ onViewable, ...rest }: ViewableListenerProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const raf = useRef(0);
-  const [isViewable, setViewable] = useRefState(false);
+export default styled(function ViewableListener({
+  visiblePart: visiblePartProp = 0.8,
+  throttle = 200,
+  documentVisibility = true,
+  onChange,
+  ...rest
+}: ViewableListenerProps) {
+  const rootRef = React.useRef<HTMLDivElement>(null);
 
-  const check = useCallback(() => {
+  React.useEffect(() => {
     const { current: root } = rootRef;
-    if (!root) return;
+    if (!root) return undefined;
 
-    window.cancelAnimationFrame(raf.current);
+    const visiblePart = +visiblePartProp;
+    let raf = 0;
+    let lastViewable: boolean | undefined;
+    let lastDocumentViewable = document.visibilityState === 'visible';
 
-    raf.current = window.requestAnimationFrame(() => {
-      const { top } = root.getBoundingClientRect();
-      const startPoint = (window.innerHeight * 2) / 3;
+    const check = (): void => {
+      if (documentVisibility && document.visibilityState !== 'visible') return;
+      raf = window.requestAnimationFrame(() => {
+        const { top, bottom, height } = root.getBoundingClientRect();
+        const visibleHeight = height * visiblePart;
+        const bottomPos = top + visibleHeight;
+        const viewable = window.innerHeight >= bottomPos && bottom > visibleHeight;
+        // console.log(bottomPos, top, bottom, visibleHeight, viewable);
+        if (lastViewable !== viewable) {
+          lastViewable = viewable;
+          onChange(viewable);
+        }
+      });
+    };
 
-      const viewable = top <= startPoint;
-      if (!isViewable() && viewable) {
-        onViewable();
+    const checkDocumentVisibility = (): void => {
+      const viewable = document.visibilityState === 'visible';
+      if (lastDocumentViewable !== viewable) {
+        lastDocumentViewable = viewable;
+        // Check if visible on page
+        if (viewable && visiblePart > 0) {
+          // Always re-check, the page size may be changed or something else.
+          lastViewable = undefined;
+          check();
+        }
+        // Hidden tab
+        else if (visiblePart <= 0 || lastViewable !== viewable) {
+          onChange(viewable);
+        }
       }
-      if (isViewable() !== viewable) {
-        setViewable(viewable);
-      }
-    });
-  }, [isViewable, onViewable, setViewable]);
+    };
 
-  useEffect(() => {
-    // Subscribe to window scroll
-    const listener = new EventEmitterListener(window);
-    listener.on('scroll', check, { capture: false, passive: true });
+    const handler = throttle && throttle > 0 ? throttleFn(check, throttle) : check;
 
-    // Detect is viewable
-    check();
+    if (visiblePart > 0) {
+      window.addEventListener('scroll', handler, { capture: false, passive: true });
+      check();
+    }
+
+    if (documentVisibility) {
+      document.addEventListener('visibilitychange', checkDocumentVisibility);
+      checkDocumentVisibility();
+    }
 
     return () => {
-      window.cancelAnimationFrame(raf.current);
-      listener.removeAllListeners();
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', handler, { capture: false });
+      document.removeEventListener('visibilitychange', checkDocumentVisibility);
     };
-  }, [check]);
+  }, [documentVisibility, onChange, throttle, visiblePartProp]);
 
   return <div ref={rootRef} {...rest} />;
 })({
@@ -56,4 +89,5 @@ export default styled(function ViewableListener({ onViewable, ...rest }: Viewabl
   height: '100%',
   zIndex: -1,
   opacity: 0,
+  visibility: 'hidden',
 });

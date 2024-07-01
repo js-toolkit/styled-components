@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { create, type JssOptions } from 'jss';
 import MuiStylesProvider, {
   type StylesProviderProps as MuiStylesProviderProps,
@@ -19,7 +19,7 @@ export default function StylesProvider({
   injectFirst,
   ...rest
 }: StylesProviderProps): JSX.Element {
-  const jss = useMemo(() => {
+  const jss = React.useMemo(() => {
     let insertionPointRef = insertionPoint;
 
     if (!insertionPointRef && injectFirst && typeof window !== 'undefined') {

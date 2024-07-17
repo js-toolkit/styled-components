@@ -23,8 +23,27 @@ export interface MenuListProps<
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
   items?: MenuItem<V, I>[] | undefined;
-  headerProps?: FlexAllProps<'div'> | undefined;
-  listProps?: FlexAllProps<'div'> | undefined;
+  headerProps?:
+    | FlexAllProps<
+        React.ComponentType<
+          React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+        >
+      >
+    | undefined;
+  headerGroupProps?:
+    | FlexAllProps<
+        React.ComponentType<
+          React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+        >
+      >
+    | undefined;
+  listProps?:
+    | FlexAllProps<
+        React.ComponentType<
+          React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+        >
+      >
+    | undefined;
   onItemSelect?: MenuListItemProps<V, I>['onSelect'] | undefined;
   onItemMouseEnter?:
     | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
@@ -72,16 +91,12 @@ const HeaderRoot = styled((props: React.PropsWithChildren<FlexComponentProps>) =
   ...rc?.MenuList?.header?.root,
 }));
 
-const HeaderTitleContainer = styled((props: React.PropsWithChildren<FlexComponentProps<'div'>>) => {
-  return <Flex grow alignItems="center" {...props} />;
-})(({ theme: { rc }, onClick }) => ({
+const HeaderGroup = styled(Flex)(({ theme: { rc }, onClick }) => ({
   cursor: onClick ? 'pointer' : undefined,
-  ...rc?.MenuList?.header?.root,
+  ...rc?.MenuList?.header?.group?.root,
 }));
 
-const HeaderTitle = styled((props: React.PropsWithChildren<FlexComponentProps>) => {
-  return <Flex {...props} />;
-})(({ theme: { rc } }) => ({
+const HeaderTitle = styled(Flex)(({ theme: { rc } }) => ({
   fontWeight: 500,
   ...rc?.MenuList?.header?.title?.root,
 }));
@@ -97,6 +112,7 @@ export default function MenuList<
   onClose,
   items,
   headerProps,
+  headerGroupProps,
   listProps,
   onItemSelect,
   onItemMouseEnter,
@@ -139,9 +155,16 @@ export default function MenuList<
 
   const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
+  const hasHeaderIcon = !!backIconProps || !!headerIconProps;
+
+  const headerGroupFlex =
+    typeof theme?.header?.group?.flex === 'function'
+      ? theme.header.group.flex({ hasIcon: hasHeaderIcon })
+      : theme?.header?.group?.flex;
+
   const headerTitleFlex =
     typeof theme?.header?.title?.flex === 'function'
-      ? theme.header.title.flex({ hasIcon: !!backIconProps || !!headerIconProps })
+      ? theme.header.title.flex({ hasIcon: hasHeaderIcon })
       : theme?.header?.title?.flex;
 
   const listContainerFlex =
@@ -198,7 +221,13 @@ export default function MenuList<
     <Root onKeyDown={keyDownHandler} {...rest}>
       {hasHeader && (
         <HeaderRoot py="xs" pl="s" pr {...theme?.header?.flex} {...headerProps}>
-          <HeaderTitleContainer grow alignItems="center" onClick={onBack ? backHandler : undefined}>
+          <HeaderGroup
+            grow
+            alignItems="center"
+            onClick={onBack ? backHandler : undefined}
+            {...headerGroupFlex}
+            {...headerGroupProps}
+          >
             {!!backIconProps && <SvgSpriteIcon size="1.5em" {...backIconProps} />}
             {!!headerIconProps && <SvgSpriteIcon {...headerIconProps} />}
 
@@ -210,7 +239,7 @@ export default function MenuList<
             >
               {header}
             </HeaderTitle>
-          </HeaderTitleContainer>
+          </HeaderGroup>
 
           {headerActionElement}
 

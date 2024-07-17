@@ -287,6 +287,15 @@ export interface Theme {
         | {
             root?: CSSProperties | undefined;
             flex?: FlexOnlyProps | undefined;
+            group?:
+              | {
+                  root?: CSSProperties | undefined;
+                  flex?:
+                    | FlexOnlyProps
+                    | ((options: { hasIcon: boolean }) => FlexOnlyProps)
+                    | undefined;
+                }
+              | undefined;
             backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
             closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
             title?:

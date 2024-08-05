@@ -72,7 +72,6 @@ const Root = styled(
   // Backdrop background
   '&::before': {
     content: backdrop && (loading || keepShowing) ? '""' : 'unset', // Show/hide backdrop
-    // content: ({ backdrop }: MakeStylesProps) => (backdrop ? '""' : 'unset'), // Enable/disable backdrop
     position: 'absolute',
     top: '0',
     left: '0',

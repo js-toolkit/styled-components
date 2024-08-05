@@ -127,7 +127,6 @@ export default function MenuList<
   ...rest
 }: MenuListProps<V, I, HI>): JSX.Element {
   const { rc } = useTheme();
-  // const css = useStyles({ classes: { root: className, header: headerProps?.className } });
 
   const backHandler = useRefCallback<React.MouseEventHandler>((event) => {
     onBack && stopPropagation(event);

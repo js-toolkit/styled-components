@@ -1,8 +1,4 @@
-import type {
-  BaseCSSProperties,
-  CSSProperties as CSSPropertiesOrigin,
-  // StyleRules,
-} from '@mui/styles/withStyles';
+import type { CSSObject } from '@mui/styled-engine';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled';
 import type { SvgSpriteIconProps } from './svg/SvgSpriteIcon';
 import type { MenuListItemProps } from './Menu/MenuListItem';
@@ -11,20 +7,7 @@ import type { ModalProps } from './Modal';
 import type { NotificationPosition, NotificationVariant } from './Notifications';
 import type { FieldState } from './Field';
 
-// export interface CSSPropertiesDeep extends BaseCSSProperties {
-//   [k: string]: any | CSSPropertiesDeep;
-// }
-
-export type BaseCreateCSSProperties = {
-  [P in keyof BaseCSSProperties]: BaseCSSProperties[P];
-};
-
-export interface CreateCSSProperties extends BaseCreateCSSProperties {
-  // Allow pseudo selectors and media queries
-  [k: string]: BaseCreateCSSProperties[keyof BaseCreateCSSProperties] | CreateCSSProperties;
-}
-
-export type CSSProperties = CSSPropertiesOrigin | CreateCSSProperties;
+export type CSSProperties = CSSObject;
 
 export type ButtonThemeSizes = {
   [P in ButtonSize as `size-${P}`]?: CSSProperties | undefined;
@@ -407,6 +390,5 @@ export interface Theme {
 type AppTheme = Theme;
 
 declare module '@mui/system/createTheme' {
-  // eslint-disable-next-line no-shadow
   export interface Theme extends AppTheme {}
 }

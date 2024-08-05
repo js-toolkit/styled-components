@@ -1,5 +1,5 @@
 export function getHipotenuza(katA: number, katB: number): number {
-  return Math.sqrt(Math.pow(katA, 2) + Math.pow(katB, 2));
+  return Math.sqrt(katA ** 2 + katB ** 2);
 }
 
 export function getTriangleHeight(katA: number, katB: number): number {

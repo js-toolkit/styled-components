@@ -50,7 +50,7 @@ const getClassName = (
 ): string => {
   const isStringClassNames = typeof classNames === 'string';
   const prefix = isStringClassNames && classNames ? `${classNames}-` : '';
-  return isStringClassNames ? `${prefix}${status}` : classNames[status] ?? '';
+  return isStringClassNames ? `${prefix}${status}` : (classNames[status] ?? '');
 };
 
 export default React.forwardRef(function Transition(

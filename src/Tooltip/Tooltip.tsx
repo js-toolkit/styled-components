@@ -150,7 +150,7 @@ export default function Tooltip({
         calcArrowCss(
           tooltip.alignX,
           tooltip.alignY,
-          rc?.Tooltip?.arrowColor || rc?.Tooltip?.style?.backgroundColor || 'rgba(50, 50, 50, 0.8)',
+          rc?.Tooltip?.arrowColor || 'rgba(50, 50, 50, 0.8)',
           `${container.clientHeight / 4}px`
         )
       );

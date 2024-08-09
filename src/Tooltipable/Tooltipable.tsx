@@ -3,8 +3,9 @@ import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styl
 import { noop } from '@js-toolkit/utils/noop';
 import { debounce } from '@js-toolkit/utils/debounce';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
-import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useHoverCallbacks from '@js-toolkit/react-hooks/useHoverCallbacks';
+import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 
 type WithData<D = undefined> =
   Exclude<D, undefined> extends never
@@ -51,10 +52,10 @@ export default function Tooltipable<
   type T = GetHtmlType<C>;
 
   const {
-    onClick,
     onMouseEnter,
     onMouseLeave,
     onTouchStart,
+    onClick,
     onContextMenu,
     componentRef,
     ...rest
@@ -69,8 +70,6 @@ export default function Tooltipable<
   const rootRef = useRef<T>(null);
   const rootRefs = useRefs(rootRef, componentRef as React.Ref<T>);
   const isShowingTooltipRef = useRef(false);
-  /** To prevent mouseenter (showing tooltip) on touch */
-  const isTouchingRef = useRef(false);
 
   const showTooltip = useRefCallback(() => {
     if (rootRef.current && tooltip && onShowTooltip) {
@@ -108,50 +107,26 @@ export default function Tooltipable<
   //   }
   // }, [data, element, isHover, onHideTooltip, onShowTooltip, tooltip]);
 
-  const touchStartHandler = useRefCallback<React.TouchEventHandler<HTMLDivElement>>((event) => {
-    // console.log('touchStart', event.nativeEvent.type);
-    isTouchingRef.current = true;
-    onTouchStart && onTouchStart(event);
-  });
-
-  const contextMenuHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    // console.log('contextMenu', event.nativeEvent.type);
-    isTouchingRef.current = false;
-    onContextMenu && onContextMenu(event);
-  });
-
-  const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    // console.log('click', event.nativeEvent.type);
-    isTouchingRef.current = false;
-    onClick && onClick(event);
-  });
-
-  const mouseEnterHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    // console.log('mouseEnter', event.nativeEvent.type, event.nativeEvent);
-    if (isTouchingRef.current) return;
-    // tooltip && onShowTooltip && setHover(true, event.currentTarget);
-    showTooltip();
-    onMouseEnter && onMouseEnter(event);
-  });
-
-  const mouseLeaveHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    // console.log('mouseLeave', event.nativeEvent.type, event.nativeEvent);
-    if (isTouchingRef.current) return;
-    // (getHover() || tooltip) && onHideTooltip && setHover(false, event.currentTarget);
-    hideTooltipDelayed();
-    onMouseLeave && onMouseLeave(event);
+  const hoverCallbacks = useHoverCallbacks({
+    onMouseEnter: (event) => {
+      showTooltip();
+      if (onMouseEnter) onMouseEnter(event);
+    },
+    onMouseLeave: (event) => {
+      hideTooltipDelayed();
+      if (onMouseLeave) onMouseLeave(event);
+    },
+    onTouchStart,
+    onClick,
+    onContextMenu,
   });
 
   return (
     <Flex
-      componentRef={rootRefs}
-      onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
-      onTouchStart={touchStartHandler}
-      onContextMenu={contextMenuHandler}
-      onClick={clickHandler}
+      componentRef={rootRefs as React.Ref<HTMLDivElement>}
       aria-label={tooltip}
-      {...(rest as any)}
+      {...hoverCallbacks}
+      {...rest}
     />
   );
 }

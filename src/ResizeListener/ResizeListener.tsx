@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import throttleFn from 'lodash.throttle';
 import type { Size } from '@js-toolkit/utils/types/utils';
 import HiddenIFrame from '../HiddenIFrame';
@@ -19,10 +19,10 @@ export default function ResizeListener({
   onlyHeight,
   onSizeChange,
 }: ResizeListenerProps): JSX.Element {
-  const rootRef = useRef<HTMLIFrameElement>(null);
-  const lastRectRef = useRef<DOMRect>();
+  const rootRef = React.useRef<HTMLIFrameElement>(null);
+  const lastRectRef = React.useRef<DOMRect>();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const { current: root } = rootRef;
     if (!root) return undefined;
 
@@ -54,18 +54,18 @@ export default function ResizeListener({
     };
 
     const loadHandler = (): void => {
-      root.contentWindow && setupWindow(root.contentWindow);
+      if (root.contentWindow) setupWindow(root.contentWindow);
     };
 
     if (root.contentWindow) {
-      setupWindow(root.contentWindow);
+      loadHandler();
     } else {
       root.addEventListener('load', loadHandler, { once: true });
     }
 
     return () => {
       root.removeEventListener('load', loadHandler);
-      root.contentWindow && root.contentWindow.removeEventListener('resize', handler);
+      if (root.contentWindow) root.contentWindow.removeEventListener('resize', handler);
       lastRectRef.current = undefined;
     };
   }, [onSizeChange, onlyHeight, onlyWidth, throttle]);

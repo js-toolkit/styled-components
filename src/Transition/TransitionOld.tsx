@@ -12,7 +12,7 @@ import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 
 export interface TransitionProps<E extends HTMLElement | undefined>
   extends TransitionActions,
-    TimeoutProps<E>,
+    OmitIndex<TimeoutProps<E>>,
     Pick<CSSTransitionProps<E>, 'classNames'> {
   /** A single child content element. */
   children: React.ReactElement<{ style?: React.CSSProperties | undefined }, any>;
@@ -23,7 +23,7 @@ const normalizedTransitionCallback =
   (
     nodeRef: React.RefObject<HTMLElement | undefined>,
     callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
-  ): ((isAppearing?: boolean | undefined) => void) =>
+  ): ((isAppearing?: boolean) => void) =>
   (maybeIsAppearing) => {
     if (!callback || !nodeRef.current) return;
     const node = nodeRef.current;

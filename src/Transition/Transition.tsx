@@ -18,7 +18,7 @@ export type TransitionClassNames = PartialRecord<
 
 export type TransitionStatus = keyof TransitionClassNames;
 
-export interface TransitionProps extends TransitionActions, TimeoutProps<undefined> {
+export interface TransitionProps extends TransitionActions, OmitIndex<TimeoutProps<undefined>> {
   /** A single child content element. */
   children: React.ReactElement<
     { style?: React.CSSProperties | undefined; className?: string | undefined },
@@ -32,7 +32,7 @@ const normalizedTransitionCallback =
   (
     nodeRef: React.RefObject<HTMLElement | undefined>,
     callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
-  ): ((isAppearing?: boolean | undefined) => void) =>
+  ): ((isAppearing?: boolean) => void) =>
   (maybeIsAppearing) => {
     if (!callback || !nodeRef.current) return;
     const node = nodeRef.current;
@@ -56,7 +56,7 @@ const getClassName = (
 export default React.forwardRef(function Transition(
   props: TransitionProps,
   ref: React.Ref<unknown>
-): JSX.Element {
+): React.ReactNode {
   const {
     nodeRef: nodeRefProp,
     appear = true,
@@ -85,7 +85,7 @@ export default React.forwardRef(function Transition(
 
   const appearingRef = React.useRef(false);
 
-  const handleStartTransition = (appearing?: boolean | undefined): void => {
+  const handleStartTransition = (appearing?: boolean): void => {
     appearingRef.current = !!appearing;
   };
 
@@ -163,4 +163,4 @@ export default React.forwardRef(function Transition(
       }}
     </TransitionBase>
   );
-}) as <E extends HTMLElement>(props: TransitionProps & React.RefAttributes<E>) => JSX.Element;
+}) as <E extends HTMLElement>(props: TransitionProps & React.RefAttributes<E>) => React.ReactNode;

@@ -22,7 +22,7 @@ import { getModificationDetector } from './modificationDetector';
 export type VideoWatermarkProps = FlexComponentProps &
   Partial<Point> &
   Partial<Size> &
-  Pick<WatermarkFieldProps, 'lineHeightScale' | 'textHeightScale' | 'textSpacing'> & {
+  Pick<WatermarkFieldProps, 'lineSpaceScale' | 'textHeightScale' | 'textSpacing'> & {
     htmlRef?: React.Ref<HTMLDivElement>;
     text: string;
     baseFontSize?: number | undefined;
@@ -74,7 +74,7 @@ export default React.memo(function VideoWatermark({
   updateTimeout,
   baseFontSize,
   scaleBySize,
-  lineHeightScale,
+  lineSpaceScale,
   textHeightScale,
   textSpacing,
   visibleTimeout,
@@ -138,8 +138,8 @@ export default React.memo(function VideoWatermark({
             onModified: (type) => {
               if (type === 'children') {
                 keyState.inc();
-              } else {
-                onModificationDetected && onModificationDetected();
+              } else if (onModificationDetected) {
+                onModificationDetected();
               }
             },
           })
@@ -163,7 +163,7 @@ export default React.memo(function VideoWatermark({
       hiddenTimeout,
       isVisible: () => rootState.visible,
       onShow: () => {
-        redraw && keyState.inc();
+        if (redraw) keyState.inc();
         rootState.show();
       },
       onHide: rootState.hide,
@@ -204,7 +204,7 @@ export default React.memo(function VideoWatermark({
         return { x: maxX, y: maxY };
       },
       onUpdate: (coord) => {
-        redraw && keyState.inc();
+        if (redraw) keyState.inc();
         setCoord(coord);
       },
       showOptions:
@@ -278,7 +278,7 @@ export default React.memo(function VideoWatermark({
       {mode === 'stripes' && (
         <StyledWatermarkField
           patternTransform={theme?.stripes?.field?.patternTransform ?? 'rotate(-45)'}
-          lineHeightScale={lineHeightScale ?? theme?.stripes?.field?.lineHeightScale}
+          lineSpaceScale={lineSpaceScale ?? theme?.stripes?.field?.lineSpaceScale}
           textHeightScale={textHeightScale ?? theme?.stripes?.field?.textHeightScale}
           textSpacing={textSpacing ?? theme?.stripes?.field?.textSpacing}
           updateKey={rootFontSize}
@@ -296,13 +296,13 @@ export default React.memo(function VideoWatermark({
           >
             <StyledWatermarkField
               id={visibleTimeout && hiddenTimeout ? undefined : `${coord.x}-${coord.y}`}
-              lineHeightScale={lineHeightScale ?? theme?.random?.field?.lineHeightScale}
+              lineSpaceScale={lineSpaceScale ?? theme?.random?.field?.lineSpaceScale}
               updateKey={rootFontSize}
               text={text}
               mode="single"
               {...getTextSize()}
               onSizeChanged={setTextSize}
-              style={{ left: coord.x, top: coord.y }}
+              style={{ left: coord.x, top: coord.y, background: 'yellow' }}
             />
           </Fade>
         </TransitionGroup>

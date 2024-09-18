@@ -1,6 +1,7 @@
 import type { CSSObject } from '@mui/styled-engine';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled';
 import type { SvgSpriteIconProps } from './svg/SvgSpriteIcon';
+import type { WatermarkFieldProps } from './svg/WatermarkField';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
@@ -241,17 +242,17 @@ export interface Theme {
           default?: CSSProperties | undefined;
           stripes?:
             | (CSSProperties & {
-                field?: {
-                  patternTransform?: string;
-                  lineHeightScale?: number;
-                  textHeightScale?: number;
-                  textSpacing?: number;
-                };
+                field?: Pick<
+                  WatermarkFieldProps,
+                  'lineSpaceScale' | 'textHeightScale' | 'textSpacing' | 'patternTransform'
+                >;
               })
             | undefined;
           random?:
             | (CSSProperties & {
-                field?: { transitionDuration?: number; lineHeightScale?: number };
+                field?: Pick<WatermarkFieldProps, 'lineSpaceScale'> & {
+                  transitionDuration?: number;
+                };
               })
             | undefined;
         }

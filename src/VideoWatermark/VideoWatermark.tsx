@@ -302,7 +302,7 @@ export default React.memo(function VideoWatermark({
               mode="single"
               {...getTextSize()}
               onSizeChanged={setTextSize}
-              style={{ left: coord.x, top: coord.y, background: 'yellow' }}
+              style={{ left: coord.x, top: coord.y }}
             />
           </Fade>
         </TransitionGroup>

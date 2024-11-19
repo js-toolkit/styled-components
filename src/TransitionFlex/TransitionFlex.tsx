@@ -63,7 +63,7 @@ function TransitionFlex<
   }
 
   const children = keepChildren ? childrenProp || lastChildrenRef.current : childrenProp;
-  const trProps = transitionProps as TransitionProps;
+  const trProps = transitionProps as TransitionProps | undefined;
 
   const enteredHandler = useChainRefCallback(
     onShown && (() => onShown()),
@@ -81,12 +81,12 @@ function TransitionFlex<
     transition as React.FC<TransitionProps>,
     {
       ...trProps,
-      in: hidden == null ? (trProps.in ?? inProp ?? true) : !hidden,
+      in: hidden == null ? (trProps?.in ?? inProp ?? true) : !hidden,
       appear,
       enter,
       exit,
-      unmountOnExit: disposable ?? trProps.unmountOnExit,
-      timeout: transitionDuration ?? trProps.timeout,
+      unmountOnExit: disposable ?? trProps?.unmountOnExit,
+      timeout: transitionDuration ?? trProps?.timeout,
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },

@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@mui/system/styled';
 import type { FlexComponentProps } from 'reflexy/styled';
 import { loadImage } from '@js-toolkit/web-utils/loadImage';

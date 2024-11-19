@@ -1,4 +1,3 @@
-import React from 'react';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
 
 export interface DefaultRendererProps extends FlexComponentProps {

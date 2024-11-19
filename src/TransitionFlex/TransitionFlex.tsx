@@ -46,13 +46,14 @@ function TransitionFlex<
   onShown,
   ...rest
 }: TransitionFlexProps<T, C>): JSX.Element {
-  // In case if inside TransitionGroup
   const {
+    // In case if inside TransitionGroup
     in: inProp,
     enter,
     exit,
-    onEntered,
     onExited,
+    onEntered, // really also passed?
+    // Other props
     children: childrenProp,
     ...rootRest
   } = rest as React.PropsWithChildren<NonNullable<HideableProps['transitionProps']>>;
@@ -82,9 +83,9 @@ function TransitionFlex<
     {
       ...trProps,
       in: hidden == null ? (trProps?.in ?? inProp ?? true) : !hidden,
-      appear,
-      enter,
-      exit,
+      appear: appear ?? trProps?.appear,
+      enter: enter ?? trProps?.enter,
+      exit: exit ?? trProps?.exit,
       unmountOnExit: disposable ?? trProps?.unmountOnExit,
       timeout: transitionDuration ?? trProps?.timeout,
       onEntered: enteredHandler,

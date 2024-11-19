@@ -37,10 +37,10 @@ function TransitionFlex<
 >({
   transition = Fade as T,
   transitionProps,
-  transitionDuration = (transitionProps as TransitionProps)?.timeout,
-  hidden = !((transitionProps as TransitionProps)?.in ?? true),
-  appear = (transitionProps as TransitionProps)?.appear ?? true,
-  disposable = (transitionProps as TransitionProps)?.unmountOnExit,
+  transitionDuration,
+  hidden,
+  appear,
+  disposable,
   keepChildren,
   onHidden,
   onShown,
@@ -48,7 +48,7 @@ function TransitionFlex<
 }: TransitionFlexProps<T, C>): JSX.Element {
   // In case if inside TransitionGroup
   const {
-    in: inProp = !hidden,
+    in: inProp,
     enter,
     exit,
     onEntered,
@@ -63,29 +63,30 @@ function TransitionFlex<
   }
 
   const children = keepChildren ? childrenProp || lastChildrenRef.current : childrenProp;
+  const trProps = transitionProps as TransitionProps;
 
   const enteredHandler = useChainRefCallback(
     onShown && (() => onShown()),
-    (transitionProps as TransitionProps)?.onEntered,
+    trProps?.onEntered,
     onEntered
   );
 
   const exitedHandler = useChainRefCallback(
     onHidden && (() => onHidden()),
-    (transitionProps as TransitionProps)?.onExited,
+    trProps?.onExited,
     onExited
   );
 
   return React.createElement(
     transition as React.FC<TransitionProps>,
     {
-      ...transitionProps,
-      in: inProp,
+      ...trProps,
+      in: hidden == null ? (trProps.in ?? inProp ?? true) : !hidden,
       appear,
       enter,
       exit,
-      unmountOnExit: disposable,
-      timeout: transitionDuration,
+      unmountOnExit: disposable ?? trProps.unmountOnExit,
+      timeout: transitionDuration ?? trProps.timeout,
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },

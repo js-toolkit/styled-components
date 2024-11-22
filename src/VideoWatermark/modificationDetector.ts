@@ -7,7 +7,7 @@ export interface ModificationDetectorOptions {
   readonly onModified: (type: 'children' | 'root') => void;
 }
 
-export interface ModificationDetector {
+export interface ModificationDetector extends Disposable {
   readonly setVisible: VoidFunction;
   readonly setHidden: VoidFunction;
   readonly setNode: (node: HTMLElement) => void;
@@ -19,7 +19,7 @@ export interface ModificationDetector {
 }
 
 export function getModificationDetector({
-  mode: _,
+  mode: _mode,
   checkInterval,
   onModified,
 }: ModificationDetectorOptions): ModificationDetector {
@@ -125,5 +125,8 @@ export function getModificationDetector({
     },
     setNode: setup,
     destroy: stop,
+    [Symbol.dispose](): void {
+      this.destroy();
+    },
   };
 }

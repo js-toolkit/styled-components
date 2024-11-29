@@ -143,7 +143,7 @@ export default function MenuListItem<V, I extends string | IconProps>({
   const theme = rc?.MenuListItem;
 
   const iconProps: IconProps | undefined =
-    typeof icon === 'string' ? ({ svgSprite: { name: icon, size: '1.5em' } } as IconProps) : icon;
+    typeof icon === 'string' ? { svgSprite: { name: icon, size: '1.5em' } } : icon;
 
   const hasIcon = !!iconProps?.svgSprite || !!iconProps?.svg;
 

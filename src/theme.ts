@@ -1,8 +1,7 @@
 import type { CSSObject } from '@mui/styled-engine';
 import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled';
-import type { SvgSpriteIconProps } from './svg/SvgSpriteIcon';
 import type { WatermarkFieldProps } from './svg/WatermarkField';
-import type { MenuListItemProps } from './Menu/MenuListItem';
+import type { IconProps, MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
 import type { NotificationPosition, NotificationVariant } from './Notifications';
@@ -280,8 +279,8 @@ export interface Theme {
                     | undefined;
                 }
               | undefined;
-            backIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
-            closeIcon?: Pick<SvgSpriteIconProps<string>, 'name' | 'size'> | undefined;
+            backIcon?: IconProps | undefined;
+            closeIcon?: IconProps | undefined;
             title?:
               | {
                   root?: CSSProperties | undefined;
@@ -342,8 +341,9 @@ export interface Theme {
               | undefined;
           }
         | undefined;
-      checkIcon?: (Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps) | undefined;
-      submenuIcon?: (Pick<SvgSpriteIconProps<string>, 'name' | 'size'> & SpaceProps) | undefined;
+
+      checkIcon?: IconProps | undefined;
+      submenuIcon?: IconProps | undefined;
     };
 
     Tooltip?:
@@ -391,5 +391,6 @@ export interface Theme {
 type AppTheme = Theme;
 
 declare module '@mui/system/createTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-shadow
   export interface Theme extends AppTheme {}
 }

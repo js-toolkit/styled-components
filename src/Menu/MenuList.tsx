@@ -4,21 +4,15 @@ import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import { stopPropagation } from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
+import SvgSpriteIcon from '../svg/SvgSpriteIcon';
 import Button, { type ButtonProps } from '../Button';
-import MenuListItem, { type MenuListItemProps } from './MenuListItem';
+import MenuListItem, { type IconProps, type MenuListItemProps } from './MenuListItem';
 
-export type MenuItem<V, I extends string | SvgSpriteIconProps<string>> = Omit<
-  MenuListItemProps<V, I>,
-  'onClick'
-> &
+export type MenuItem<V, I extends string | IconProps> = Omit<MenuListItemProps<V, I>, 'onClick'> &
   React.Attributes;
 
-export interface MenuListProps<
-  V,
-  I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>,
-> extends FlexComponentProps<'div'> {
+export interface MenuListProps<V, I extends string | IconProps, HI extends string | IconProps>
+  extends FlexComponentProps<'div'> {
   header?: React.ReactChild | undefined;
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
@@ -101,11 +95,7 @@ const HeaderTitle = styled(Flex)(({ theme: { rc } }) => ({
   ...rc?.MenuList?.header?.title?.root,
 }));
 
-export default function MenuList<
-  V,
-  I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>,
->({
+export default function MenuList<V, I extends string | IconProps, HI extends string | IconProps>({
   header,
   headerIcon,
   onBack,
@@ -146,15 +136,25 @@ export default function MenuList<
   const theme = rc?.MenuList;
   const backIconProps = onBack ? theme?.header?.backIcon : undefined;
   const closeIconProps = onClose ? theme?.header?.closeIcon : undefined;
+  const hasCloseIcon = !!(closeIconProps?.svgSprite || closeIconProps?.svg);
 
-  const headerIconProps =
-    typeof headerIcon === 'string'
-      ? { name: headerIcon }
-      : (headerIcon as SvgSpriteIconProps<string>);
+  const headerIconProps: IconProps | undefined =
+    typeof headerIcon === 'string' ? { svgSprite: { name: headerIcon } } : headerIcon;
 
-  const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
+  const hasHeader = !!(
+    header ||
+    headerIconProps?.svgSprite ||
+    headerIconProps?.svg ||
+    onBack ||
+    headerAction ||
+    onClose
+  );
 
-  const hasHeaderIcon = !!backIconProps || !!headerIconProps;
+  const hasHeaderIcon =
+    !!backIconProps?.svgSprite ||
+    !!backIconProps?.svg ||
+    !!headerIconProps?.svgSprite ||
+    !!headerIconProps?.svg;
 
   const headerGroupFlex =
     typeof theme?.header?.group?.flex === 'function'
@@ -227,8 +227,20 @@ export default function MenuList<
             {...headerGroupFlex}
             {...headerGroupProps}
           >
-            {!!backIconProps && <SvgSpriteIcon size="1.5em" {...backIconProps} />}
-            {!!headerIconProps && <SvgSpriteIcon {...headerIconProps} />}
+            {!!backIconProps?.svgSprite && (
+              <Flex
+                flex={false}
+                component={SvgSpriteIcon}
+                size="1.5em"
+                {...backIconProps.svgSprite}
+              />
+            )}
+            {!!backIconProps?.svg && <Flex flex={false} {...backIconProps.svg} />}
+
+            {!!headerIconProps?.svgSprite && (
+              <Flex flex={false} component={SvgSpriteIcon} {...headerIconProps.svgSprite} />
+            )}
+            {!!headerIconProps?.svg && <Flex flex={false} {...headerIconProps.svg} />}
 
             <HeaderTitle
               ml={!backIconProps && !headerIconProps ? 's' : 'xs'}
@@ -242,9 +254,17 @@ export default function MenuList<
 
           {headerActionElement}
 
-          {!!closeIconProps && (
+          {hasCloseIcon && (
             <Button shrink={0} size="contain" color="none" onClick={closeHandler}>
-              <SvgSpriteIcon size="0.875em" {...closeIconProps} />
+              {!!closeIconProps?.svgSprite && (
+                <Flex
+                  flex={false}
+                  component={SvgSpriteIcon}
+                  size="0.875em"
+                  {...closeIconProps.svgSprite}
+                />
+              )}
+              {!!closeIconProps?.svg && <Flex flex={false} {...closeIconProps.svg} />}
             </Button>
           )}
         </HeaderRoot>

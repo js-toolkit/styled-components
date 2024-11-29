@@ -1,20 +1,20 @@
 import React from 'react';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import type { SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
 import MenuList, { type MenuItem, type MenuListProps } from './MenuList';
+import type { IconProps } from './MenuListItem';
 
 export interface MenuSelectListProps<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>,
+  I extends string | IconProps,
+  HI extends string | IconProps,
 > extends MenuListProps<V, I, HI> {
   selectedValue: MenuItem<V, I>['value'];
 }
 
 export default function MenuSelectList<
   V extends React.Key | null,
-  I extends string | SvgSpriteIconProps<string>,
-  HI extends string | SvgSpriteIconProps<string>,
+  I extends string | IconProps,
+  HI extends string | IconProps,
 >({ selectedValue, onItemProps, ...rest }: MenuSelectListProps<V, I, HI>): JSX.Element {
   const itemPropsHandler = useRefCallback<NonNullable<MenuListProps<V, I, HI>['onItemProps']>>(
     (itemProps) => {

@@ -1,7 +1,12 @@
 import React, { type AriaAttributes, useEffect, useRef } from 'react';
 import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
-import { Flex, type FlexComponentProps } from 'reflexy/styled';
+import {
+  Flex,
+  type FlexAllProps,
+  type FlexComponentProps,
+  type FlexOnlyProps,
+} from 'reflexy/styled';
 import { noop } from '@js-toolkit/utils/noop';
 import { preventDefault } from '@js-toolkit/web-utils/preventDefault';
 import { stopPropagation } from '@js-toolkit/web-utils/stopPropagation';
@@ -11,7 +16,14 @@ import TruncatedText from '../TruncatedText';
 import SvgSpriteIcon, { type SvgSpriteIconProps } from '../svg/SvgSpriteIcon';
 import { excludeProp } from '../utils';
 
-export interface MenuListItemProps<V, I extends string | SvgSpriteIconProps<string>>
+export type IconProps = {
+  svgSprite?: (SvgSpriteIconProps<string> & FlexOnlyProps) | undefined;
+  svg?:
+    | RequiredSome<FlexAllProps<React.FC<React.SVGProps<SVGSVGElement>>>, 'component'>
+    | undefined;
+};
+
+export interface MenuListItemProps<V, I extends string | IconProps>
   extends FlexComponentProps<'div', { omitProps: true }>,
     Pick<
       React.HTMLAttributes<HTMLDivElement>,
@@ -58,7 +70,7 @@ const Subtitle = styled(TruncatedText)(({ theme: { rc } }) => ({
   ...rc?.MenuListItem?.subtitle?.root,
 }));
 
-export default function MenuListItem<V, I extends string | SvgSpriteIconProps<string>>({
+export default function MenuListItem<V, I extends string | IconProps>({
   icon,
   title,
   subtitle,
@@ -130,21 +142,21 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
 
   const theme = rc?.MenuListItem;
 
-  const iconProps =
-    typeof icon === 'string' ? { name: icon, size: '1.5em' } : (icon as SvgSpriteIconProps<string>);
+  const iconProps: IconProps | undefined =
+    typeof icon === 'string' ? ({ svgSprite: { name: icon, size: '1.5em' } } as IconProps) : icon;
+
+  const hasIcon = !!iconProps?.svgSprite || !!iconProps?.svg;
 
   const rootFlex =
-    typeof theme?.flex === 'function'
-      ? theme.flex({ hasIcon: !!iconProps, submenu, checked })
-      : theme?.flex;
+    typeof theme?.flex === 'function' ? theme.flex({ hasIcon, submenu, checked }) : theme?.flex;
 
   const titleFlex =
     typeof theme?.title?.flex === 'function'
-      ? theme.title.flex({ hasIcon: !!iconProps, shrinkTitle, submenu, checked })
+      ? theme.title.flex({ hasIcon, shrinkTitle, submenu, checked })
       : theme?.title?.flex;
   const subtitleFlex =
     typeof theme?.subtitle?.flex === 'function'
-      ? theme.subtitle.flex({ hasIcon: !!iconProps, shrinkTitle, submenu, checked })
+      ? theme.subtitle.flex({ hasIcon, shrinkTitle, submenu, checked })
       : theme?.subtitle?.flex;
 
   const checkIconProps = checked ? theme?.checkIcon : undefined;
@@ -156,16 +168,17 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
       aria-haspopup={submenu || undefined}
       componentRef={rootRefs}
       px
-      py={iconProps ? 0.375 : 0.625}
+      py={hasIcon ? 0.375 : 0.625}
       {...rootFlex}
       onClick={clickHandler}
       onKeyDown={keyDownHandler}
       {...rest}
     >
-      {!!iconProps && <Icon {...iconProps} />}
+      {iconProps?.svgSprite && <Flex flex={false} component={Icon} {...iconProps?.svgSprite} />}
+      {iconProps?.svg && <Flex flex={false} {...iconProps?.svg} />}
 
       {title && typeof title !== 'object' ? (
-        <Title ml={iconProps ? 'xs' : undefined} grow shrink={shrinkTitle} {...titleFlex}>
+        <Title ml={hasIcon ? 'xs' : undefined} grow shrink={shrinkTitle} {...titleFlex}>
           {title}
         </Title>
       ) : (
@@ -178,27 +191,29 @@ export default function MenuListItem<V, I extends string | SvgSpriteIconProps<st
         </Subtitle>
       )}
 
-      {!!checkIconProps && (
+      {!!checkIconProps?.svgSprite && (
         <Flex
           flex={false}
           ml
           shrink={0}
           component={SvgSpriteIcon}
           size="0.75em"
-          {...checkIconProps}
+          {...checkIconProps.svgSprite}
         />
       )}
+      {!!checkIconProps?.svg && <Flex flex={false} ml shrink={0} {...checkIconProps.svg} />}
 
-      {!!submenuIconProps && (
+      {!!submenuIconProps?.svgSprite && (
         <Flex
           flex={false}
           ml
           shrink={0}
           component={SvgSpriteIcon}
           size="0.6em"
-          {...submenuIconProps}
+          {...submenuIconProps.svgSprite}
         />
       )}
+      {!!submenuIconProps?.svg && <Flex flex={false} ml shrink={0} {...submenuIconProps.svg} />}
     </Root>
   );
 }

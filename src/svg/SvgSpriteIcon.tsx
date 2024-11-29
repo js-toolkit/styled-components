@@ -3,6 +3,7 @@ import useTheme from '@mui/system/useTheme';
 import styled from '@mui/system/styled';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
+import { excludeProp } from '../utils';
 import type { Theme } from '../theme';
 // eslint-disable-next-line import/no-cycle
 import useSvgSpriteIconHref from './useSvgSpriteIconHref';
@@ -56,10 +57,7 @@ SvgSpriteIcon.spriteId = 'svgsprite';
 
 export default hoistNonReactStatics(
   styled(SvgSpriteIcon, {
-    shouldForwardProp: (key) => {
-      const prop = key as keyof SvgSpriteIconProps<string>;
-      return prop !== 'scaleOnHover';
-    },
+    shouldForwardProp: excludeProp<SvgSpriteIconProps<string>>(['scaleOnHover']),
     name: SvgSpriteIcon.name,
   })(({ scaleOnHover }) => ({
     display: 'inline-block',

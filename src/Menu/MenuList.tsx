@@ -4,18 +4,19 @@ import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import { stopPropagation } from '@js-toolkit/web-utils/stopPropagation';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import SvgSpriteIcon from '../svg/SvgSpriteIcon';
 import Button, { type ButtonProps } from '../Button';
-import MenuListItem, { type IconProps, type MenuListItemProps } from './MenuListItem';
+import type { IconComponentProps } from '../theme';
+import MenuListItem, { type MenuListItemProps } from './MenuListItem';
 
-export type MenuItem<V, I extends string | IconProps> = Omit<MenuListItemProps<V, I>, 'onClick'> &
+export type MenuItem<V, I extends IconComponentProps> = Omit<MenuListItemProps<V, I>, 'onClick'> &
   React.Attributes;
 
-export interface MenuListProps<V, I extends string | IconProps, HI extends string | IconProps>
+export interface MenuListProps<V, I extends IconComponentProps, HI extends IconComponentProps>
   extends FlexComponentProps<'div'> {
   header?: React.ReactChild | undefined;
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
+  itemComponent?: React.FC<MenuListItemProps<V, I>>;
   items?: MenuItem<V, I>[] | undefined;
   headerProps?:
     | FlexAllProps<
@@ -95,11 +96,12 @@ const HeaderTitle = styled(Flex)(({ theme: { rc } }) => ({
   ...rc?.MenuList?.header?.title?.root,
 }));
 
-export default function MenuList<V, I extends string | IconProps, HI extends string | IconProps>({
+export default function MenuList<V, I extends IconComponentProps, HI extends IconComponentProps>({
   header,
   headerIcon,
   onBack,
   onClose,
+  itemComponent: ItemComponent = MenuListItem,
   items,
   headerProps,
   headerGroupProps,
@@ -136,25 +138,13 @@ export default function MenuList<V, I extends string | IconProps, HI extends str
   const theme = rc?.MenuList;
   const backIconProps = onBack ? theme?.header?.backIcon : undefined;
   const closeIconProps = onClose ? theme?.header?.closeIcon : undefined;
-  const hasCloseIcon = !!(closeIconProps?.svgSprite || closeIconProps?.svg);
+  // const hasCloseIcon = !!(closeIconProps?.svgSprite || closeIconProps?.svg);
 
-  const headerIconProps: IconProps | undefined =
-    typeof headerIcon === 'string' ? { svgSprite: { name: headerIcon } } : headerIcon;
+  const headerIconProps = headerIcon;
 
-  const hasHeader = !!(
-    header ||
-    headerIconProps?.svgSprite ||
-    headerIconProps?.svg ||
-    onBack ||
-    headerAction ||
-    onClose
-  );
+  const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
-  const hasHeaderIcon =
-    !!backIconProps?.svgSprite ||
-    !!backIconProps?.svg ||
-    !!headerIconProps?.svgSprite ||
-    !!headerIconProps?.svg;
+  const hasHeaderIcon = !!(backIconProps || headerIconProps);
 
   const headerGroupFlex =
     typeof theme?.header?.group?.flex === 'function'
@@ -180,7 +170,7 @@ export default function MenuList<V, I extends string | IconProps, HI extends str
         ...restItemProps
       } = onItemProps ? onItemProps(itemProps) : itemProps;
       return (
-        <MenuListItem
+        <ItemComponent
           key={key}
           value={value}
           onSelect={onItemSelect}
@@ -193,6 +183,7 @@ export default function MenuList<V, I extends string | IconProps, HI extends str
       );
     });
   }, [
+    ItemComponent,
     items,
     onItemBlur,
     onItemFocus,
@@ -227,20 +218,13 @@ export default function MenuList<V, I extends string | IconProps, HI extends str
             {...headerGroupFlex}
             {...headerGroupProps}
           >
-            {!!backIconProps?.svgSprite && (
-              <Flex
-                flex={false}
-                component={SvgSpriteIcon}
-                size="1.5em"
-                {...backIconProps.svgSprite}
-              />
+            {!!backIconProps && (
+              <Flex<React.FC<IconComponentProps>> flex={false} size="1.5em" {...backIconProps} />
             )}
-            {!!backIconProps?.svg && <Flex flex={false} {...backIconProps.svg} />}
 
-            {!!headerIconProps?.svgSprite && (
-              <Flex flex={false} component={SvgSpriteIcon} {...headerIconProps.svgSprite} />
+            {!!headerIconProps && (
+              <Flex<React.FC<IconComponentProps>> flex={false} {...headerIconProps} />
             )}
-            {!!headerIconProps?.svg && <Flex flex={false} {...headerIconProps.svg} />}
 
             <HeaderTitle
               ml={!backIconProps && !headerIconProps ? 's' : 'xs'}
@@ -254,17 +238,9 @@ export default function MenuList<V, I extends string | IconProps, HI extends str
 
           {headerActionElement}
 
-          {hasCloseIcon && (
+          {!!closeIconProps && (
             <Button shrink={0} size="contain" color="none" onClick={closeHandler}>
-              {!!closeIconProps?.svgSprite && (
-                <Flex
-                  flex={false}
-                  component={SvgSpriteIcon}
-                  size="0.875em"
-                  {...closeIconProps.svgSprite}
-                />
-              )}
-              {!!closeIconProps?.svg && <Flex flex={false} {...closeIconProps.svg} />}
+              <Flex<React.FC<IconComponentProps>> flex={false} size="0.875em" {...closeIconProps} />
             </Button>
           )}
         </HeaderRoot>

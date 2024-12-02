@@ -1,7 +1,7 @@
 import type { CSSObject } from '@mui/styled-engine';
-import type { FlexOnlyProps, SpaceProps } from 'reflexy/styled';
+import type { FlexAllProps, FlexOnlyProps, SpaceProps } from 'reflexy/styled';
 import type { WatermarkFieldProps } from './svg/WatermarkField';
-import type { IconProps, MenuListItemProps } from './Menu/MenuListItem';
+import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
 import type { NotificationPosition, NotificationVariant } from './Notifications';
@@ -28,6 +28,13 @@ export type ButtonTheme = ButtonThemeSizes &
   ButtonStyles & {
     [P in ButtonColor]?: { [K in ButtonVariant]?: ButtonStyles | undefined } | undefined;
   };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type IconComponentProps<C extends React.ElementType = any> = FlexAllProps<C> & {
+  readonly size?: string | number | undefined;
+  readonly width?: string | number | undefined;
+  readonly height?: string | number | undefined;
+};
 
 export interface Theme {
   rc?: {
@@ -279,8 +286,8 @@ export interface Theme {
                     | undefined;
                 }
               | undefined;
-            backIcon?: IconProps | undefined;
-            closeIcon?: IconProps | undefined;
+            backIcon?: IconComponentProps | undefined;
+            closeIcon?: IconComponentProps | undefined;
             title?:
               | {
                   root?: CSSProperties | undefined;
@@ -320,7 +327,7 @@ export interface Theme {
               | FlexOnlyProps
               | ((
                   options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
-                    MenuListItemProps<string, string>,
+                    MenuListItemProps<string, never>,
                     'shrinkTitle'
                   >
                 ) => FlexOnlyProps)
@@ -334,7 +341,7 @@ export interface Theme {
               | FlexOnlyProps
               | ((
                   options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
-                    MenuListItemProps<string, string>,
+                    MenuListItemProps<string, never>,
                     'shrinkTitle'
                   >
                 ) => FlexOnlyProps)
@@ -342,8 +349,8 @@ export interface Theme {
           }
         | undefined;
 
-      checkIcon?: IconProps | undefined;
-      submenuIcon?: IconProps | undefined;
+      checkIcon?: IconComponentProps | undefined;
+      submenuIcon?: IconComponentProps | undefined;
     };
 
     Tooltip?:

@@ -28,7 +28,6 @@ export interface PictureProps
   readonly timeout?: number | undefined;
   readonly onLoadCompleted?: ((src: string, error?: unknown) => void) | undefined;
   readonly onLoadTimeout?: this['onLoadCompleted'];
-  readonly onError?: ((error: unknown) => void) | undefined;
 }
 
 export default styled(
@@ -41,7 +40,6 @@ export default styled(
     transitionProps,
     onLoadTimeout,
     onLoadCompleted,
-    onError,
     ...rest
   }: PictureProps) => {
     const [loaded, setLoaded] = useState(false);
@@ -91,9 +89,8 @@ export default styled(
     const errorHandler = useRefCallback<React.ReactEventHandler>((ev) => {
       clearTimeout(timerRef.current);
       const error = ev.nativeEvent;
-      if (onError) onError(error);
+      if (onLoadCompleted) onLoadCompleted(imgRef.current?.currentSrc ?? '', error);
       else console.error(error);
-      onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '', error);
     });
 
     return (

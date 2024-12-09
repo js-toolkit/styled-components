@@ -14,10 +14,7 @@ export interface PosterProps
       HideableProps,
       'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
     >,
-    Pick<
-      PictureProps,
-      'src' | 'crossOrigin' | 'timeout' | 'onLoadTimeout' | 'onLoadCompleted' | 'onError'
-    > {}
+    Pick<PictureProps, 'src' | 'crossOrigin' | 'timeout' | 'onLoadTimeout' | 'onLoadCompleted'> {}
 
 export default styled(function Poster({
   hidden,
@@ -27,7 +24,6 @@ export default styled(function Poster({
   transitionProps,
   onLoadTimeout,
   onLoadCompleted,
-  onError,
   style,
   ...rest
 }: PosterProps): JSX.Element {
@@ -69,7 +65,7 @@ export default styled(function Poster({
 
     const timer = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
 
-    tryLoad().then(
+    void tryLoad().then(
       (img) => {
         clearTimeout(timer);
         if (unmounted) return;
@@ -80,9 +76,8 @@ export default styled(function Poster({
       (ex) => {
         clearTimeout(timer);
         if (!unmounted) {
-          if (onError) onError(ex);
+          if (onLoadCompleted) onLoadCompleted('', ex);
           else console.error(ex);
-          onLoadCompleted && onLoadCompleted('');
         }
       }
     );

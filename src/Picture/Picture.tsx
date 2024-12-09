@@ -26,7 +26,7 @@ export interface PictureProps
     Pick<React.ImgHTMLAttributes<unknown>, 'crossOrigin' | 'loading'> {
   readonly src: string | PictureSources;
   readonly timeout?: number | undefined;
-  readonly onLoadCompleted?: ((src: string) => void) | undefined;
+  readonly onLoadCompleted?: ((src: string, error?: unknown) => void) | undefined;
   readonly onLoadTimeout?: this['onLoadCompleted'];
   readonly onError?: ((error: unknown) => void) | undefined;
 }
@@ -90,9 +90,10 @@ export default styled(
 
     const errorHandler = useRefCallback<React.ReactEventHandler>((ev) => {
       clearTimeout(timerRef.current);
-      if (onError) onError(ev.nativeEvent);
-      else console.error(ev.nativeEvent);
-      onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '');
+      const error = ev.nativeEvent;
+      if (onError) onError(error);
+      else console.error(error);
+      onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '', error);
     });
 
     return (

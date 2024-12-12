@@ -39,7 +39,7 @@ export type NotificationPosition = GetOverridedKeys<
 
 export interface Notification<
   TID extends string | number = string | number,
-  TContent = JSX.Element | string,
+  TContent = React.JSX.Element | string,
   TTransition extends TransitionComponent = TransitionComponent,
   // TRoot extends React.ElementType = any,
   TBarContentElement extends React.ElementType = any,
@@ -252,11 +252,11 @@ export default React.memo(function Notifications<
   listProps,
   disableTransition,
   ...rest
-}: NotificationsProps<C, N>): JSX.Element | null {
+}: NotificationsProps<C, N>): React.JSX.Element | null {
   const update = useUpdate();
 
   // if (list.length === 0) return null;
-  const mapRef = useRef(undefined as unknown as Map<NotificationPosition, JSX.Element[]>);
+  const mapRef = useRef(undefined as unknown as Map<NotificationPosition, React.JSX.Element[]>);
   if (!mapRef.current) {
     mapRef.current = new Map();
   }
@@ -335,5 +335,5 @@ export default React.memo(function Notifications<
         </ScrollingContainer>
       </Root>
     );
-  }) as unknown as JSX.Element;
+  }) as unknown as React.JSX.Element;
 });

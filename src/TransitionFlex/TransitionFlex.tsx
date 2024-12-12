@@ -45,7 +45,7 @@ function TransitionFlex<
   onHidden,
   onShown,
   ...rest
-}: TransitionFlexProps<T, C>): JSX.Element {
+}: TransitionFlexProps<T, C>): React.JSX.Element {
   const {
     // In case if inside TransitionGroup
     in: inProp,

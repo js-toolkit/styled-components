@@ -10,7 +10,7 @@ export default function SvgMultilineText({
   lineDY,
   x,
   ...rest
-}: SvgMultilineTextProps): JSX.Element | null {
+}: SvgMultilineTextProps): React.JSX.Element | null {
   const lines = React.useMemo(() => (typeof text === 'string' ? text.split('\n') : text), [text]);
 
   return (

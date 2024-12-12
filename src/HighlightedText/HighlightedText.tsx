@@ -24,7 +24,7 @@ function HighlightedText<C extends React.ElementType = 'span'>({
   children: text,
   ignoreCase = true,
   ...rest
-}: HighlightedTextProps<C>): JSX.Element {
+}: HighlightedTextProps<C>): React.JSX.Element {
   const [content, _highlighted] = useMemo(() => {
     if (!highlight || !text) return [text, undefined];
 
@@ -51,7 +51,7 @@ function HighlightedText<C extends React.ElementType = 'span'>({
         }
         return acc;
       },
-      [[] as (JSX.Element | string)[], [] as string[]] as const
+      [[] as (React.JSX.Element | string)[], [] as string[]] as const
     );
 
     return [normalizeArray(nextParts), normalizeArray(hParts)] as const;

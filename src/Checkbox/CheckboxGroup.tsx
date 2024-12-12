@@ -20,7 +20,7 @@ export default function CheckboxGroup<V = unknown>({
   value: checkedValueProp,
   onChange,
   ...rest
-}: React.PropsWithChildren<CheckboxGroupProps<V>>): JSX.Element {
+}: React.PropsWithChildren<CheckboxGroupProps<V>>): React.JSX.Element {
   const [checkedValue, setCheckedValue] = useState(checkedValueProp);
 
   const onChecked = useRefCallback((value: V) => {

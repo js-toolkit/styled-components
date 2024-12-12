@@ -32,7 +32,7 @@ export default styled(function Badge({
   loading,
   children,
   ...rest
-}: React.PropsWithChildren<BadgeProps>): JSX.Element {
+}: React.PropsWithChildren<BadgeProps>): React.JSX.Element {
   return (
     <Flex {...rest}>
       {children}

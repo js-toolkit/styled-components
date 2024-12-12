@@ -34,8 +34,11 @@ export type VideoWatermarkProps = FlexComponentProps &
     modificationDetectionInterval?: number;
     onModificationDetected?: VoidFunction;
   } & (
-    | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement> }
-    | { mode?: 'stripes' | undefined; videoRef?: React.RefObject<HTMLVideoElement> | undefined }
+    | { mode: 'random'; videoRef: React.RefObject<HTMLVideoElement | null> }
+    | {
+        mode?: 'stripes' | undefined;
+        videoRef?: React.RefObject<HTMLVideoElement | null> | undefined;
+      }
   );
 
 function scaleFontSize(baseFontSize: number, scale: number, width: number, height: number): number {
@@ -87,7 +90,7 @@ export default React.memo(function VideoWatermark({
   modificationDetectionInterval = 5_000,
   onModificationDetected,
   ...rest
-}: VideoWatermarkProps): JSX.Element {
+}: VideoWatermarkProps): React.JSX.Element {
   const rootRef = useRef<HTMLDivElement>(null);
   const keyState = useIncrementalState();
   const rootState = useHideableState({ enabled: true, visible: true });

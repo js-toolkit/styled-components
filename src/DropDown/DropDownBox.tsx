@@ -4,7 +4,7 @@ import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import DropDownContext from './DropDownContext';
 
 /** Map of html tags and their selector */
-export type HtmlTagSelectorMap = { [P in keyof JSX.IntrinsicElements]?: string | undefined };
+export type HtmlTagSelectorMap = { [P in keyof React.JSX.IntrinsicElements]?: string | undefined };
 
 export interface DropDownBoxProps extends FlexComponentProps<'div'> {
   /** Function, boolean or map.
@@ -64,7 +64,7 @@ export default styled(function DropDownBox({
   closeOnClick,
   prerender = false,
   ...rest
-}: React.PropsWithChildren<DropDownBoxProps>): JSX.Element | null {
+}: React.PropsWithChildren<DropDownBoxProps>): React.JSX.Element | null {
   const selfNodeRef = useRef<HTMLDivElement>(null);
   const closeOnClickRef = useRef(closeOnClick);
 

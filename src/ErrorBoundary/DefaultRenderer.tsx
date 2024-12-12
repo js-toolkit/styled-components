@@ -4,7 +4,7 @@ export interface DefaultRendererProps extends FlexComponentProps {
   readonly error: unknown;
 }
 
-export default function DefaultRenderer({ error, ...rest }: DefaultRendererProps): JSX.Element {
+export default function DefaultRenderer({ error, ...rest }: DefaultRendererProps): React.JSX.Element {
   return (
     <Flex column center fill {...rest}>
       <h1>Произошла ошибка.</h1>

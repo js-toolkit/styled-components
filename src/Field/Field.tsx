@@ -126,7 +126,7 @@ export default function Field({
   state = 'default',
   children,
   ...rest
-}: React.PropsWithChildren<FieldProps>): JSX.Element {
+}: React.PropsWithChildren<FieldProps>): React.JSX.Element {
   const {
     children: labelChildren,
     content: labelContent = labelChildren,

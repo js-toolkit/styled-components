@@ -85,7 +85,7 @@ export default function Tooltip({
   onShown,
   onHidden,
   ...rest
-}: TooltipProps): JSX.Element {
+}: TooltipProps): React.JSX.Element {
   const { rc } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

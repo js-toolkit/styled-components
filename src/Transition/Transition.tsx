@@ -30,7 +30,7 @@ export interface TransitionProps extends TransitionActions, OmitIndex<TimeoutPro
 
 const normalizedTransitionCallback =
   (
-    nodeRef: React.RefObject<HTMLElement | undefined>,
+    nodeRef: React.RefObject<HTMLElement | null | undefined>,
     callback: EnterHandler<undefined> | ExitHandler<undefined> | undefined
   ): ((isAppearing?: boolean) => void) =>
   (maybeIsAppearing) => {
@@ -74,10 +74,10 @@ export default React.forwardRef(function Transition(
     ...other
   } = props;
 
-  const nodeRef = React.useRef<HTMLElement | undefined>(null);
+  const nodeRef = React.useRef<HTMLElement | null | undefined>(null);
 
   const handleRef = useRefs(
-    (children as React.FunctionComponentElement<unknown>).ref,
+    (children as React.ReactElement<React.RefAttributes<unknown>>).props.ref,
     ref,
     nodeRefProp,
     nodeRef

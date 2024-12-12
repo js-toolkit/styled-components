@@ -228,7 +228,7 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   animation = true,
   children,
   ...rest
-}: React.PropsWithChildren<LoadableFlexProps<C>>): JSX.Element {
+}: React.PropsWithChildren<LoadableFlexProps<C>>): React.JSX.Element {
   const [keepShowing, setKeepShowing] = useState(false);
   const loadingRef = useRef(false);
   loadingRef.current = loading;

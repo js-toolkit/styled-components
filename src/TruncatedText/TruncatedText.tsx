@@ -33,6 +33,6 @@ const Root = styled(Flex, {
 export default function TruncatedText<C extends React.ElementType = 'span'>({
   component = 'span' as C,
   ...rest
-}: TruncatedTextProps<C>): JSX.Element {
+}: TruncatedTextProps<C>): React.JSX.Element {
   return <Root flex={false} component={component} {...(rest as any)} />;
 }

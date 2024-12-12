@@ -48,7 +48,7 @@ export default function Tooltipable<
   onShowTooltip,
   onHideTooltip,
   ...restProps
-}: TooltipableProps<C, D>): JSX.Element {
+}: TooltipableProps<C, D>): React.JSX.Element {
   type T = GetHtmlType<C>;
 
   const {

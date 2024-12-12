@@ -28,7 +28,9 @@ export interface NotificationBarProps<
     HideableProps<TTransition> {
   readonly id: TID;
   readonly variant?: NotificationVariant | undefined;
-  readonly action?: ((props: Pick<this, 'id' | 'variant' | 'onAction'>) => JSX.Element) | undefined;
+  readonly action?:
+    | ((props: Pick<this, 'id' | 'variant' | 'onAction'>) => React.JSX.Element)
+    | undefined;
   readonly onAction?: ((id: TID) => void) | undefined;
   readonly contentProps?: FlexAllProps<TContent> | undefined;
   readonly actionProps?: FlexAllProps<TAction> | undefined;
@@ -128,7 +130,7 @@ export default function NotificationBar<
   ...rest
 }: React.PropsWithChildren<
   NotificationBarProps<TID, TContent, TAction, TTransition>
->): JSX.Element {
+>): React.JSX.Element {
   const onUnmountRef = useRefCallback(() => onUnmount && onUnmount());
   useEffect(() => onUnmountRef, [onUnmountRef]);
 

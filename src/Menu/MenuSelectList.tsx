@@ -15,7 +15,7 @@ export default function MenuSelectList<
   V extends React.Key | null,
   I extends IconComponentProps,
   HI extends IconComponentProps,
->({ selectedValue, onItemProps, ...rest }: MenuSelectListProps<V, I, HI>): JSX.Element {
+>({ selectedValue, onItemProps, ...rest }: MenuSelectListProps<V, I, HI>): React.JSX.Element {
   const itemPropsHandler = useRefCallback<NonNullable<MenuListProps<V, I, HI>['onItemProps']>>(
     (itemProps) => {
       return {

@@ -35,7 +35,7 @@ export default styled(function DropDown({
   onOutsideClick,
   children,
   ...rest
-}: React.PropsWithChildren<DropDownProps>): JSX.Element {
+}: React.PropsWithChildren<DropDownProps>): React.JSX.Element {
   const [isExpandedState, setExpandedState] = useState(!onToggle && !!expanded);
 
   const isExpanded = onToggle

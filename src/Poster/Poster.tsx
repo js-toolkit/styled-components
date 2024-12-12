@@ -26,7 +26,7 @@ export default styled(function Poster({
   onLoadCompleted,
   style,
   ...rest
-}: PosterProps): JSX.Element {
+}: PosterProps): React.JSX.Element {
   const [url, setUrl] = useState('');
 
   useEffect(() => {

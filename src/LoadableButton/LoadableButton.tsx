@@ -54,6 +54,6 @@ const Root = styled(
 
 export default function LoadableButton<C extends React.ElementType = 'button'>(
   props: LoadableButtonProps<C>
-): JSX.Element {
+): React.JSX.Element {
   return <Root {...props} />;
 }

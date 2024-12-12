@@ -13,7 +13,7 @@ export default function NotificationCloseAction<T extends string | number>({
   onAction,
   children,
   ...rest
-}: React.PropsWithChildren<NotificationCloseActionProps<T>>): JSX.Element {
+}: React.PropsWithChildren<NotificationCloseActionProps<T>>): React.JSX.Element {
   const clickHandler = useCallback(() => onAction && onAction(id), [id, onAction]);
 
   return (

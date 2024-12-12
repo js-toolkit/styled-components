@@ -80,7 +80,7 @@ export default function MenuListItem<
   onKeyDown,
   componentRef,
   ...rest
-}: MenuListItemProps<V, I, IC>): JSX.Element {
+}: MenuListItemProps<V, I, IC>): React.JSX.Element {
   const { rc } = useTheme();
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {

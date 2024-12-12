@@ -21,7 +21,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
   onShowTooltip,
   onHideTooltip,
   ...restProps
-}: TooltipButtonProps<C, D>): JSX.Element {
+}: TooltipButtonProps<C, D>): React.JSX.Element {
   const { onClick, ...rest } = restProps as OmitStrict<
     TooltipButtonProps<'button'>,
     keyof TooltipableTooltipProps<undefined, HTMLButtonElement>

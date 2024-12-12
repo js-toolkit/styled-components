@@ -161,7 +161,7 @@ export default function Checkbox<V = unknown>({
   disabled,
   value,
   ...rest
-}: React.PropsWithChildren<CheckboxProps<V>>): JSX.Element {
+}: React.PropsWithChildren<CheckboxProps<V>>): React.JSX.Element {
   const { checkedValue, onChecked } = useContext(CheckboxContext);
   const [isChecked, setChecked] = useState(!!checked);
 

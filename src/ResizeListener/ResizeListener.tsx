@@ -18,9 +18,9 @@ export default function ResizeListener({
   onlyWidth,
   onlyHeight,
   onSizeChange,
-}: ResizeListenerProps): JSX.Element {
+}: ResizeListenerProps): React.JSX.Element {
   const rootRef = React.useRef<HTMLIFrameElement>(null);
-  const lastRectRef = React.useRef<DOMRect>();
+  const lastRectRef = React.useRef<DOMRect>(undefined);
 
   React.useEffect(() => {
     const { current: root } = rootRef;

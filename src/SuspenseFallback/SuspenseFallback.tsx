@@ -15,7 +15,7 @@ export default function SuspenseFallback({
   onMount,
   onUnmount,
   element,
-}: SuspenseFallbackProps): JSX.Element | null {
+}: SuspenseFallbackProps): React.JSX.Element | null {
   const [isCanRender, setCanRender] = useState(delay == null || delay <= 0);
 
   const isMounted = useIsMounted();
@@ -43,5 +43,5 @@ export default function SuspenseFallback({
     };
   }, [isCanRender, isMounted, onMount, onMountChanged, onUnmount]);
 
-  return (isCanRender && (element as JSX.Element)) || null;
+  return (isCanRender && (element as React.JSX.Element)) || null;
 }

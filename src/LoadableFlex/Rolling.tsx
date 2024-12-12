@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Rolling(props: React.SVGAttributes<SVGSVGElement>): JSX.Element {
+export default function Rolling(props: React.SVGAttributes<SVGSVGElement>): React.JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -20,7 +20,7 @@ function DropDownLabel<C extends React.ElementType = DefaultComponentType>({
   className,
   children,
   ...rest
-}: DropDownLabelProps<C>): JSX.Element {
+}: DropDownLabelProps<C>): React.JSX.Element {
   const { expanded, toggle } = useContext(DropDownContext);
 
   return (

@@ -5,7 +5,7 @@ import UserIcon from './UserIcon';
 
 export interface AvatarProps extends FlexComponentProps<'div'> {
   img?: string | undefined;
-  size?: React.ReactText | undefined;
+  size?: string | number | undefined;
 }
 
 type RootProps = React.PropsWithChildren<FlexComponentProps & Pick<AvatarProps, 'size'>>;
@@ -54,7 +54,7 @@ const FallbackIcon = styled(UserIcon)(({ theme: { rc } }) => ({
   ...rc?.Avatar?.fallbackImg,
 }));
 
-function Avatar({ img, children, ...rest }: AvatarProps): JSX.Element {
+function Avatar({ img, children, ...rest }: AvatarProps): React.JSX.Element {
   const [showFallbackUserIcon, setShowUserIcon] = useState(true);
 
   const onLoadSuccess = useCallback(() => {

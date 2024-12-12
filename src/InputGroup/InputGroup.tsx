@@ -4,8 +4,8 @@ import { Flex, type FlexComponentProps, type FlexAllProps } from 'reflexy/styled
 import InvalidIcon from './InvalidIcon';
 
 export interface InputGroupProps<C extends React.ElementType = 'input'> extends FlexComponentProps {
-  input: JSX.Element | FlexAllProps<C>;
-  error?: string | boolean | JSX.Element | undefined;
+  input: React.JSX.Element | FlexAllProps<C>;
+  error?: string | boolean | React.JSX.Element | undefined;
 }
 
 type RootProps = FlexComponentProps & { showErrorIcon: boolean };
@@ -90,7 +90,7 @@ export default function InputGroup<C extends React.ElementType = 'input'>({
   error,
   children,
   ...rest
-}: React.PropsWithChildren<InputGroupProps<C>>): JSX.Element {
+}: React.PropsWithChildren<InputGroupProps<C>>): React.JSX.Element {
   const hasError = !!error;
   const showErrorIcon = hasError && typeof error === 'string';
   const stateAttrs = { 'data-invalid': hasError || undefined };

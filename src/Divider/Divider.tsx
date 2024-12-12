@@ -31,7 +31,7 @@ export default function Divider<C extends React.ElementType = DefaultComponentTy
   light,
   column,
   ...rest
-}: DividerProps<C>): JSX.Element {
+}: DividerProps<C>): React.JSX.Element {
   return (
     <Root
       column={column}

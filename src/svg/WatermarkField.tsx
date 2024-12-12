@@ -35,7 +35,7 @@ export default React.forwardRef(function WatermarkField(
     ...rest
   }: WatermarkFieldProps,
   ref: React.Ref<SVGSVGElement>
-): JSX.Element {
+): React.JSX.Element {
   const patternId = `textstripe${id ?? ''}`;
 
   const textRef = React.useRef<SVGTextElement>(null);

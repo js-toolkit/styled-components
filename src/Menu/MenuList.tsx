@@ -13,7 +13,7 @@ export type MenuItem<V, I extends IconComponentProps> = Omit<MenuListItemProps<V
 
 export interface MenuListProps<V, I extends IconComponentProps, HI extends IconComponentProps>
   extends FlexComponentProps<'div'> {
-  header?: React.ReactChild | undefined;
+  header?: React.ReactNode | undefined;
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
   itemComponent?: React.FC<MenuListItemProps<V, I>>;
@@ -117,7 +117,7 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
   children,
   onKeyDown,
   ...rest
-}: MenuListProps<V, I, HI>): JSX.Element {
+}: MenuListProps<V, I, HI>): React.JSX.Element {
   const { rc } = useTheme();
 
   const backHandler = useRefCallback<React.MouseEventHandler>((event) => {

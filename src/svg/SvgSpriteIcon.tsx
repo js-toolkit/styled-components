@@ -35,7 +35,7 @@ function SvgSpriteIcon<N extends string>({
   componentRef,
   children,
   ...rest
-}: SvgSpriteIconProps<N>): JSX.Element | null {
+}: SvgSpriteIconProps<N>): React.JSX.Element | null {
   const { rc } = useTheme<Theme>();
   const refs = useRefs(htmlRef, componentRef);
 

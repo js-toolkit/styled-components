@@ -1,14 +1,14 @@
 import React, { useCallback, useState, useRef, useMemo } from 'react';
 import styled from '@mui/system/styled';
 import { clsx } from 'clsx';
-import type { FlexComponentProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { WithFlexComponent } from 'reflexy/types';
-import FlexWithRef from 'reflexy/FlexWithRef';
 import { OutsideClickListener, type OutsideClickListenerProps } from 'react-outside-click-listener';
 import DropDownContext, { type DropDownContextValue } from './DropDownContext';
 
 export interface DropDownProps
   extends Partial<Pick<OutsideClickListenerProps, 'onOutsideClick'>>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Omit<FlexComponentProps<'div'>, keyof React.DOMAttributes<any>>,
     WithFlexComponent {
   expanded?: boolean | undefined;
@@ -48,7 +48,7 @@ export default styled(function DropDown({
   isExpandedRef.current = isExpanded;
 
   const toggle = useCallback(
-    (value?: boolean | undefined) => {
+    (value?: boolean) => {
       const nextValue = typeof value === 'boolean' ? value : !isExpandedRef.current;
       if (nextValue === isExpandedRef.current) return;
 
@@ -87,8 +87,7 @@ export default styled(function DropDown({
         disabled={!hideOnOutsideClick || !isExpandedRef.current}
         onOutsideClick={outsideClickHandler}
       >
-        <FlexWithRef
-          component="div"
+        <Flex
           column
           className={clsx(className, isExpandedRef.current && expandedClassName)}
           aria-expanded={isExpandedRef.current}
@@ -96,7 +95,7 @@ export default styled(function DropDown({
           {...rest}
         >
           {children}
-        </FlexWithRef>
+        </Flex>
       </OutsideClickListener>
     </DropDownContext.Provider>
   );

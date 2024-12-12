@@ -3,10 +3,10 @@ import Fade from '@mui/material/Fade';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
 import { copyInternalProps } from 'reflexy/utils';
-import FlexWithRef from 'reflexy/FlexWithRef';
 import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
 
 export type TransitionComponent = React.JSXElementConstructor<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TransitionProps & { children: React.ReactElement<any, any> }
 >;
 
@@ -91,9 +91,7 @@ function TransitionFlex<
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },
-    <FlexWithRef FlexComponent={Flex} component="div" {...rootRest}>
-      {children}
-    </FlexWithRef>
+    <Flex {...rootRest}>{children}</Flex>
   );
 }
 

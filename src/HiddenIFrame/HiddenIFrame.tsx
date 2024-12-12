@@ -1,6 +1,8 @@
 import React from 'react';
 
-export interface HiddenIFrameProps extends React.IframeHTMLAttributes<HTMLIFrameElement> {}
+export interface HiddenIFrameProps
+  extends React.IframeHTMLAttributes<HTMLIFrameElement>,
+    React.RefAttributes<HTMLIFrameElement> {}
 
 const style: React.CSSProperties = {
   position: 'absolute',
@@ -17,16 +19,9 @@ const style: React.CSSProperties = {
   zIndex: -1,
 };
 
-export default React.memo(
-  React.forwardRef((props: HiddenIFrameProps, ref: React.Ref<HTMLIFrameElement>) => {
-    return (
-      // eslint-disable-next-line jsx-a11y/iframe-has-title
-      <iframe
-        ref={ref}
-        tabIndex={-1}
-        {...props}
-        style={props.style ? { ...style, ...props.style } : style}
-      />
-    );
-  })
-);
+export default function HiddenIFrame(props: HiddenIFrameProps): React.JSX.Element {
+  return (
+    // eslint-disable-next-line jsx-a11y/iframe-has-title
+    <iframe tabIndex={-1} {...props} style={props.style ? { ...style, ...props.style } : style} />
+  );
+}

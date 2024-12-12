@@ -3,7 +3,9 @@ import type { Size } from '@js-toolkit/utils/types/utils';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
 import SvgMultilineText from './SvgMultilineText';
 
-export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> {
+export interface WatermarkFieldProps
+  extends React.SVGAttributes<SVGSVGElement>,
+    React.RefAttributes<SVGSVGElement> {
   readonly updateKey: React.Key | undefined;
   readonly text: string;
   readonly mode: 'lines' | 'single';
@@ -17,25 +19,23 @@ export interface WatermarkFieldProps extends React.SVGAttributes<SVGSVGElement> 
   readonly onSizeChanged: (size: Size) => void;
 }
 
-export default React.forwardRef(function WatermarkField(
-  {
-    updateKey,
-    id,
-    text,
-    mode,
-    lineSpaceScale = 0,
-    textHeightScale = 1.5,
-    textSpacing = 0,
-    patternUnits = 'userSpaceOnUse',
-    patternContentUnits,
-    patternTransform,
-    onSizeChanged,
-    width: rootWidth = '100%',
-    height: rootHeight = '100%',
-    ...rest
-  }: WatermarkFieldProps,
-  ref: React.Ref<SVGSVGElement>
-): React.JSX.Element {
+export default function WatermarkField({
+  ref,
+  updateKey,
+  id,
+  text,
+  mode,
+  lineSpaceScale = 0,
+  textHeightScale = 1.5,
+  textSpacing = 0,
+  patternUnits = 'userSpaceOnUse',
+  patternContentUnits,
+  patternTransform,
+  onSizeChanged,
+  width: rootWidth = '100%',
+  height: rootHeight = '100%',
+  ...rest
+}: WatermarkFieldProps): React.JSX.Element {
   const patternId = `textstripe${id ?? ''}`;
 
   const textRef = React.useRef<SVGTextElement>(null);
@@ -139,4 +139,4 @@ export default React.forwardRef(function WatermarkField(
       <rect width="100%" height="100%" fill={`url(#${patternId})`} />
     </svg>
   );
-});
+}

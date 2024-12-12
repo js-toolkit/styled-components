@@ -22,6 +22,7 @@ export interface TransitionProps extends TransitionActions, OmitIndex<TimeoutPro
   /** A single child content element. */
   children: React.ReactElement<
     { style?: React.CSSProperties | undefined; className?: string | undefined },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any
   >;
   classNames?: string | TransitionClassNames | undefined;
@@ -53,11 +54,11 @@ const getClassName = (
   return isStringClassNames ? `${prefix}${status}` : (classNames[status] ?? '');
 };
 
-export default React.forwardRef(function Transition(
-  props: TransitionProps,
-  ref: React.Ref<unknown>
-): React.ReactNode {
+export default function Transition<E extends HTMLElement>(
+  props: TransitionProps & React.RefAttributes<E>
+): React.JSX.Element {
   const {
+    ref,
     nodeRef: nodeRefProp,
     appear = true,
     in: inProp,
@@ -163,4 +164,4 @@ export default React.forwardRef(function Transition(
       }}
     </TransitionBase>
   );
-}) as <E extends HTMLElement>(props: TransitionProps & React.RefAttributes<E>) => React.ReactNode;
+}

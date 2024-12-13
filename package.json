@@ -57,7 +57,7 @@
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.1",
     "react-outside-click-listener": "^1.7.0",
-    "reflexy": "^3.56.0",
+    "reflexy": "^3.57.1",
     "rimraf": "^6.0.1",
     "terser": "^5.37.0",
     "typescript": "^5.7.2",

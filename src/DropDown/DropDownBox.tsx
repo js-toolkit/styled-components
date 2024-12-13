@@ -101,8 +101,7 @@ export default styled(function DropDownBox({
   return (
     <Root
       column
-      component="div"
-      componentRef={selfNodeRef}
+      ref={selfNodeRef}
       onClick={clickHandler}
       hidden={!expanded}
       floating={floating}

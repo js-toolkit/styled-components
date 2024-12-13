@@ -7,7 +7,6 @@ import {
   type DefaultComponentType,
   type FlexComponentProps,
 } from 'reflexy/styled';
-import ForwardRef from 'reflexy/ForwardRef';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { clsx } from 'clsx';
 import { clear } from '@js-toolkit/utils/clear';
@@ -18,6 +17,7 @@ import type { CSSProperties } from '../theme';
 import { excludeProp } from '../utils';
 import NotificationBar, { type NotificationBarProps } from './NotificationBar';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NotificationPositions {}
 
 export type NotificationPosition = GetOverridedKeys<
@@ -281,8 +281,7 @@ export default React.memo(function Notifications<
       const onUnmount = onShown && (() => window.clearTimeout(timer));
 
       arr.push(
-        <ForwardRef
-          component={StyledNotificationBar}
+        <StyledNotificationBar
           key={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
           id={n.id} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
           position={position}
@@ -296,10 +295,10 @@ export default React.memo(function Notifications<
           actionProps={n.actionProps}
           onShown={onShown}
           onUnmount={onUnmount}
-          {...(n.rootProps as FlexComponentProps)}
+          {...n.rootProps}
         >
           {n.content}
-        </ForwardRef>
+        </StyledNotificationBar>
       );
     });
 

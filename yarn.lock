@@ -484,7 +484,7 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-modal: "npm:^3.16.1"
     react-outside-click-listener: "npm:^1.7.0"
-    reflexy: "npm:^3.56.0"
+    reflexy: "npm:^3.57.1"
     rimraf: "npm:^6.0.1"
     terser: "npm:^5.37.0"
     typescript: "npm:^5.7.2"
@@ -3340,12 +3340,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reflexy@npm:^3.56.0":
-  version: 3.56.0
-  resolution: "reflexy@npm:3.56.0"
+"reflexy@npm:^3.57.1":
+  version: 3.57.1
+  resolution: "reflexy@npm:3.57.1"
   peerDependencies:
-    react: ">= 16.8.x"
-  checksum: 10c0/319550c54cce62f1a52cdfcc6bab4d6fe43edd4c9051f7a3acadb0509574826f485be847585301a5ed9624c2906f116de9be398f04070b0ae1ef540a9a5f0870
+    react: ">= 19"
+  checksum: 10c0/c18e3624d6b998a51951a93b877c175faec3e35400ce115ef19114cf55072b27eb9c82f32480c36b23a1cda0effb63c54010ef4f89bf2c7bb6dc449bbcab4fa9
   languageName: node
   linkType: hard
 

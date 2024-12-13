@@ -46,8 +46,8 @@ export default function CheckboxGroup<V = unknown>({
   );
 
   return (
-    <CheckboxContext.Provider value={contextValue}>
+    <CheckboxContext value={contextValue}>
       <Flex role="radiogroup" {...rest} />
-    </CheckboxContext.Provider>
+    </CheckboxContext>
   );
 }

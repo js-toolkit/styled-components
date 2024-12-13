@@ -97,12 +97,11 @@ const Root = styled(
     }, [onHidden, setVisible]);
 
     const contentElement: NonNullable<ReactModal.Props['contentElement']> = (
-      { ref, ...contentProps },
+      contentProps,
       children
     ) => {
       return (
         <TransitionFlex
-          componentRef={ref}
           column
           hidden={hidden}
           appear={appear}
@@ -122,18 +121,12 @@ const Root = styled(
     const backdropElement: NonNullable<ModalProps['backdropElement']> =
       rest.backdropElement && !disableBackdrop
         ? rest.backdropElement
-        : ({ ref, ...backdropProps }, contentEl) => {
+        : (backdropProps, contentEl) => {
             if (disableBackdrop) {
               return contentEl;
             }
             return (
-              <Flex
-                componentRef={ref}
-                center
-                overflowX="hidden"
-                overflowY="auto"
-                {...backdropProps}
-              >
+              <Flex center overflowX="hidden" overflowY="auto" {...backdropProps}>
                 {contentEl}
               </Flex>
             );

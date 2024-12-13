@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { styled, css } from '@mui/system';
 import useTheme from '@mui/system/useTheme';
-import { Flex, type FlexSimpleProps, type SpaceProps } from 'reflexy/styled';
+import { Flex, type FlexComponentProps, type SpaceProps } from 'reflexy/styled';
 import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { type TransitionFlexProps } from '../TransitionFlex';
 import TruncatedText from '../TruncatedText';
@@ -35,12 +35,12 @@ export interface TooltipData {
 }
 
 export interface TooltipProps
-  extends FlexSimpleProps,
+  extends FlexComponentProps<'div'>,
     Pick<TransitionFlexProps, 'onShown' | 'onHidden'> {
   readonly tooltip: TooltipData | undefined;
 }
 
-const Root = styled(TransitionFlex)({
+const Root = styled(TransitionFlex<'div'>)({
   position: 'absolute',
   userSelect: 'none',
   pointerEvents: 'none',
@@ -49,11 +49,11 @@ const Root = styled(TransitionFlex)({
   top: 0,
 });
 
-const Container = styled(Flex)({
+const Container = styled(Flex<'div'>)({
   position: 'relative',
 });
 
-const RowContainer = styled(Flex)({
+const RowContainer = styled(Flex<'div'>)({
   maxWidth: 'inherit',
 });
 
@@ -163,16 +163,16 @@ export default function Tooltip({
 
   return (
     <Root
+      ref={rootRef}
       hidden={hidden}
       keepChildren
-      componentRef={rootRef}
       className={className}
       onShown={onShown}
       onHidden={onHidden}
     >
       {tooltip && !!(tooltip.title || tooltip.text) && (
         <Container
-          componentRef={containerRef}
+          ref={containerRef}
           column
           alignItems="flex-start"
           {...rest}
@@ -181,17 +181,17 @@ export default function Tooltip({
           style={tooltip.maxWidth != null ? { maxWidth: tooltip.maxWidth } : undefined}
         >
           {tooltip.preview && (
-            <RowContainer componentRef={previewRef}>
+            <RowContainer ref={previewRef}>
               {React.isValidElement(tooltip.preview) ? (
                 tooltip.preview
               ) : (
-                <div style={tooltip.preview as React.CSSProperties} />
+                <div style={tooltip.preview} />
               )}
             </RowContainer>
           )}
 
           {tooltip.title && (
-            <RowContainer componentRef={titleRef}>
+            <RowContainer ref={titleRef}>
               {React.isValidElement(tooltip.title) ? (
                 tooltip.title
               ) : (
@@ -202,7 +202,7 @@ export default function Tooltip({
             </RowContainer>
           )}
 
-          <RowContainer componentRef={textRef}>
+          <RowContainer ref={textRef}>
             {tooltip.text && React.isValidElement(tooltip.text) ? (
               tooltip.text
             ) : (

@@ -82,7 +82,7 @@ export default styled(function DropDown({
   );
 
   return (
-    <DropDownContext.Provider value={contextValue}>
+    <DropDownContext value={contextValue}>
       <OutsideClickListener
         disabled={!hideOnOutsideClick || !isExpandedRef.current}
         onOutsideClick={outsideClickHandler}
@@ -97,7 +97,7 @@ export default styled(function DropDown({
           {children}
         </Flex>
       </OutsideClickListener>
-    </DropDownContext.Provider>
+    </DropDownContext>
   );
 })(({ theme: { rc } }) => ({
   position: 'relative',

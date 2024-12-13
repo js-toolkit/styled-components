@@ -19,11 +19,10 @@ import { getShowController } from './getShowController';
 import { getRandomShowController } from './getRandomShowController';
 import { getModificationDetector } from './modificationDetector';
 
-export type VideoWatermarkProps = FlexComponentProps &
+export type VideoWatermarkProps = FlexComponentProps<'div', { omitProps: true }> &
   Partial<Point> &
   Partial<Size> &
   Pick<WatermarkFieldProps, 'lineSpaceScale' | 'textHeightScale' | 'textSpacing'> & {
-    htmlRef?: React.Ref<HTMLDivElement>;
     text: string;
     baseFontSize?: number | undefined;
     scaleBySize?: number | undefined;
@@ -46,7 +45,7 @@ function scaleFontSize(baseFontSize: number, scale: number, width: number, heigh
   return Math.floor(baseFontSize * ((minSize / 100) * scale));
 }
 
-const Root = styled(TransitionFlex)({
+const Root = styled(TransitionFlex<'div'>)({
   // '&::before': {
   //   ...Watermark,
   //   position: 'absolute',
@@ -70,7 +69,7 @@ const StyledWatermarkField = styled(WatermarkField)(({ theme: { rc }, mode }) =>
 }));
 
 export default React.memo(function VideoWatermark({
-  htmlRef,
+  ref,
   videoRef,
   text,
   mode = 'stripes',
@@ -152,7 +151,7 @@ export default React.memo(function VideoWatermark({
     [keyState, mode, modificationDetectionInterval, onModificationDetected]
   );
 
-  const setRootRef = useRefs(rootRef, htmlRef, modificationDetector?.setNode);
+  const setRootRef = useRefs(rootRef, ref, modificationDetector?.setNode);
 
   // Stripes
   useLayoutEffect(() => {
@@ -266,7 +265,7 @@ export default React.memo(function VideoWatermark({
       key={keyState.value}
       fill
       {...rest}
-      componentRef={setRootRef}
+      ref={setRootRef}
       hidden={rootState.hidden}
       style={{
         ...rest.style,

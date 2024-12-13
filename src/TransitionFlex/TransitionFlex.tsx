@@ -23,17 +23,17 @@ export interface HideableProps<T extends TransitionComponent = TransitionCompone
 }
 
 export type TransitionFlexProps<
-  T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,
+  T extends TransitionComponent = TransitionComponent,
 > = FlexAllProps<C, { inferStyleProps: { style: true } }> & HideableProps<T>;
 
 /**
- * The component must accept `ref` or `componentRef` prop.
+ * The component must accept `ref` prop.
  * Default transition is `Fade`.
  */
 function TransitionFlex<
-  T extends TransitionComponent = TransitionComponent,
   C extends React.ElementType = DefaultComponentType,
+  T extends TransitionComponent = TransitionComponent,
 >({
   transition = Fade as T,
   transitionProps,
@@ -45,7 +45,7 @@ function TransitionFlex<
   onHidden,
   onShown,
   ...rest
-}: TransitionFlexProps<T, C>): React.JSX.Element {
+}: TransitionFlexProps<C, T>): React.JSX.Element {
   const {
     // In case if inside TransitionGroup
     in: inProp,

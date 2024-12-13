@@ -78,7 +78,7 @@ export default function MenuListItem<
   onSelect,
   onClick,
   onKeyDown,
-  componentRef,
+  ref,
   ...rest
 }: MenuListItemProps<V, I, IC>): React.JSX.Element {
   const { rc } = useTheme();
@@ -106,7 +106,7 @@ export default function MenuListItem<
   });
 
   const rootRef = useRef<HTMLDivElement>(null);
-  const rootRefs = useRefs(rootRef, componentRef);
+  const rootRefs = useRefs(rootRef, ref);
 
   useEffect(() => {
     const { current: root } = rootRef;
@@ -161,7 +161,7 @@ export default function MenuListItem<
     <Root
       clickable={!!onSelect}
       aria-haspopup={submenu || undefined}
-      componentRef={rootRefs}
+      ref={rootRefs}
       px
       py={hasIcon ? 0.375 : 0.625}
       {...rootFlex}

@@ -51,15 +51,8 @@ export default function Tooltipable<
 }: TooltipableProps<C, D>): React.JSX.Element {
   type T = GetHtmlType<C>;
 
-  const {
-    onMouseEnter,
-    onMouseLeave,
-    onTouchStart,
-    onClick,
-    onContextMenu,
-    componentRef,
-    ...rest
-  } = restProps as TooltipableProps<DefaultComponentType>;
+  const { onMouseEnter, onMouseLeave, onTouchStart, onClick, onContextMenu, ref, ...rest } =
+    restProps as TooltipableProps<DefaultComponentType>;
 
   // const [getHover, getHoverData, setHover] = useToggleDebounce<HTMLButtonElement | undefined>({
   //   wait: tooltipDelay,
@@ -68,7 +61,7 @@ export default function Tooltipable<
   // const element = getHoverData();
 
   const rootRef = useRef<T>(null);
-  const rootRefs = useRefs(rootRef, componentRef as React.Ref<T>);
+  const rootRefs = useRefs(rootRef as React.Ref<HTMLDivElement>, ref);
   const isShowingTooltipRef = useRef(false);
 
   const showTooltip = useRefCallback(() => {
@@ -121,12 +114,5 @@ export default function Tooltipable<
     onContextMenu,
   });
 
-  return (
-    <Flex
-      componentRef={rootRefs as React.Ref<HTMLDivElement>}
-      aria-label={tooltip}
-      {...hoverCallbacks}
-      {...rest}
-    />
-  );
+  return <Flex ref={rootRefs} aria-label={tooltip} {...hoverCallbacks} {...rest} />;
 }

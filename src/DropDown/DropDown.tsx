@@ -2,15 +2,13 @@ import React, { useCallback, useState, useRef, useMemo } from 'react';
 import styled from '@mui/system/styled';
 import { clsx } from 'clsx';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
-import type { WithFlexComponent } from 'reflexy/types';
 import { OutsideClickListener, type OutsideClickListenerProps } from 'react-outside-click-listener';
 import DropDownContext, { type DropDownContextValue } from './DropDownContext';
 
 export interface DropDownProps
   extends Partial<Pick<OutsideClickListenerProps, 'onOutsideClick'>>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Omit<FlexComponentProps<'div'>, keyof React.DOMAttributes<any>>,
-    WithFlexComponent {
+    Omit<FlexComponentProps<'div'>, keyof React.DOMAttributes<any>> {
   expanded?: boolean | undefined;
   onToggle?: ((expanded: boolean) => void) | undefined;
   /** Works only for uncontrolled */

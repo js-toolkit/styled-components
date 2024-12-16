@@ -25,7 +25,7 @@ const Root = styled(Flex, {
     : 'var(--rc--divider-color, rgba(0, 0, 0, 0.1))',
 
   ...(light ? rc?.Divider?.light : rc?.Divider?.default),
-}));
+})) as typeof Flex;
 
 export default function Divider<C extends React.ElementType = DefaultComponentType>({
   light,

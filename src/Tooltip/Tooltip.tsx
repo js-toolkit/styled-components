@@ -65,12 +65,12 @@ const textStyle = css({
   maxWidth: 'inherit',
 });
 
-const Title = styled(TruncatedText)(textStyle, ({ theme: { rc } }) => ({
+const Title = styled(TruncatedText<'span'>)(textStyle, ({ theme: { rc } }) => ({
   ...rc?.Tooltip?.style,
   ...rc?.Tooltip?.title,
 }));
 
-const Text = styled(TruncatedText)(textStyle, ({ theme: { rc } }) => ({
+const Text = styled(TruncatedText<'span'>)(textStyle, ({ theme: { rc } }) => ({
   ...rc?.Tooltip?.style,
   ...rc?.Tooltip?.text,
 }));

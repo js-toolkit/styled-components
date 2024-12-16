@@ -86,7 +86,7 @@ const Root = styled(
 
 type ContentContainerProps = FlexComponentProps & Required<Pick<RootProps, 'variant'>>;
 
-const ContentContainer = styled(Flex, {
+const ContentContainer = styled(Flex<'div'>, {
   shouldForwardProp: excludeProp<keyof ContentContainerProps>(['variant']),
 })<ContentContainerProps>(({ theme: { rc }, variant, ...props }) => ({
   userSelect: 'none',
@@ -105,7 +105,7 @@ const ContentContainer = styled(Flex, {
   ...rc?.NotificationBar?.[variant]?.content,
 }));
 
-const ActionContainer = styled(Flex, {
+const ActionContainer = styled(Flex<'div'>, {
   shouldForwardProp: excludeProp<keyof ContentContainerProps>(['variant']),
 })<ContentContainerProps>(({ theme: { rc }, variant }) => ({
   marginLeft: '1em',

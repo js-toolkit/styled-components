@@ -217,7 +217,7 @@ const Root = styled(
 
 type ScrollingContainerProps = Pick<RootProps, 'position'>;
 
-const ScrollingContainer = styled(Flex, {
+const ScrollingContainer = styled(Flex<'div'>, {
   shouldForwardProp: excludeProp<keyof ScrollingContainerProps>(['position']),
 })<ScrollingContainerProps>(({ theme: { rc }, position }) => ({
   // Enable only on NotificationBar

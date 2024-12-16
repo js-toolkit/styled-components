@@ -54,11 +54,11 @@ const Icon = styled(Flex<'div'>)(({ theme: { rc } }) => ({
   ...rc?.MenuListItem?.icon,
 }));
 
-const Title = styled(TruncatedText)(({ theme: { rc } }) => ({
+const Title = styled(TruncatedText<'span'>)(({ theme: { rc } }) => ({
   ...rc?.MenuListItem?.title?.root,
 }));
 
-const Subtitle = styled(TruncatedText)(({ theme: { rc } }) => ({
+const Subtitle = styled(TruncatedText<'span'>)(({ theme: { rc } }) => ({
   ...rc?.MenuListItem?.subtitle?.root,
 }));
 

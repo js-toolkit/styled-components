@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { styled, keyframes } from '@mui/system';
 import {
@@ -8,6 +7,7 @@ import {
   type FlexComponentProps,
 } from 'reflexy/styled';
 import type { CSSProperties } from '../theme';
+import { excludeProp } from '../utils';
 import Ring from './Ring';
 
 export type SpinnerPosition = 'top' | 'right' | 'left' | 'bottom' | 'center';
@@ -53,16 +53,13 @@ const Root = styled(
     <Flex data-loading={!!loading || keepShowing || undefined} {...rest} />
   ),
   {
-    shouldForwardProp: (key) => {
-      const prop = key as keyof RootProps;
-      return (
-        prop !== 'disableOnLoading' &&
-        prop !== 'keepShowing' &&
-        prop !== 'backdrop' &&
-        prop !== 'animation' &&
-        prop !== 'blur'
-      );
-    },
+    shouldForwardProp: excludeProp<RootProps>([
+      'disableOnLoading',
+      'keepShowing',
+      'backdrop',
+      'animation',
+      'blur',
+    ]),
   }
 )(({ theme: { rc }, loading, disableOnLoading, keepShowing, backdrop, animation, blur }) => ({
   position: 'relative',
@@ -227,6 +224,7 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
   blur,
   animation = true,
   children,
+  component,
   ...rest
 }: React.PropsWithChildren<LoadableFlexProps<C>>): React.JSX.Element {
   const [keepShowing, setKeepShowing] = useState(false);
@@ -257,6 +255,7 @@ export default function LoadableFlex<C extends React.ElementType = DefaultCompon
       backdrop={backdrop}
       animation={animation}
       blur={blur}
+      component={component as 'div'}
       {...rest}
     >
       {spinnerElement && (!!loading || keepShowing) && (

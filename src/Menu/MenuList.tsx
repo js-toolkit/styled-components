@@ -25,13 +25,7 @@ export interface MenuListProps<V, I extends IconComponentProps, HI extends IconC
         >
       >
     | undefined;
-  headerGroupProps?:
-    | FlexAllProps<
-        React.ComponentType<
-          React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-        >
-      >
-    | undefined;
+  headerGroupProps?: FlexAllProps<'div'> | undefined;
   listProps?:
     | FlexAllProps<
         React.ComponentType<
@@ -86,12 +80,12 @@ const HeaderRoot = styled((props: React.PropsWithChildren<FlexComponentProps>) =
   ...rc?.MenuList?.header?.root,
 }));
 
-const HeaderGroup = styled(Flex)(({ theme: { rc }, onClick }) => ({
+const HeaderGroup = styled(Flex<'div'>)(({ theme: { rc }, onClick }) => ({
   cursor: onClick ? 'pointer' : undefined,
   ...rc?.MenuList?.header?.group?.root,
 }));
 
-const HeaderTitle = styled(Flex)(({ theme: { rc } }) => ({
+const HeaderTitle = styled(Flex<'div'>)(({ theme: { rc } }) => ({
   fontWeight: 500,
   ...rc?.MenuList?.header?.title?.root,
 }));

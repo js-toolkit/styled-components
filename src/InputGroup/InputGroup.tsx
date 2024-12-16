@@ -10,7 +10,7 @@ export interface InputGroupProps<C extends React.ElementType = 'input'> extends 
 
 type RootProps = FlexComponentProps & { showErrorIcon: boolean };
 
-const Root = styled(Flex, {
+const Root = styled(Flex<'div'>, {
   shouldForwardProp: (key) => {
     const prop = key as keyof RootProps;
     return prop !== 'showErrorIcon';

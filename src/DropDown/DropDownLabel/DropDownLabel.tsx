@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import { clsx } from 'clsx';
 import { Flex, type FlexAllProps, type DefaultComponentType } from 'reflexy/styled';
@@ -21,7 +21,7 @@ function DropDownLabel<C extends React.ElementType = DefaultComponentType>({
   children,
   ...rest
 }: DropDownLabelProps<C>): React.JSX.Element {
-  const { expanded, toggle } = useContext(DropDownContext);
+  const { expanded, toggle } = React.use(DropDownContext);
 
   return (
     <Flex
@@ -31,7 +31,7 @@ function DropDownLabel<C extends React.ElementType = DefaultComponentType>({
       onClick={toggleOnClick ? toggle : undefined}
       aria-expanded={expanded}
       data-dropdown-label=""
-      {...(rest as any)}
+      {...rest}
     >
       {children}
 

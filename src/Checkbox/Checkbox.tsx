@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useContext } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import CheckboxContext from './CheckboxContext';
@@ -162,10 +162,10 @@ export default function Checkbox<V = unknown>({
   value,
   ...rest
 }: React.PropsWithChildren<CheckboxProps<V>>): React.JSX.Element {
-  const { checkedValue, onChecked } = useContext(CheckboxContext);
-  const [isChecked, setChecked] = useState(!!checked);
+  const { checkedValue, onChecked } = React.use(CheckboxContext);
+  const [isChecked, setChecked] = React.useState(!!checked);
 
-  const isCheckedRef = useRef(false);
+  const isCheckedRef = React.useRef(false);
 
   // If controlled
   if (onChange) {
@@ -181,7 +181,7 @@ export default function Checkbox<V = unknown>({
     isCheckedRef.current = isChecked;
   }
 
-  const toggle = useCallback(() => {
+  const toggle = React.useCallback(() => {
     // We can't uncheck radio
     if (type === 'radio' && isCheckedRef.current) {
       return;

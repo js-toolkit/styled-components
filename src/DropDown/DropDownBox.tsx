@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef, useEffect } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import DropDownContext from './DropDownContext';
@@ -65,16 +65,16 @@ export default styled(function DropDownBox({
   prerender = false,
   ...rest
 }: React.PropsWithChildren<DropDownBoxProps>): React.JSX.Element | null {
-  const selfNodeRef = useRef<HTMLDivElement>(null);
-  const closeOnClickRef = useRef(closeOnClick);
+  const selfNodeRef = React.useRef<HTMLDivElement>(null);
+  const closeOnClickRef = React.useRef(closeOnClick);
 
-  const { expanded, floating, toggle } = useContext(DropDownContext);
+  const { expanded, floating, toggle } = React.use(DropDownContext);
 
-  useEffect(() => {
+  React.useEffect(() => {
     closeOnClickRef.current = closeOnClick;
   }, [closeOnClick]);
 
-  const clickHandler = useCallback<React.MouseEventHandler>(
+  const clickHandler = React.useCallback<React.MouseEventHandler>(
     (event) => {
       let shouldClose = false;
       const mapOrFnOrVal = closeOnClickRef.current;

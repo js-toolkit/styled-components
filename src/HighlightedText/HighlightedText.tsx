@@ -25,6 +25,7 @@ function HighlightedText<C extends React.ElementType = 'span'>({
   ignoreCase = true,
   ...rest
 }: HighlightedTextProps<C>): React.JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [content, _highlighted] = useMemo(() => {
     if (!highlight || !text) return [text, undefined];
 

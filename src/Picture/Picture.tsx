@@ -6,7 +6,7 @@ import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 
 export interface PictureSources {
-  /** Fallback or default src */
+  /** Fallback or default src. */
   readonly src: string;
   readonly srcset?:
     | {

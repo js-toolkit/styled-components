@@ -13,13 +13,14 @@ import Ring from './Ring';
 export type SpinnerPosition = 'top' | 'right' | 'left' | 'bottom' | 'center';
 export type SpinnerSize = 'auto' | 'xs' | 's' | 'm' | 'l' | 'xl';
 
-interface LoadableStyleProps {
+export interface LoadableStyleProps {
   readonly loading?: boolean | undefined;
   readonly disableOnLoading?: boolean | undefined;
   readonly backdrop?: boolean | undefined;
   readonly blur?: boolean | number | undefined;
   readonly spinnerSize?: SpinnerSize | undefined;
   readonly spinnerPosition?: SpinnerPosition | undefined;
+  readonly spinnerClassName?: string | undefined;
   readonly animation?: boolean | undefined;
 }
 
@@ -27,7 +28,6 @@ export type LoadableFlexProps<C extends React.ElementType = DefaultComponentType
   FlexAllProps<C> &
     LoadableStyleProps & {
       readonly spinner?: boolean | React.ReactElement | undefined;
-      readonly spinnerClassName?: string | undefined;
     };
 
 const show = keyframes({
@@ -88,7 +88,7 @@ const Root = styled(
     }),
   },
 
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-use-before-define
   [`& > *:not(${SpinnerContainer})`]: {
     filter: blur ? `blur(${typeof blur === 'number' ? blur : 2}px)` : undefined,
   },
@@ -107,6 +107,7 @@ const SpinnerContainer = styled(Flex, {
       prop !== 'spinnerPosition'
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   name: LoadableFlex.name,
   slot: 'spinner',
 })<SpinnerContainerProps>(

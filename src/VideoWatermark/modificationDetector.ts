@@ -19,6 +19,7 @@ export interface ModificationDetector extends Disposable {
 }
 
 export function getModificationDetector({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   mode: _mode,
   checkInterval,
   onModified,

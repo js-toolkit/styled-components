@@ -2,17 +2,17 @@ import React from 'react';
 import styled from '@mui/system/styled';
 import { clsx } from 'clsx';
 import LoadableFlex, {
-  type LoadableFlexProps,
   type SpinnerPosition as LoadableSpinnerPosition,
+  type LoadableStyleProps,
 } from '../LoadableFlex';
 import Button, { type ButtonProps } from '../Button';
 import type { CSSProperties } from '../theme';
 
 export type SpinnerPosition = Extract<LoadableSpinnerPosition, 'right' | 'left' | 'center'>;
 
-export type LoadableButtonProps<C extends React.ElementType = 'button'> = Omit<
-  LoadableFlexProps<any>,
-  'size' | 'color' | 'variant' | 'spinnerPosition' | 'spinnerSize'
+export type LoadableButtonProps<C extends React.ElementType = 'button'> = OmitStrict<
+  LoadableStyleProps,
+  'spinnerPosition' | 'spinnerSize'
 > &
   ButtonProps<C> & { spinnerPosition?: SpinnerPosition | undefined };
 
@@ -25,7 +25,7 @@ const Root = styled(
       loading={loading}
       spinnerPosition={spinnerPosition}
       spinnerClassName={clsx(`${rest.className}__spinner`, spinnerClassName)}
-      {...(rest as any)}
+      {...rest}
     />
   )
 )(({ theme: { rc }, loading, spinnerPosition }) => ({
@@ -50,7 +50,7 @@ const Root = styled(
       ...(rc?.LoadableButton?.spinner?.['& > svg'] as CSSProperties),
     },
   },
-}));
+})) as typeof LoadableButton;
 
 export default function LoadableButton<C extends React.ElementType = 'button'>(
   props: LoadableButtonProps<C>

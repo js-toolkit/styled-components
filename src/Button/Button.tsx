@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React from 'react';
 import styled from '@mui/system/styled';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
@@ -5,9 +6,7 @@ import type { GetOverridedKeys } from '../types/local';
 import type { CSSProperties } from '../theme';
 
 export interface ButtonSizes {}
-
 export interface ButtonColors {}
-
 export interface ButtonVariants {}
 
 export type ButtonSize = GetOverridedKeys<'contain' | 'xs' | 's' | 'm' | 'l' | 'xl', ButtonSizes>;

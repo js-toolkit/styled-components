@@ -12,6 +12,7 @@ import TransitionFlex, {
 import { excludeProp } from '../utils';
 import type { GetOverridedKeys } from '../types/local';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NotificationVariants {}
 
 export type NotificationVariant = GetOverridedKeys<

@@ -33,7 +33,6 @@ export default class ErrorBoundary extends React.Component<
     return { error };
   }
 
-  // eslint-disable-next-line react/state-in-constructor
   override state: State = {
     error: undefined,
   };

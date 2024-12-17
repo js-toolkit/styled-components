@@ -6,8 +6,8 @@ export function calcX(
   x: number,
   alignX: TooltipData['alignX'],
   contentWidth: number,
-  minX?: number | undefined,
-  maxX?: number | undefined
+  minX?: number,
+  maxX?: number
 ): number {
   if (contentWidth <= 0) return -9999;
   const x1 = x - (alignX === 'middle' ? contentWidth / 2 : alignX === 'right' ? contentWidth : 0);
@@ -25,8 +25,8 @@ export function calcY(
   y: number,
   alignY: TooltipData['alignY'],
   contentHeight: number,
-  minY?: number | undefined,
-  maxY?: number | undefined
+  minY?: number,
+  maxY?: number
 ): number {
   if (contentHeight <= 0) return -9999;
   const y1 =

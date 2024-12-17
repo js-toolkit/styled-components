@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-use-before-define */
+
 import React from 'react';
 import styled from '@mui/system/styled';
 import type { MUIStyledCommonProps } from '@mui/system';
@@ -7,6 +8,7 @@ import { Flex, type FlexComponentProps } from 'reflexy/styled';
 import type { GetOverridedKeys } from '../types/local';
 import { isValidReactNode } from '../isValidReactNode';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FieldStates {}
 
 export type FieldState = GetOverridedKeys<'default' | 'error' | 'warn' | 'info', FieldStates>;

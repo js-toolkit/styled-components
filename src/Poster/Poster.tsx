@@ -1,108 +1,54 @@
-/* eslint-disable no-await-in-loop */
-import { useEffect, useState } from 'react';
-import styled from '@mui/system/styled';
-import type { FlexComponentProps } from 'reflexy/styled';
-import { loadImage } from '@js-toolkit/web-utils/loadImage';
-import { takeSnapshot } from '@js-toolkit/web-utils/takeSnapshot';
-import { isWebPSupported } from '@js-toolkit/web-utils/isWebPSupported';
-import TransitionFlex, { type HideableProps } from '../TransitionFlex';
-import type { PictureProps } from '../Picture';
+import React from 'react';
+import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useHideableState from '@js-toolkit/react-hooks/useHideableState';
+import Picture, { type PictureProps } from '../Picture';
 
-export interface PosterProps
-  extends FlexComponentProps,
-    Pick<
-      HideableProps,
-      'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
-    >,
-    Pick<PictureProps, 'src' | 'crossOrigin' | 'timeout' | 'onLoadTimeout' | 'onLoadCompleted'> {}
+export interface PosterProps extends PictureProps {
+  /** Low quality img source which will be used while normal img is loading. Eg. data url. */
+  readonly src0?: string;
+}
 
-export default styled(function Poster({
+export default function Poster({
+  src,
+  src0,
   hidden,
-  src: srcProp,
-  crossOrigin,
-  timeout,
-  transitionProps,
-  onLoadTimeout,
   onLoadCompleted,
-  style,
+  onLoadTimeout,
+  onShown,
+  onHidden,
   ...rest
 }: PosterProps): React.JSX.Element {
-  const [url, setUrl] = useState('');
+  const state = useHideableState(() => {
+    return { enabled: !!src0, visible: !!src0 };
+  }, [src0]);
 
-  useEffect(() => {
-    const tryLoad = async (): Promise<HTMLImageElement> => {
-      if (typeof srcProp === 'string') {
-        return loadImage({ src: srcProp, crossOrigin });
-      }
+  const shownHandler = useRefCallback(() => {
+    state.hide();
+    onShown && onShown();
+  });
 
-      let img: HTMLImageElement | undefined;
-      let webpSupported: boolean | undefined;
-
-      for (const { type, media, ...srcsetRest } of srcProp.srcset ?? []) {
-        try {
-          let load = true;
-          if (type === 'image/webp') {
-            load = webpSupported ?? (webpSupported = await isWebPSupported());
-          }
-          if (load) {
-            load = !media || window.matchMedia(media).matches;
-          }
-          img = load ? await loadImage({ ...srcsetRest, crossOrigin }) : undefined;
-          if (img) break;
-        } catch {
-          //
-        }
-      }
-
-      if (!img) {
-        return loadImage({ src: srcProp.src, crossOrigin });
-      }
-
-      return img;
-    };
-
-    let unmounted = false;
-
-    const timer = (timeout ?? 0) > 0 && onLoadTimeout ? setTimeout(onLoadTimeout, timeout) : 0;
-
-    void tryLoad().then(
-      (img) => {
-        clearTimeout(timer);
-        if (unmounted) return;
-        const dataUrl = takeSnapshot(img, { quality: 1 });
-        setUrl(dataUrl);
-        onLoadCompleted && onLoadCompleted(img.currentSrc);
-      },
-      (ex) => {
-        clearTimeout(timer);
-        if (!unmounted) {
-          if (onLoadCompleted) onLoadCompleted('', ex);
-          else console.error(ex);
-        }
-      }
-    );
-
-    return () => {
-      unmounted = true;
-      clearTimeout(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crossOrigin, srcProp, timeout]);
+  const hasLevel0 = !!(src0 && state.enabled);
 
   return (
-    <TransitionFlex
-      hidden={hidden ?? !url}
-      transitionDuration={250}
-      transitionProps={{ easing: { enter: 'ease-in', exit: 'ease-out' }, ...transitionProps }}
-      style={url ? { ...style, backgroundImage: `url('${url}')` } : style}
-      {...rest}
-    />
+    <>
+      {hasLevel0 && (
+        <Picture
+          src={src0}
+          hidden={hidden || state.hidden}
+          onHidden={state.disable}
+          onLoadCompleted={onLoadCompleted}
+          {...rest}
+        />
+      )}
+      <Picture
+        hidden={hidden || (hasLevel0 ? undefined : hidden)}
+        src={src}
+        onLoadCompleted={onLoadCompleted}
+        onLoadTimeout={onLoadTimeout}
+        onShown={hasLevel0 ? shownHandler : onShown}
+        onHidden={onHidden}
+        {...rest}
+      />
+    </>
   );
-})({
-  pointerEvents: 'none',
-  touchAction: 'none',
-  userSelect: 'none',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center center',
-  backgroundRepeat: 'no-repeat',
-});
+}

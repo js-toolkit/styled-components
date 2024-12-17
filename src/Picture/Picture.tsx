@@ -21,7 +21,13 @@ export interface PictureProps
   extends FlexComponentProps,
     Pick<
       HideableProps,
-      'hidden' | 'disposable' | 'onShown' | 'onHidden' | 'transitionDuration' | 'transitionProps'
+      | 'hidden'
+      | 'appear'
+      | 'disposable'
+      | 'onShown'
+      | 'onHidden'
+      | 'transitionDuration'
+      | 'transitionProps'
     >,
     Pick<React.ImgHTMLAttributes<unknown>, 'crossOrigin' | 'loading'> {
   readonly src: string | PictureSources;

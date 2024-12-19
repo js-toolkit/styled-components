@@ -14,7 +14,7 @@ type WithData<D = undefined> =
       ? { readonly data?: D | undefined }
       : IfExtends<D, undefined, { readonly data?: D | undefined }, { readonly data: D }>;
 
-type GetHtmlType<C extends React.ElementType, T = React.ElementRef<C>> = T extends never
+type GetHtmlType<C extends React.ElementType, T = React.ComponentRef<C>> = T extends never
   ? Element
   : unknown extends T
     ? Element

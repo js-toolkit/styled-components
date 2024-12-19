@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from '@mui/system/styled';
 import type { FlexComponentProps } from 'reflexy/styled';
+import { TimeoutError } from '@js-toolkit/utils/TimeoutError';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
@@ -32,8 +33,8 @@ export interface PictureProps
     Pick<React.ImgHTMLAttributes<unknown>, 'crossOrigin' | 'loading'> {
   readonly src: string | PictureSources;
   readonly timeout?: number | undefined;
+  /** `error` is instance of `@js-toolkit/utils/TimeoutError` if timeout exceeded. */
   readonly onLoadCompleted?: ((src: string, error?: unknown) => void) | undefined;
-  readonly onLoadTimeout?: this['onLoadCompleted'];
 }
 
 export default styled(
@@ -44,7 +45,6 @@ export default styled(
     loading,
     timeout,
     transitionProps,
-    onLoadTimeout,
     onLoadCompleted,
     ...rest
   }: PictureProps) => {
@@ -56,8 +56,13 @@ export default styled(
       const normalizedSrc = typeof srcProp === 'string' ? { src: srcProp } : srcProp;
 
       timerRef.current =
-        (timeout ?? 0) > 0 && onLoadTimeout
-          ? window.setTimeout(() => onLoadTimeout(imgRef.current?.currentSrc ?? ''), timeout)
+        (timeout ?? 0) > 0 && onLoadCompleted
+          ? window.setTimeout(() => {
+              onLoadCompleted(
+                imgRef.current?.currentSrc ?? '',
+                new TimeoutError(`Timeout of ${timeout}ms exceeded.`)
+              );
+            }, timeout)
           : 0;
 
       return [
@@ -75,7 +80,7 @@ export default styled(
           clearTimeout(timerRef.current);
         },
       ];
-    }, [crossOrigin, loading, onLoadTimeout, srcProp, timeout]);
+    }, [crossOrigin, loading, onLoadCompleted, srcProp, timeout]);
 
     // The trick to workaround the WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=190031)
     // to do not load img together with selected source.

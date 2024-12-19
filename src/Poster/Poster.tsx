@@ -26,17 +26,9 @@ export default function Poster({
 
   const hasLevel0 = !!(src0 && state0.enabled);
 
+  // Order has matter in order to avoid a blink on hide l0 img.
   return (
     <>
-      {hasLevel0 && (
-        <Picture
-          src={src0}
-          hidden={hidden || state0.hidden}
-          timeout={timeout}
-          onHidden={state0.disable}
-          {...rest}
-        />
-      )}
       <Picture
         hidden={hidden || (hasLevel0 ? undefined : hidden)}
         src={src}
@@ -45,6 +37,16 @@ export default function Poster({
         onHidden={onHidden}
         {...rest}
       />
+      {hasLevel0 && (
+        <Picture
+          src={src0}
+          hidden={hidden || state0.hidden}
+          timeout={timeout}
+          transitionProps={{ easing: { enter: 'ease-in', exit: 'linear' } }}
+          onHidden={state0.disable}
+          {...rest}
+        />
+      )}
     </>
   );
 }

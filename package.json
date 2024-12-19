@@ -1,6 +1,6 @@
 {
   "name": "@js-toolkit/styled-components",
-  "version": "1.21.0",
+  "version": "1.22.0",
   "description": "Styled react components powered by @mui/@mui/system/styled",
   "author": "VZH",
   "license": "MIT",

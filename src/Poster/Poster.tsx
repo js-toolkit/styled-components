@@ -12,40 +12,36 @@ export default function Poster({
   src,
   src0,
   hidden,
-  onLoadCompleted,
-  onLoadTimeout,
+  timeout,
   onShown,
   onHidden,
   ...rest
 }: PosterProps): React.JSX.Element {
-  const state = useHideableState(() => {
-    return { enabled: !!src0, visible: !!src0 };
-  }, [src0]);
+  const state0 = useHideableState(() => ({ enabled: !!src0, visible: !!src0 }), [src0]);
 
   const shownHandler = useRefCallback(() => {
-    state.hide();
+    state0.hide();
     onShown && onShown();
   });
 
-  const hasLevel0 = !!(src0 && state.enabled);
+  const hasLevel0 = !!(src0 && state0.enabled);
 
   return (
     <>
       {hasLevel0 && (
         <Picture
           src={src0}
-          hidden={hidden || state.hidden}
-          onHidden={state.disable}
-          onLoadCompleted={onLoadCompleted}
+          hidden={hidden || state0.hidden}
+          timeout={timeout}
+          onHidden={state0.disable}
           {...rest}
         />
       )}
       <Picture
         hidden={hidden || (hasLevel0 ? undefined : hidden)}
         src={src}
-        onLoadCompleted={onLoadCompleted}
-        onLoadTimeout={onLoadTimeout}
-        onShown={hasLevel0 ? shownHandler : onShown}
+        timeout={src0 ? undefined : timeout}
+        onShown={src0 ? shownHandler : onShown}
         onHidden={onHidden}
         {...rest}
       />

@@ -5,6 +5,7 @@
     "outDir": "dist",
     "baseUrl": "src",
     "exactOptionalPropertyTypes": true,
+    "types": [],
     "sourceMap": false,
     "declaration": true,
     "incremental": true,

@@ -119,7 +119,7 @@ export function getModificationDetector({
   return {
     setVisible: () => {
       visible = true;
-      if (!timer.active) observe();
+      if (!timer.isActive()) observe();
     },
     setHidden: () => {
       visible = false;

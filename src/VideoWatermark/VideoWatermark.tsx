@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
 import Fade from '@mui/material/Fade';
@@ -90,7 +90,7 @@ export default React.memo(function VideoWatermark({
   onModificationDetected,
   ...rest
 }: VideoWatermarkProps): React.JSX.Element {
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = React.useRef<HTMLDivElement>(null);
   const keyState = useIncrementalState();
   const rootState = useHideableState({ enabled: true, visible: true });
   const [getTextSize, setTextSize] = useRefState<Size>({ width: 0, height: 0 });
@@ -154,7 +154,7 @@ export default React.memo(function VideoWatermark({
   const setRootRef = useRefs(rootRef, ref, modificationDetector?.setNode);
 
   // Stripes
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (!videoRef?.current || mode === 'random' || !visibleTimeout || !hiddenTimeout) {
       return undefined;
     }
@@ -165,8 +165,10 @@ export default React.memo(function VideoWatermark({
       hiddenTimeout,
       isVisible: () => rootState.visible,
       onShow: () => {
-        if (redraw) keyState.inc();
-        rootState.show();
+        React.startTransition(() => {
+          if (redraw) keyState.inc();
+          rootState.show();
+        });
       },
       onHide: rootState.hide,
     });
@@ -184,7 +186,7 @@ export default React.memo(function VideoWatermark({
   }, [hiddenTimeout, keyState, mode, redraw, rootState, videoRef, visibleTimeout]);
 
   // Random
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (
       !videoRef?.current ||
       mode !== 'random' ||
@@ -206,8 +208,10 @@ export default React.memo(function VideoWatermark({
         return { x: maxX, y: maxY };
       },
       onUpdate: (coord) => {
-        if (redraw) keyState.inc();
-        setCoord(coord);
+        React.startTransition(() => {
+          if (redraw) keyState.inc();
+          setCoord(coord);
+        });
       },
       showOptions:
         visibleTimeout && hiddenTimeout

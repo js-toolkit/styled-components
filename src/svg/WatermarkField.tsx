@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Size } from '@js-toolkit/utils/types/utils';
 import useRefState from '@js-toolkit/react-hooks/useRefState';
+import useUpdateEffect from '@js-toolkit/react-hooks/useUpdateEffect';
 import SvgMultilineText from './SvgMultilineText';
 
 export interface WatermarkFieldProps
@@ -36,8 +37,6 @@ export default function WatermarkField({
   height: rootHeight = '100%',
   ...rest
 }: WatermarkFieldProps): React.JSX.Element {
-  const patternId = `textstripe${id ?? ''}`;
-
   const textRef = React.useRef<SVGTextElement>(null);
 
   const [lines, longestLine] = React.useMemo(() => {
@@ -66,7 +65,6 @@ export default function WatermarkField({
   const { textWidth, lineHeight, realLineHeight } = getSize();
   const lineDY = lineHeight + lineHeight * lineSpaceScale;
   const textHeight = lineDY * (lines.length - 1) + lineHeight; // (lineHeight + lineDY / 2)
-
   const textSpacingValue = lineDY * textSpacing;
 
   // console.log(
@@ -79,16 +77,16 @@ export default function WatermarkField({
   //   `textSpacingValue: ${textSpacingValue}`
   // );
 
-  React.useEffect(() => {
+  useUpdateEffect(() => {
     onSizeChanged({ width: textWidth, height: textHeight });
   }, [onSizeChanged, textHeight, textWidth]);
 
   const patternCommonProps = {
-    id: patternId,
+    id: `textstripe${id ?? ''}`,
     patternUnits,
     patternContentUnits,
     patternTransform,
-  } as React.SVGProps<SVGPatternElement>;
+  } satisfies React.SVGProps<SVGPatternElement>;
 
   return (
     <svg id={id} ref={ref} fill="currentColor" width={rootWidth} height={rootHeight} {...rest}>
@@ -136,7 +134,7 @@ export default function WatermarkField({
           </pattern>
         )}
       </defs>
-      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+      <rect width="100%" height="100%" fill={`url(#${patternCommonProps.id})`} />
     </svg>
   );
 }

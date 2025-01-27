@@ -122,7 +122,12 @@ export default React.memo(function VideoWatermark({
     return baseFontSize;
   })();
 
-  const textSizeInitialized = getTextSize().height > 0;
+  // const textSizeInitialized = getTextSize().height > 0;
+  const textSize = getTextSize();
+  const textSizeInitialized = useUpdatedRefValue(
+    (prev) => !!text && (prev || textSize.height > 0),
+    [text, textSize.height]
+  ).current;
 
   // const watermarkImg = useMemo(() => {
   //   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${textWidth}" height="${textHeight}">
@@ -165,10 +170,8 @@ export default React.memo(function VideoWatermark({
       hiddenTimeout,
       isVisible: () => rootState.visible,
       onShow: () => {
-        React.startTransition(() => {
-          if (redraw) keyState.inc();
-          rootState.show();
-        });
+        if (redraw) keyState.inc({ silent: true });
+        rootState.show();
       },
       onHide: rootState.hide,
     });
@@ -208,10 +211,8 @@ export default React.memo(function VideoWatermark({
         return { x: maxX, y: maxY };
       },
       onUpdate: (coord) => {
-        React.startTransition(() => {
-          if (redraw) keyState.inc();
-          setCoord(coord);
-        });
+        if (redraw) keyState.inc({ silent: true });
+        setCoord(coord);
       },
       showOptions:
         visibleTimeout && hiddenTimeout

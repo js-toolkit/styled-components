@@ -50,7 +50,7 @@ export default function ResizeListener({
 
     const setupWindow = (windowToListenOn: Window): void => {
       windowToListenOn.addEventListener('resize', handler, { passive: true });
-      resizeHandler();
+      handler();
     };
 
     const loadHandler = (): void => {

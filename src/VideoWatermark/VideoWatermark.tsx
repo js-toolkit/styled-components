@@ -125,8 +125,8 @@ export default React.memo(function VideoWatermark({
   // const textSizeInitialized = getTextSize().height > 0;
   const textSize = getTextSize();
   const textSizeInitialized = useUpdatedRefValue(
-    (prev) => !!text && (prev || textSize.height > 0),
-    [text, textSize.height]
+    (prev?: boolean) => prev || textSize.height > 0,
+    [textSize.height]
   ).current;
 
   // const watermarkImg = useMemo(() => {

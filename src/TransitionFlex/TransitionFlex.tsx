@@ -39,7 +39,7 @@ function TransitionFlex<
   transitionProps,
   transitionDuration,
   hidden,
-  appear,
+  appear, // Will be overrided by TransitionGroup.
   disposable,
   keepChildren,
   onHidden,
@@ -82,7 +82,7 @@ function TransitionFlex<
     transition as React.FC<TransitionProps>,
     {
       ...trProps,
-      in: hidden == null ? (trProps?.in ?? inProp ?? true) : !hidden,
+      in: inProp ?? (hidden == null ? (trProps?.in ?? true) : !hidden),
       appear: appear ?? trProps?.appear,
       enter: enter ?? trProps?.enter,
       exit: exit ?? trProps?.exit,

@@ -78,6 +78,10 @@ function TransitionFlex<
     onExited
   );
 
+  if (hidden != null && inProp != null) {
+    console.warn('You should not use `hidden` prop inside <TransitionGroup>.');
+  }
+
   return React.createElement(
     transition as React.FC<TransitionProps>,
     {

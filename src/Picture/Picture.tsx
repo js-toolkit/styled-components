@@ -30,7 +30,10 @@ export interface PictureProps
       | 'transitionDuration'
       | 'transitionProps'
     >,
-    Pick<React.ImgHTMLAttributes<unknown>, 'crossOrigin' | 'loading'> {
+    Pick<
+      React.ImgHTMLAttributes<unknown>,
+      'crossOrigin' | 'decoding' | 'fetchPriority' | 'loading' | 'referrerPolicy'
+    > {
   readonly src: string | PictureSources;
   readonly timeout?: number | undefined;
   /** `error` is instance of `@js-toolkit/utils/TimeoutError` if timeout exceeded. */
@@ -42,7 +45,10 @@ export default styled(
     hidden,
     src: srcProp,
     crossOrigin,
+    decoding,
+    fetchPriority = 'auto',
     loading,
+    referrerPolicy,
     timeout,
     transitionProps,
     onLoadCompleted,
@@ -70,9 +76,17 @@ export default styled(
           normalizedSrc,
           <>
             {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
-              <source key={src} srcSet={src} {...srcRest} />
+              <source key={src} {...srcRest} srcSet={src} />
             ))}
-            <img ref={imgRef} crossOrigin={crossOrigin} alt="" loading={loading} />
+            <img
+              ref={imgRef}
+              crossOrigin={crossOrigin}
+              decoding={decoding}
+              fetchPriority={fetchPriority}
+              loading={loading}
+              referrerPolicy={referrerPolicy}
+              alt=""
+            />
           </>,
         ],
 
@@ -80,7 +94,16 @@ export default styled(
           clearTimeout(timerRef.current);
         },
       ];
-    }, [crossOrigin, loading, onLoadCompleted, srcProp, timeout]);
+    }, [
+      crossOrigin,
+      decoding,
+      fetchPriority,
+      loading,
+      onLoadCompleted,
+      referrerPolicy,
+      srcProp,
+      timeout,
+    ]);
 
     // The trick to workaround the WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=190031)
     // to do not load img together with selected source.

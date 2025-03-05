@@ -18,6 +18,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
   data,
   tooltip,
   tooltipDelay,
+  hideTooltipOnUnmount,
   onShowTooltip,
   onHideTooltip,
   ...restProps
@@ -36,6 +37,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
       data={data as never}
       tooltip={tooltip}
       tooltipDelay={tooltipDelay}
+      hideTooltipOnUnmount={hideTooltipOnUnmount}
       onShowTooltip={onShowTooltip}
       onHideTooltip={onHideTooltip}
       component={TweakableElementWrapper}

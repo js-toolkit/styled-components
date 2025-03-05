@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
 import { noop } from '@js-toolkit/utils/noop';
-import { debounce } from '@js-toolkit/utils/debounce';
+import { debounce, type DebouncedFunc } from '@js-toolkit/utils/debounce';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useHoverCallbacks from '@js-toolkit/react-hooks/useHoverCallbacks';
@@ -31,6 +31,7 @@ export type TooltipableTooltipProps<D = undefined, T extends Element = Element> 
   readonly tooltipDelay?: number | undefined;
   readonly onShowTooltip?: ((tooltip: TooltipData<D, T>) => void) | undefined;
   readonly onHideTooltip?: ((target: TooltipData<D, T>['target']) => void) | undefined;
+  readonly hideTooltipOnUnmount?: boolean | undefined;
 } & WithData<D>;
 
 export type TooltipableProps<
@@ -45,6 +46,7 @@ export default function Tooltipable<
   tooltip,
   tooltipDelay = 0,
   data,
+  hideTooltipOnUnmount,
   onShowTooltip,
   onHideTooltip,
   ...restProps
@@ -60,9 +62,18 @@ export default function Tooltipable<
   // const isHover = getHover();
   // const element = getHoverData();
 
-  const rootRef = useRef<T>(null);
-  const rootRefs = useRefs(rootRef as React.Ref<HTMLDivElement>, ref);
-  const isShowingTooltipRef = useRef(false);
+  const rootRef = React.useRef<T>(null);
+
+  const rootRefs = useRefs((instance) => {
+    rootRef.current = instance as T;
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      if (hideTooltipOnUnmount && isShowingTooltipRef.current) hideTooltip();
+      rootRef.current = null;
+    };
+  }, ref);
+
+  const isShowingTooltipRef = React.useRef(false);
 
   const showTooltip = useRefCallback(() => {
     if (rootRef.current && tooltip && onShowTooltip) {
@@ -72,6 +83,8 @@ export default function Tooltipable<
   });
 
   const hideTooltip = useRefCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    (hideTooltipDelayed as DebouncedFunc<VoidFunction>).cancel?.();
     if (rootRef.current && onHideTooltip) {
       isShowingTooltipRef.current = false;
       onHideTooltip(rootRef.current);
@@ -86,11 +99,16 @@ export default function Tooltipable<
     return [hideTooltip, noop];
   }, [hideTooltip, onHideTooltip, tooltipDelay]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isShowingTooltipRef.current) return;
     if (tooltip) showTooltip();
     else hideTooltip();
   }, [hideTooltip, showTooltip, tooltip, data]);
+
+  // React.useEffect(() => {
+  //   if (hideTooltipOnUnmount) return hideTooltip;
+  //   return undefined;
+  // }, [hideTooltip, hideTooltipOnUnmount]);
 
   // useEffect(() => {
   //   if (isHover && onShowTooltip && tooltip && element) {

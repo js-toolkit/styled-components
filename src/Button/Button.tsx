@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import React from 'react';
 import styled from '@mui/system/styled';
+import type { MUIStyledCommonProps } from '@mui/system';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import type { GetOverridedKeys } from '../types/local';
 import type { CSSProperties } from '../theme';
@@ -25,7 +26,8 @@ export interface ButtonStyleProps {
 }
 
 export type ButtonProps<C extends React.ElementType = 'button'> = FlexAllProps<C> &
-  ButtonStyleProps;
+  ButtonStyleProps &
+  Pick<MUIStyledCommonProps, 'sx'>;
 
 // function excludeHoverRules<T extends AnyObject | undefined>(rules: T): T {
 //   if (rules == null) return rules;
@@ -300,5 +302,5 @@ const Root = styled(
 export default function Button<C extends React.ElementType = 'button'>(
   props: ButtonProps<C>
 ): React.JSX.Element {
-  return <Root {...(props as any)} />;
+  return <Root {...props} />;
 }

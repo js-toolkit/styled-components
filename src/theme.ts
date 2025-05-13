@@ -1,6 +1,5 @@
 import type { CSSObject } from '@mui/styled-engine';
 import type { FlexAllProps, FlexOnlyProps, SpaceProps } from 'reflexy/styled';
-import type { WatermarkFieldProps } from './svg/WatermarkField';
 import type { MenuListItemProps } from './Menu/MenuListItem';
 import type { ButtonColor, ButtonSize, ButtonVariant } from './Button';
 import type { ModalProps } from './Modal';
@@ -241,27 +240,6 @@ export interface Theme {
               >
             | undefined;
         })
-      | undefined;
-
-    VideoWatermark?:
-      | {
-          default?: CSSProperties | undefined;
-          stripes?:
-            | (CSSProperties & {
-                field?: Pick<
-                  WatermarkFieldProps,
-                  'lineSpaceScale' | 'textHeightScale' | 'textSpacing' | 'patternTransform'
-                >;
-              })
-            | undefined;
-          random?:
-            | (CSSProperties & {
-                field?: Pick<WatermarkFieldProps, 'lineSpaceScale'> & {
-                  transitionDuration?: number;
-                };
-              })
-            | undefined;
-        }
       | undefined;
 
     SvgSpriteIcon?:

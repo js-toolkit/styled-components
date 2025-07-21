@@ -75,8 +75,8 @@ export default styled(
         [
           normalizedSrc,
           <>
-            {normalizedSrc.srcset?.map(({ src, ...srcRest }) => (
-              <source key={src} {...srcRest} srcSet={src} />
+            {normalizedSrc.srcset?.map(({ src, media, ...srcRest }) => (
+              <source key={src + media} {...srcRest} srcSet={src} media={media} />
             ))}
             <img
               ref={imgRef}

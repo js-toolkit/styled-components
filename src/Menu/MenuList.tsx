@@ -115,18 +115,24 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
   const { rc } = useTheme();
 
   const backHandler = useRefCallback<React.MouseEventHandler>((event) => {
-    onBack && stopPropagation(event);
-    onBack && onBack();
+    if (onBack) {
+      stopPropagation(event);
+      onBack();
+    }
   });
 
   const closeHandler = useRefCallback<React.MouseEventHandler>((event) => {
-    onClose && stopPropagation(event);
-    onClose && onClose();
+    if (onClose) {
+      stopPropagation(event);
+      onClose();
+    }
   });
 
   const headerActionHandler = useRefCallback<React.MouseEventHandler>((event) => {
-    onHeaderAction && stopPropagation(event);
-    onHeaderAction && onHeaderAction();
+    if (onHeaderAction) {
+      stopPropagation(event);
+      onHeaderAction();
+    }
   });
 
   const theme = rc?.MenuList;

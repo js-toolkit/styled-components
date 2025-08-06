@@ -10,6 +10,10 @@ export type TransitionComponent = React.JSXElementConstructor<
   TransitionProps & { children: React.ReactElement<any, any> }
 >;
 
+export function NoTransition({ children }: React.PropsWithChildren): React.ReactNode {
+  return children;
+}
+
 export interface HideableProps<T extends TransitionComponent = TransitionComponent> {
   readonly hidden?: boolean | undefined;
   readonly appear?: boolean | undefined;

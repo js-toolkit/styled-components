@@ -64,9 +64,30 @@ export const DefaultHeaderAction = styled((props: ButtonProps) => {
       {...props}
     />
   );
-})(({ theme: { rc } }) => ({
-  ...rc?.MenuList?.header?.action?.root,
-}));
+})(({
+  theme: { rc },
+  onClick,
+  onClickCapture,
+  onDoubleClick,
+  onPointerDown,
+  onPointerDownCapture,
+  onPointerUp,
+  onPointerUpCapture,
+}) => {
+  const clickable = !!(
+    onClick ||
+    onClickCapture ||
+    onDoubleClick ||
+    onPointerDown ||
+    onPointerDownCapture ||
+    onPointerUp ||
+    onPointerUpCapture
+  );
+  return {
+    cursor: clickable ? undefined : 'default',
+    ...rc?.MenuList?.header?.action?.root,
+  };
+});
 
 const Root = styled((props: React.PropsWithChildren<FlexComponentProps<'div'>>) => (
   <Flex column role="menu" {...props} />
@@ -204,7 +225,9 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
     (React.isValidElement(headerAction) ? (
       headerAction
     ) : (
-      <DefaultHeaderAction onClick={headerActionHandler}>{headerAction}</DefaultHeaderAction>
+      <DefaultHeaderAction onClick={onHeaderAction && headerActionHandler}>
+        {headerAction}
+      </DefaultHeaderAction>
     ));
 
   return (

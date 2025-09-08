@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from '@mui/system/styled';
 import type { FlexComponentProps } from 'reflexy/styled';
 import { TimeoutError } from '@js-toolkit/utils/TimeoutError';
@@ -38,6 +38,7 @@ export interface PictureProps
   readonly timeout?: number | undefined;
   /** `error` is instance of `@js-toolkit/utils/TimeoutError` if timeout exceeded. */
   readonly onLoadCompleted?: ((src: string, error?: unknown) => void) | undefined;
+  readonly onUnmount?: VoidFunction | undefined;
 }
 
 export default styled(
@@ -52,6 +53,7 @@ export default styled(
     timeout,
     transitionProps,
     onLoadCompleted,
+    onUnmount,
     ...rest
   }: PictureProps) => {
     const [loaded, setLoaded] = useState(false);
@@ -113,6 +115,10 @@ export default styled(
       if (!img) return;
       img.src = sources.src;
     }, [sources]);
+
+    const unmountHandler = useRefCallback(() => onUnmount && onUnmount());
+
+    useEffect(() => unmountHandler, [unmountHandler]);
 
     const loadHandler = useRefCallback<React.ReactEventHandler<HTMLImageElement>>(() => {
       clearTimeout(timerRef.current);

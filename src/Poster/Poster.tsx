@@ -15,6 +15,7 @@ export default function Poster({
   timeout,
   onShown,
   onHidden,
+  onUnmount,
   ...rest
 }: PosterProps): React.JSX.Element {
   const state0 = useHideableState(
@@ -56,6 +57,7 @@ export default function Poster({
         timeout={src0 ? undefined : timeout}
         onShown={src0 ? shownHandler : onShown}
         onHidden={onHidden}
+        onUnmount={onUnmount}
         {...rest}
       />
     </>

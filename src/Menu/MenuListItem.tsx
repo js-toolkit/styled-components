@@ -180,7 +180,7 @@ export default function MenuListItem<
       )}
 
       {!!subtitle && (
-        <Subtitle ml shrink={!shrinkTitle} {...subtitleFlex}>
+        <Subtitle ml={!!title || undefined} shrink={!shrinkTitle} {...subtitleFlex}>
           {subtitle}
         </Subtitle>
       )}

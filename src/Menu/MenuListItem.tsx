@@ -45,7 +45,7 @@ const Root = styled(
   (props: RootProps) => <Flex role="menuitem" alignItems="center" shrink={0} {...props} />,
   { shouldForwardProp: excludeProp<keyof RootProps>(['clickable']) }
 )(({ theme: { rc }, clickable }) => ({
-  cursor: clickable ? 'pointer' : undefined,
+  ...(clickable ? { cursor: 'pointer' } : { pointerEvents: 'none' }),
   ...rc?.MenuListItem?.root,
 }));
 

@@ -4,6 +4,7 @@ import type { FlexComponentProps } from 'reflexy/styled';
 import { TimeoutError } from '@js-toolkit/utils/TimeoutError';
 import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import useRefs from '@js-toolkit/react-hooks/useRefs';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 
 export interface PictureSources {
@@ -33,7 +34,9 @@ export interface PictureProps
     Pick<
       React.ImgHTMLAttributes<unknown>,
       'crossOrigin' | 'decoding' | 'fetchPriority' | 'loading' | 'referrerPolicy'
-    > {
+    >,
+    Pick<React.RefAttributes<HTMLElement>, 'ref'> {
+  readonly imgRef?: React.Ref<HTMLImageElement>;
   readonly src: string | PictureSources;
   readonly timeout?: number | undefined;
   /** `error` is instance of `@js-toolkit/utils/TimeoutError` if timeout exceeded. */
@@ -43,6 +46,7 @@ export interface PictureProps
 
 export default styled(
   ({
+    imgRef: imgRefProp,
     hidden,
     src: srcProp,
     crossOrigin,
@@ -58,6 +62,7 @@ export default styled(
   }: PictureProps) => {
     const [loaded, setLoaded] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
+    const imgRefs = useRefs(imgRef, imgRefProp);
     const timerRef = useRef(0);
 
     const [sources, variants] = useMemoDestructor(() => {
@@ -81,7 +86,7 @@ export default styled(
               <source key={src + media} {...srcRest} srcSet={src} media={media} />
             ))}
             <img
-              ref={imgRef}
+              ref={imgRefs}
               crossOrigin={crossOrigin}
               decoding={decoding}
               fetchPriority={fetchPriority}
@@ -100,6 +105,7 @@ export default styled(
       crossOrigin,
       decoding,
       fetchPriority,
+      imgRefs,
       loading,
       onLoadCompleted,
       referrerPolicy,

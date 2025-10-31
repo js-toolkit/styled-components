@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import React from 'react';
 import TransitionBase, {
   type TransitionActions,

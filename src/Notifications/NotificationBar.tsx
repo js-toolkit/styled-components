@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import { clsx } from 'clsx';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import TransitionFlex, {
   type HideableProps,
   type TransitionComponent,
@@ -36,7 +35,6 @@ export interface NotificationBarProps<
   readonly contentProps?: FlexAllProps<TContent> | undefined;
   readonly actionProps?: FlexAllProps<TAction> | undefined;
   readonly applyClassesToTransition?: boolean | undefined;
-  readonly onUnmount?: VoidFunction | undefined;
 }
 
 type RootProps = TransitionFlexProps &
@@ -127,14 +125,10 @@ export default function NotificationBar<
   contentProps,
   actionProps,
   children,
-  onUnmount,
   ...rest
 }: React.PropsWithChildren<
   NotificationBarProps<TID, TContent, TAction, TTransition>
 >): React.JSX.Element {
-  const onUnmountRef = useRefCallback(() => onUnmount && onUnmount());
-  useEffect(() => onUnmountRef, [onUnmountRef]);
-
   return (
     <Root variant={variant} alignItems="center" {...(rest as TransitionFlexProps)}>
       <ContentContainer grow variant={variant} {...(contentProps as FlexComponentProps)}>

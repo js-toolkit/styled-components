@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styled from '@mui/system/styled';
 import {
   Flex,
@@ -9,8 +9,7 @@ import {
 } from 'reflexy/styled';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { clsx } from 'clsx';
-import { clear } from '@js-toolkit/utils/clear';
-import useUpdate from '@js-toolkit/react-hooks/useUpdate';
+import useRefState from '@js-toolkit/react-hooks/useRefState';
 import type { TransitionComponent } from '../TransitionFlex';
 import type { GetOverridedKeys } from '../types/local';
 import type { CSSProperties } from '../theme';
@@ -253,17 +252,10 @@ export default React.memo(function Notifications<
   disableTransition,
   ...rest
 }: NotificationsProps<C, N>): React.JSX.Element | null {
-  const update = useUpdate();
+  const [getMap, setMap] = useRefState<Map<NotificationPosition, React.JSX.Element[]>>();
 
-  // if (list.length === 0) return null;
-  const mapRef = useRef(undefined as unknown as Map<NotificationPosition, React.JSX.Element[]>);
-  if (!mapRef.current) {
-    mapRef.current = new Map();
-  }
-
-  useEffect(() => {
-    const map = mapRef.current;
-    map.forEach(clear);
+  React.useEffect(() => {
+    const map = new Map<NotificationPosition, React.JSX.Element[]>();
 
     list.forEach((n) => {
       const position = n.position ?? defaultPosition;
@@ -272,13 +264,13 @@ export default React.memo(function Notifications<
 
       const { timeout } = n;
       let timer = 0;
-      const onShown =
+      const shownHandler =
         onTimeout && timeout && timeout > 0
           ? () => {
               timer = window.setTimeout(() => onTimeout(n.id as N['id']), timeout);
             }
           : undefined;
-      const onUnmount = onShown && (() => window.clearTimeout(timer));
+      const hiddenHandler = shownHandler && (() => window.clearTimeout(timer));
 
       arr.push(
         <StyledNotificationBar
@@ -293,8 +285,8 @@ export default React.memo(function Notifications<
           onAction={n.noAction ? undefined : (onAction as NotificationBarProps['onAction'])}
           contentProps={n.contentProps}
           actionProps={n.actionProps}
-          onShown={onShown}
-          onUnmount={onUnmount}
+          onShown={shownHandler}
+          onHidden={hiddenHandler}
           {...n.rootProps}
         >
           {n.content}
@@ -302,10 +294,10 @@ export default React.memo(function Notifications<
       );
     });
 
-    update();
-  }, [defaultAction, defaultPosition, list, onAction, onTimeout, update]);
+    setMap(map);
+  }, [defaultAction, defaultPosition, list, onAction, onTimeout, setMap]);
 
-  return Array.from(mapRef.current.entries(), ([pos, arr]) => {
+  return Array.from(getMap()?.entries() ?? [], ([pos, arr]) => {
     const variant: RootProps['variant'] =
       (pos.startsWith('window') && 'fixed') ||
       ((pos === 'top' || pos === 'bottom' || pos.startsWith('left') || pos.startsWith('right')) &&

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { isValidElement, useMemo } from 'react';
 import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
@@ -11,8 +11,11 @@ import MenuListItem, { type MenuListItemProps } from './MenuListItem';
 export type MenuItem<V, I extends IconComponentProps> = Omit<MenuListItemProps<V, I>, 'onClick'> &
   React.Attributes;
 
-export interface MenuListProps<V, I extends IconComponentProps, HI extends IconComponentProps>
-  extends FlexComponentProps<'div'> {
+export interface MenuListProps<
+  V,
+  I extends IconComponentProps,
+  HI extends IconComponentProps,
+> extends FlexComponentProps<'div'> {
   header?: React.ReactNode | undefined;
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
@@ -75,12 +78,12 @@ export const DefaultHeaderAction = styled((props: ButtonProps) => {
   onPointerUpCapture,
 }) => {
   const clickable = !!(
-    onClick ||
-    onClickCapture ||
-    onDoubleClick ||
-    onPointerDown ||
-    onPointerDownCapture ||
-    onPointerUp ||
+    onClick ??
+    onClickCapture ??
+    onDoubleClick ??
+    onPointerDown ??
+    onPointerDownCapture ??
+    onPointerUp ??
     onPointerUpCapture
   );
   return {
@@ -109,6 +112,12 @@ const HeaderGroup = styled(Flex<'div'>)(({ theme: { rc }, onClick }) => ({
 const HeaderTitle = styled(Flex<'div'>)(({ theme: { rc } }) => ({
   fontWeight: 500,
   ...rc?.MenuList?.header?.title?.root,
+}));
+
+const List = styled((props: React.PropsWithChildren<FlexComponentProps>) => {
+  return <Flex column overflowY="auto" {...props} />;
+})(({ theme: { rc } }) => ({
+  ...rc?.MenuList?.list?.root,
 }));
 
 export default function MenuList<V, I extends IconComponentProps, HI extends IconComponentProps>({
@@ -165,7 +174,7 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
 
   const hasHeader = !!(header || headerIconProps || onBack || headerAction || onClose);
 
-  const hasHeaderIcon = !!(backIconProps || headerIconProps);
+  const hasHeaderIcon = !!(backIconProps ?? headerIconProps);
 
   const headerGroupFlex =
     typeof theme?.header?.group?.flex === 'function'
@@ -215,14 +224,14 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
   ]);
 
   const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
-    onKeyDown && onKeyDown(event);
+    onKeyDown?.(event);
     (event.code === 'ArrowLeft' || event.code === 'ArrowRight') && stopPropagation(event);
-    event.code === 'ArrowLeft' && onBack && onBack();
+    event.code === 'ArrowLeft' && onBack?.();
   });
 
   const headerActionElement =
     !!headerAction &&
-    (React.isValidElement(headerAction) ? (
+    (isValidElement(headerAction) ? (
       headerAction
     ) : (
       <DefaultHeaderAction onClick={onHeaderAction && headerActionHandler}>
@@ -269,13 +278,7 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
         </HeaderRoot>
       )}
 
-      <Flex
-        mt={hasHeader ? 'xs' : undefined}
-        column
-        overflowY="auto"
-        {...listContainerFlex}
-        {...listProps}
-      >
+      <List mt={hasHeader ? 'xs' : undefined} {...listContainerFlex} {...listProps}>
         <Flex
           column
           shrink={0}
@@ -285,7 +288,7 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
           {itemsElements}
           {children}
         </Flex>
-      </Flex>
+      </List>
     </Root>
   );
 }

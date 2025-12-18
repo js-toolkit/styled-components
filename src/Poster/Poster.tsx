@@ -32,7 +32,7 @@ export default function Poster({
           // In order to avoid a blink on hide level0 img.
           timer = setTimeout(state0.hide, 100);
         }
-        onShown && onShown();
+        onShown?.();
       },
       () => clearTimeout(timer),
     ];

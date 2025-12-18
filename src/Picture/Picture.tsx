@@ -6,6 +6,7 @@ import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
 import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
 import useRefs from '@js-toolkit/react-hooks/useRefs';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
+import { excludeProp } from '../utils';
 
 export interface PictureSources {
   /** Fallback or default src. */
@@ -20,7 +21,8 @@ export interface PictureSources {
 }
 
 export interface PictureProps
-  extends FlexComponentProps,
+  extends
+    FlexComponentProps,
     Pick<
       HideableProps,
       | 'hidden'
@@ -39,6 +41,7 @@ export interface PictureProps
   readonly imgRef?: React.Ref<HTMLImageElement>;
   readonly src: string | PictureSources;
   readonly timeout?: number | undefined;
+  readonly objectFit?: React.CSSProperties['objectFit'];
   /** `error` is instance of `@js-toolkit/utils/TimeoutError` if timeout exceeded. */
   readonly onLoadCompleted?: ((src: string, error?: unknown) => void) | undefined;
   readonly onUnmount?: VoidFunction | undefined;
@@ -122,14 +125,14 @@ export default styled(
       img.src = sources.src;
     }, [sources]);
 
-    const unmountHandler = useRefCallback(() => onUnmount && onUnmount());
+    const unmountHandler = useRefCallback(() => onUnmount?.());
 
     useEffect(() => unmountHandler, [unmountHandler]);
 
     const loadHandler = useRefCallback<React.ReactEventHandler<HTMLImageElement>>(() => {
       clearTimeout(timerRef.current);
       setLoaded(true);
-      onLoadCompleted && onLoadCompleted(imgRef.current?.currentSrc ?? '');
+      onLoadCompleted?.(imgRef.current?.currentSrc ?? '');
     });
 
     const errorHandler = useRefCallback<React.ReactEventHandler>((ev) => {
@@ -154,8 +157,8 @@ export default styled(
       </TransitionFlex>
     );
   },
-  { name: 'Picture' }
-)({
+  { name: 'Picture', shouldForwardProp: excludeProp<PictureProps>(['objectFit']) }
+)(({ objectFit }) => ({
   '&, & img': {
     pointerEvents: 'none',
     touchAction: 'none',
@@ -165,8 +168,8 @@ export default styled(
   '& img': {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit: objectFit || 'cover',
     overflow: 'clip', // https://github.com/WICG/view-transitions/blob/main/debugging_overflow_on_images.md
     borderRadius: 'inherit',
   },
-});
+}));

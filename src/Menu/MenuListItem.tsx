@@ -16,7 +16,9 @@ export interface MenuListItemProps<
   V,
   I extends IconComponentProps<IC>,
   IC extends React.ElementType = any,
-> extends FlexComponentProps<'div', { omitProps: true }>,
+>
+  extends
+    FlexComponentProps<'div', { omitProps: true }>,
     Pick<
       React.HTMLAttributes<HTMLDivElement>,
       | keyof React.AriaAttributes
@@ -84,7 +86,7 @@ export default function MenuListItem<
   const { rc } = useTheme();
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    onClick && onClick(event);
+    onClick?.(event);
     if (onSelect) {
       stopPropagation(event);
       onSelect(value, event);
@@ -92,7 +94,7 @@ export default function MenuListItem<
   });
 
   const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
-    onKeyDown && onKeyDown(event);
+    onKeyDown?.(event);
     if (
       onSelect &&
       (event.code === 'Enter' || event.code === 'Space' || event.code === 'ArrowRight')
@@ -115,7 +117,7 @@ export default function MenuListItem<
     const focus = (): number => {
       return requestAnimationFrame(() => {
         root.focus({ preventScroll: !!root.scrollIntoView });
-        root.scrollIntoView && root.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        root.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
       });
     };
 

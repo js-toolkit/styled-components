@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 import type { CSSObject } from '@mui/styled-engine';
 import type { FlexAllProps, FlexOnlyProps, SpaceProps } from 'reflexy/styled';
 import type { MenuListItemProps } from './Menu/MenuListItem';
@@ -16,17 +17,16 @@ export type ButtonThemeVariants = {
   [P in ButtonVariant as `variant-${P}`]?: CSSProperties | undefined;
 };
 
-type ButtonStyles = {
+interface ButtonStyles {
   root?: CSSProperties | undefined;
   hover?: CSSProperties | undefined;
   active?: CSSProperties | undefined;
-};
+}
 
 export type ButtonTheme = ButtonThemeSizes &
   ButtonThemeVariants &
-  ButtonStyles & {
-    [P in ButtonColor]?: { [K in ButtonVariant]?: ButtonStyles | undefined } | undefined;
-  };
+  ButtonStyles &
+  PartialRecord<ButtonColor, PartialRecord<ButtonVariant, ButtonStyles | undefined> | undefined>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type IconComponentProps<C extends React.ElementType = any> = FlexAllProps<C> & {
@@ -285,6 +285,7 @@ export interface Theme {
         | undefined;
       list?:
         | {
+            root?: CSSProperties | undefined;
             flex?: FlexOnlyProps | ((options: { hasHeader: boolean }) => FlexOnlyProps) | undefined;
           }
         | undefined;

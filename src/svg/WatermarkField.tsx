@@ -1,12 +1,11 @@
 import React from 'react';
 import type { Size } from '@js-toolkit/utils/types/utils';
-import useRefState from '@js-toolkit/react-hooks/useRefState';
-import useUpdateEffect from '@js-toolkit/react-hooks/useUpdateEffect';
+import { useRefState } from '@js-toolkit/react-hooks/useRefState';
+import { useUpdateEffect } from '@js-toolkit/react-hooks/useUpdateEffect';
 import SvgMultilineText from './SvgMultilineText';
 
 export interface WatermarkFieldProps
-  extends React.SVGAttributes<SVGSVGElement>,
-    React.RefAttributes<SVGSVGElement> {
+  extends React.SVGAttributes<SVGSVGElement>, React.RefAttributes<SVGSVGElement> {
   readonly updateKey: React.Key | undefined;
   readonly text: string;
   readonly mode: 'lines' | 'single';

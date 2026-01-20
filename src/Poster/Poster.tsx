@@ -1,6 +1,6 @@
 import React from 'react';
-import useHideableState from '@js-toolkit/react-hooks/useHideableState';
-import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
+import { useHideableState } from '@js-toolkit/react-hooks/useHideableState';
+import { useMemoDestructor } from '@js-toolkit/react-hooks/useMemoDestructor';
 import Picture, { type PictureProps } from '../Picture';
 
 export interface PosterProps extends PictureProps {

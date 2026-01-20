@@ -1,5 +1,5 @@
 import React from 'react';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import { useRefCallback } from '@js-toolkit/react-hooks/useRefCallback';
 import type { IconComponentProps } from '../theme';
 import MenuList, { type MenuItem, type MenuListProps } from './MenuList';
 

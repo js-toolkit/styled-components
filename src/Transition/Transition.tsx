@@ -8,9 +8,9 @@ import TransitionBase, {
   type ExitHandler,
 } from 'react-transition-group/Transition';
 import { clsx } from 'clsx';
-import useRefs from '@js-toolkit/react-hooks/useRefs';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
+import { useRefs } from '@js-toolkit/react-hooks/useRefs';
+import { useRefCallback } from '@js-toolkit/react-hooks/useRefCallback';
+import { useChainRefCallback } from '@js-toolkit/react-hooks/useChainRefCallback';
 
 export type TransitionClassNames = PartialRecord<
   ExcludeStrict<TransitionStatusOrigin, 'unmounted'> | 'appearing' | 'appeared',

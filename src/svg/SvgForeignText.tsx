@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Size } from '@js-toolkit/utils/types/utils';
-import useRefState from '@js-toolkit/react-hooks/useRefState';
+import { useRefState } from '@js-toolkit/react-hooks/useRefState';
 
 export interface SvgForeignTextProps extends React.SVGProps<SVGForeignObjectElement> {
   readonly children: string;

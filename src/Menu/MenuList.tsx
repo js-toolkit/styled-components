@@ -3,7 +3,7 @@ import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexAllProps, type FlexComponentProps } from 'reflexy/styled';
 import { stopPropagation } from '@js-toolkit/web-utils/stopPropagation';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import { useRefCallback } from '@js-toolkit/react-hooks/useRefCallback';
 import Button, { type ButtonProps } from '../Button';
 import type { IconComponentProps } from '../theme';
 import MenuListItem, { type MenuListItemProps } from './MenuListItem';

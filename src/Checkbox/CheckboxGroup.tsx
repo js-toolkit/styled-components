@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
+import { useRefCallback } from '@js-toolkit/react-hooks/useRefCallback';
 import CheckboxContext, { type CheckboxContextValue } from './CheckboxContext';
 
 export interface CheckboxGroupChangeEvent<V = unknown> {
@@ -8,8 +8,10 @@ export interface CheckboxGroupChangeEvent<V = unknown> {
   value: V;
 }
 
-export interface CheckboxGroupProps<V = unknown>
-  extends Omit<FlexComponentProps<'div'>, 'onChange'> {
+export interface CheckboxGroupProps<V = unknown> extends Omit<
+  FlexComponentProps<'div'>,
+  'onChange'
+> {
   name?: string | undefined;
   value?: CheckboxContextValue<V>['checkedValue'] | undefined;
   onChange?: ((data: CheckboxGroupChangeEvent<V>) => void) | undefined;

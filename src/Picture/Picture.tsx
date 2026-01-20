@@ -2,9 +2,9 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from '@mui/system/styled';
 import type { FlexComponentProps } from 'reflexy/styled';
 import { TimeoutError } from '@js-toolkit/utils/TimeoutError';
-import useMemoDestructor from '@js-toolkit/react-hooks/useMemoDestructor';
-import useRefCallback from '@js-toolkit/react-hooks/useRefCallback';
-import useRefs from '@js-toolkit/react-hooks/useRefs';
+import { useMemoDestructor } from '@js-toolkit/react-hooks/useMemoDestructor';
+import { useRefCallback } from '@js-toolkit/react-hooks/useRefCallback';
+import { useRefs } from '@js-toolkit/react-hooks/useRefs';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import { excludeProp } from '../utils';
 

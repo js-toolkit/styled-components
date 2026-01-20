@@ -4,7 +4,7 @@ import Fade from '@mui/material/Fade';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import type { DefaultComponentType } from 'reflexy/styled';
 import type { TweakableComponentProps } from 'reflexy/types';
-import useChainRefCallback from '@js-toolkit/react-hooks/useChainRefCallback';
+import { useChainRefCallback } from '@js-toolkit/react-hooks/useChainRefCallback';
 
 export type TransitionComponent = React.JSXElementConstructor<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

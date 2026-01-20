@@ -9,7 +9,7 @@ import {
 } from 'reflexy/styled';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { clsx } from 'clsx';
-import useRefState from '@js-toolkit/react-hooks/useRefState';
+import { useRefState } from '@js-toolkit/react-hooks/useRefState';
 import type { TransitionComponent } from '../TransitionFlex';
 import type { GetOverridedKeys } from '../types/local';
 import type { CSSProperties } from '../theme';
@@ -44,12 +44,12 @@ export interface Notification<
   TBarContentElement extends React.ElementType = any,
   TBarActionElement extends React.ElementType = any,
 > extends RequiredSome<
-    Pick<
-      NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
-      'id' | 'variant' | 'contentProps' | 'actionProps'
-    >,
-    'variant'
-  > {
+  Pick<
+    NotificationBarProps<TID, TBarContentElement, TBarActionElement, TTransition>,
+    'id' | 'variant' | 'contentProps' | 'actionProps'
+  >,
+  'variant'
+> {
   readonly content: TContent;
   readonly position?: NotificationPosition | undefined;
   readonly noAction?: boolean | undefined;

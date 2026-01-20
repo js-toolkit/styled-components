@@ -4,8 +4,8 @@ import styled from '@mui/system/styled';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { excludeProp } from '../utils';
 import type { Theme } from '../theme';
-// eslint-disable-next-line import/no-cycle
-import useSvgSpriteIconHref from './useSvgSpriteIconHref';
+// eslint-disable-next-line import-x/no-cycle
+import { useSvgSpriteIconHref } from './useSvgSpriteIconHref';
 
 /** Uses in '*.svg' imports which processed by svg-sprite-loader. */
 export interface SvgSymbolInfo {
@@ -15,8 +15,7 @@ export interface SvgSymbolInfo {
 }
 
 export interface SvgSpriteIconProps<N extends string>
-  extends React.SVGAttributes<SVGSVGElement>,
-    React.RefAttributes<SVGSVGElement> {
+  extends React.SVGAttributes<SVGSVGElement>, React.RefAttributes<SVGSVGElement> {
   name: N;
   size?: number | string | undefined;
   scaleOnHover?: boolean | number | undefined;

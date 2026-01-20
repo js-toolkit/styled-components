@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { styled, css } from '@mui/system';
 import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexComponentProps, type SpaceProps } from 'reflexy/styled';
-import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
+import { useUpdatedRefState } from '@js-toolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { type TransitionFlexProps } from '../TransitionFlex';
 import TruncatedText from '../TruncatedText';
 import { calcX, calcY, calcArrowCss, calcXInside } from './utils';
@@ -35,8 +35,7 @@ export interface TooltipData {
 }
 
 export interface TooltipProps
-  extends FlexComponentProps<'div'>,
-    Pick<TransitionFlexProps, 'onShown' | 'onHidden'> {
+  extends FlexComponentProps<'div'>, Pick<TransitionFlexProps, 'onShown' | 'onHidden'> {
   readonly tooltip: TooltipData | undefined;
 }
 

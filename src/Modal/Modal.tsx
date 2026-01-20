@@ -1,10 +1,10 @@
-/* eslint-disable no-use-before-define */
-import React, { useCallback } from 'react';
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import { useCallback } from 'react';
 import styled from '@mui/system/styled';
 import ReactModal from 'react-modal';
 import { clsx } from 'clsx';
 import { Flex, type FlexComponentProps, type GetStylesTransformers } from 'reflexy/styled';
-import useUpdatedRefState from '@js-toolkit/react-hooks/useUpdatedRefState';
+import { useUpdatedRefState } from '@js-toolkit/react-hooks/useUpdatedRefState';
 import TransitionFlex, { type HideableProps } from '../TransitionFlex';
 import Header from './Header';
 import Body from './Body';
@@ -16,7 +16,8 @@ ReactModal.defaultStyles.overlay = {};
 type ModalSize = 'auto' | 'xs' | 's' | 'm' | 'l';
 
 export interface ModalProps
-  extends RequiredSome<OmitStrict<HideableProps, 'disposable'>, 'hidden'>,
+  extends
+    RequiredSome<OmitStrict<HideableProps, 'disposable'>, 'hidden'>,
     OmitStrict<
       FlexComponentProps<typeof ReactModal>,
       | 'isOpen'
@@ -93,7 +94,7 @@ const Root = styled(
 
     const hideHandler = useCallback(() => {
       setVisible(false);
-      onHidden && onHidden();
+      onHidden?.();
     }, [onHidden, setVisible]);
 
     const contentElement: NonNullable<ReactModal.Props['contentElement']> = (
@@ -152,11 +153,7 @@ const Root = styled(
         styleTransformer={styleTransformer}
         portalClassName="sc-modal-portal"
         {...rest}
-        parentSelector={
-          (parentSelector ?? Modal.defaultParentSelector) as NonNullable<
-            ModalProps['parentSelector']
-          >
-        }
+        parentSelector={(parentSelector ?? Modal.defaultParentSelector)!}
         isOpen={isVisible()}
         closeTimeoutMS={0}
         overlayClassName={backdropClasses}

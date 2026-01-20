@@ -36,18 +36,30 @@ export interface MenuListProps<
         >
       >
     | undefined;
-  onItemSelect?: MenuListItemProps<V, I>['onSelect'] | undefined;
+  onItemSelect?: MenuListItemProps<V, I>['onItemSelect'] | undefined;
   onItemMouseEnter?:
-    | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
+    | ((
+        value: MenuListItemProps<V, I>['itemValue'],
+        event: React.MouseEvent<HTMLDivElement>
+      ) => void)
     | undefined;
   onItemMouseLeave?:
-    | ((value: MenuListItemProps<V, I>['value'], event: React.MouseEvent<HTMLDivElement>) => void)
+    | ((
+        value: MenuListItemProps<V, I>['itemValue'],
+        event: React.MouseEvent<HTMLDivElement>
+      ) => void)
     | undefined;
   onItemFocus?:
-    | ((value: MenuListItemProps<V, I>['value'], event: React.FocusEvent<HTMLDivElement>) => void)
+    | ((
+        value: MenuListItemProps<V, I>['itemValue'],
+        event: React.FocusEvent<HTMLDivElement>
+      ) => void)
     | undefined;
   onItemBlur?:
-    | ((value: MenuListItemProps<V, I>['value'], event: React.FocusEvent<HTMLDivElement>) => void)
+    | ((
+        value: MenuListItemProps<V, I>['itemValue'],
+        event: React.FocusEvent<HTMLDivElement>
+      ) => void)
     | undefined;
   onItemProps?: ((itemProps: MenuItem<V, I>) => MenuItem<V, I>) | undefined;
   onClose?: VoidFunction | undefined;
@@ -193,21 +205,21 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
     if (!items || items.length === 0) return undefined;
     return items.map((itemProps, i) => {
       const {
-        value,
-        key = value == null || typeof value === 'string' || typeof value === 'number'
-          ? (value as unknown as React.Key)
+        itemValue,
+        key = itemValue == null || typeof itemValue === 'string' || typeof itemValue === 'number'
+          ? (itemValue as unknown as React.Key)
           : `key${i}`,
         ...restItemProps
       } = onItemProps ? onItemProps(itemProps) : itemProps;
       return (
         <ItemComponent
           key={key}
-          value={value}
-          onSelect={onItemSelect}
-          onMouseEnter={onItemMouseEnter && ((event) => onItemMouseEnter(value, event))}
-          onMouseLeave={onItemMouseLeave && ((event) => onItemMouseLeave(value, event))}
-          onFocus={onItemFocus && ((event) => onItemFocus(value, event))}
-          onBlur={onItemBlur && ((event) => onItemBlur(value, event))}
+          itemValue={itemValue}
+          onItemSelect={onItemSelect}
+          onMouseEnter={onItemMouseEnter && ((event) => onItemMouseEnter(itemValue, event))}
+          onMouseLeave={onItemMouseLeave && ((event) => onItemMouseLeave(itemValue, event))}
+          onFocus={onItemFocus && ((event) => onItemFocus(itemValue, event))}
+          onBlur={onItemBlur && ((event) => onItemBlur(itemValue, event))}
           {...restItemProps}
         />
       );

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { type AriaAttributes, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from '@mui/system/styled';
 import useTheme from '@mui/system/useTheme';
 import { Flex, type FlexComponentProps } from 'reflexy/styled';
@@ -16,29 +16,18 @@ export interface MenuListItemProps<
   V,
   I extends IconComponentProps<IC>,
   IC extends React.ElementType = any,
->
-  extends
-    FlexComponentProps<'div', { omitProps: true }>,
-    Pick<
-      React.HTMLAttributes<HTMLDivElement>,
-      | keyof React.AriaAttributes
-      | 'tabIndex'
-      | 'role'
-      | Exclude<
-          KeysOfType<React.HTMLAttributes<HTMLDivElement>, AnyFunction>,
-          'onSelect' | 'onSelectCapture'
-        >
-    >,
-    AriaAttributes {
-  icon?: I | undefined;
-  title: React.ReactNode;
-  subtitle?: React.ReactNode | undefined;
-  shrinkTitle?: boolean | undefined;
-  value: V;
-  submenu?: boolean | undefined;
-  checked?: boolean | undefined;
-  autoFocus?: boolean | number | undefined;
-  onSelect?: ((value: this['value'], event: React.UIEvent<HTMLDivElement>) => void) | undefined;
+> extends FlexComponentProps<'div'> {
+  itemIcon?: I | undefined;
+  itemTitle: React.ReactNode;
+  itemSubtitle?: React.ReactNode | undefined;
+  itemShrinkTitle?: boolean | undefined;
+  itemValue: V;
+  itemSubmenu?: boolean | undefined;
+  itemChecked?: boolean | undefined;
+  itemAutoFocus?: boolean | number | undefined;
+  onItemSelect?:
+    | ((value: this['itemValue'], event: React.UIEvent<HTMLDivElement>) => void)
+    | undefined;
 }
 
 type RootProps = React.PropsWithChildren<FlexComponentProps<'div'> & { clickable: boolean }>;
@@ -69,15 +58,16 @@ export default function MenuListItem<
   I extends IconComponentProps<IC>,
   IC extends React.ElementType = any,
 >({
-  icon,
-  title,
-  subtitle,
-  value,
-  submenu = false,
-  checked = false,
-  autoFocus,
-  shrinkTitle = (!subtitle && !!(checked || submenu)) || (!subtitle && !checked && !submenu),
-  onSelect,
+  itemIcon,
+  itemTitle,
+  itemSubtitle,
+  itemValue,
+  itemSubmenu = false,
+  itemChecked = false,
+  itemAutoFocus,
+  itemShrinkTitle = (!itemSubtitle && !!(itemChecked || itemSubmenu)) ||
+    (!itemSubtitle && !itemChecked && !itemSubmenu),
+  onItemSelect,
   onClick,
   onKeyDown,
   ref,
@@ -87,22 +77,22 @@ export default function MenuListItem<
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
     onClick?.(event);
-    if (onSelect) {
+    if (onItemSelect) {
       stopPropagation(event);
-      onSelect(value, event);
+      onItemSelect(itemValue, event);
     }
   });
 
   const keyDownHandler = useRefCallback<React.KeyboardEventHandler<HTMLDivElement>>((event) => {
     onKeyDown?.(event);
     if (
-      onSelect &&
+      onItemSelect &&
       (event.code === 'Enter' || event.code === 'Space' || event.code === 'ArrowRight')
     ) {
       preventDefault(event); // For enter
       stopPropagation(event);
-      if (event.code !== 'ArrowRight' || submenu) {
-        onSelect(value, event);
+      if (event.code !== 'ArrowRight' || itemSubmenu) {
+        onItemSelect(itemValue, event);
       }
     }
   });
@@ -112,7 +102,7 @@ export default function MenuListItem<
 
   useEffect(() => {
     const { current: root } = rootRef;
-    if (!root || !autoFocus) return noop;
+    if (!root || !itemAutoFocus) return noop;
 
     const focus = (): number => {
       return requestAnimationFrame(() => {
@@ -123,46 +113,60 @@ export default function MenuListItem<
 
     let raf: number;
 
-    if (autoFocus === true) {
+    if (itemAutoFocus === true) {
       raf = focus();
       return () => cancelAnimationFrame(raf);
     }
 
     const timer = setTimeout(() => {
       raf = focus();
-    }, autoFocus);
+    }, itemAutoFocus);
 
     return () => {
       clearTimeout(timer);
       cancelAnimationFrame(raf);
     };
-  }, [autoFocus]);
+  }, [itemAutoFocus]);
 
   const theme = rc?.MenuListItem;
 
-  const iconProps: IconComponentProps | undefined = icon ? { size: '1.5em', ...icon } : undefined;
+  const iconProps: IconComponentProps | undefined = itemIcon
+    ? { size: '1.5em', ...itemIcon }
+    : undefined;
 
   const hasIcon = !!iconProps;
 
   const rootFlex =
-    typeof theme?.flex === 'function' ? theme.flex({ hasIcon, submenu, checked }) : theme?.flex;
+    typeof theme?.flex === 'function'
+      ? theme.flex({ hasIcon, submenu: itemSubmenu, checked: itemChecked })
+      : theme?.flex;
 
   const titleFlex =
     typeof theme?.title?.flex === 'function'
-      ? theme.title.flex({ hasIcon, shrinkTitle, submenu, checked })
+      ? theme.title.flex({
+          hasIcon,
+          itemShrinkTitle,
+          submenu: itemSubmenu,
+          checked: itemChecked,
+        })
       : theme?.title?.flex;
   const subtitleFlex =
     typeof theme?.subtitle?.flex === 'function'
-      ? theme.subtitle.flex({ hasIcon, shrinkTitle, submenu, checked })
+      ? theme.subtitle.flex({
+          hasIcon,
+          itemShrinkTitle,
+          submenu: itemSubmenu,
+          checked: itemChecked,
+        })
       : theme?.subtitle?.flex;
 
-  const checkIconProps = checked ? theme?.checkIcon : undefined;
-  const submenuIconProps = submenu ? theme?.submenuIcon : undefined;
+  const checkIconProps = itemChecked ? theme?.checkIcon : undefined;
+  const submenuIconProps = itemSubmenu ? theme?.submenuIcon : undefined;
 
   return (
     <Root
-      clickable={!!onSelect}
-      aria-haspopup={submenu || undefined}
+      clickable={!!onItemSelect}
+      aria-haspopup={itemSubmenu || undefined}
       ref={rootRefs}
       px
       py={hasIcon ? 0.375 : 0.625}
@@ -173,17 +177,17 @@ export default function MenuListItem<
     >
       {!!iconProps && <Icon flex={false} {...iconProps} />}
 
-      {title && typeof title !== 'object' ? (
-        <Title ml={hasIcon ? 'xs' : undefined} grow shrink={shrinkTitle} {...titleFlex}>
-          {title}
+      {itemTitle && typeof itemTitle !== 'object' ? (
+        <Title ml={hasIcon ? 'xs' : undefined} grow shrink={itemShrinkTitle} {...titleFlex}>
+          {itemTitle}
         </Title>
       ) : (
-        title
+        itemTitle
       )}
 
-      {!!subtitle && (
-        <Subtitle ml={!!title || undefined} shrink={!shrinkTitle} {...subtitleFlex}>
-          {subtitle}
+      {!!itemSubtitle && (
+        <Subtitle ml={!!itemTitle || undefined} shrink={!itemShrinkTitle} {...subtitleFlex}>
+          {itemSubtitle}
         </Subtitle>
       )}
 

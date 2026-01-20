@@ -307,7 +307,7 @@ export interface Theme {
               | ((
                   options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
                     MenuListItemProps<string, never>,
-                    'shrinkTitle'
+                    'itemShrinkTitle'
                   >
                 ) => FlexOnlyProps)
               | undefined;
@@ -321,7 +321,7 @@ export interface Theme {
               | ((
                   options: { hasIcon: boolean; submenu: boolean; checked: boolean } & Pick<
                     MenuListItemProps<string, never>,
-                    'shrinkTitle'
+                    'itemShrinkTitle'
                   >
                 ) => FlexOnlyProps)
               | undefined;

@@ -8,7 +8,7 @@ export interface MenuSelectListProps<
   I extends IconComponentProps,
   HI extends IconComponentProps,
 > extends MenuListProps<V, I, HI> {
-  selectedValue: MenuItem<V, I>['value'];
+  selectedValue: MenuItem<V, I>['itemValue'];
 }
 
 export default function MenuSelectList<
@@ -20,7 +20,7 @@ export default function MenuSelectList<
     (itemProps) => {
       return {
         ...(onItemProps ? onItemProps(itemProps) : itemProps),
-        checked: selectedValue === itemProps.value,
+        checked: selectedValue === itemProps.itemValue,
       };
     }
   );

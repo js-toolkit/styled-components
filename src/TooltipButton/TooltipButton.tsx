@@ -29,7 +29,7 @@ export default function TooltipButton<C extends React.ElementType = 'button', D 
   >;
 
   const clickHandler = useRefCallback<React.MouseEventHandler<HTMLButtonElement>>((event) => {
-    onClick && onClick(event, data as never);
+    onClick?.(event, data as never);
   });
 
   return (

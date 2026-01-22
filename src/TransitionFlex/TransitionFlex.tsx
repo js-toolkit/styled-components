@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex, type DefaultComponentType, type FlexAllProps } from 'reflexy/styled';
-import { copyInternalProps } from 'reflexy/utils';
+import { copyInternalProps } from 'reflexy/copyInternalProps';
 import TweakableElementWrapper from 'reflexy/TweakableElementWrapper';
 import TransitionWrapper, {
   type HideableProps,

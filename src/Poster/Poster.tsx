@@ -30,11 +30,11 @@ export default function Poster({
         // Use src0 just for deps correct linting.
         if (src && src0) {
           // In order to avoid a blink on hide level0 img.
-          timer = setTimeout(state0.hide, 100);
+          timer = window.setTimeout(state0.hide, 100);
         }
         onShown?.();
       },
-      () => clearTimeout(timer),
+      () => window.clearTimeout(timer),
     ];
   }, [onShown, src, src0, state0.hide]);
 

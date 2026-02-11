@@ -19,7 +19,7 @@ export interface MenuListProps<
   header?: React.ReactNode | undefined;
   headerIcon?: HI | undefined;
   headerAction?: string | React.ReactElement | undefined;
-  itemComponent?: React.FC<MenuListItemProps<V, I>>;
+  itemComponent?: React.ComponentType<MenuListItemProps<V, I>>;
   items?: MenuItem<V, I>[] | undefined;
   headerProps?:
     | FlexAllProps<
@@ -263,11 +263,15 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
             {...headerGroupProps}
           >
             {!!backIconProps && (
-              <Flex<React.FC<IconComponentProps>> flex={false} size="1.5em" {...backIconProps} />
+              <Flex<React.ComponentType<IconComponentProps>>
+                flex={false}
+                size="1.5em"
+                {...backIconProps}
+              />
             )}
 
             {!!headerIconProps && (
-              <Flex<React.FC<IconComponentProps>> flex={false} {...headerIconProps} />
+              <Flex<React.ComponentType<IconComponentProps>> flex={false} {...headerIconProps} />
             )}
 
             <HeaderTitle
@@ -284,7 +288,11 @@ export default function MenuList<V, I extends IconComponentProps, HI extends Ico
 
           {!!closeIconProps && (
             <Button shrink={0} size="contain" color="none" onClick={closeHandler}>
-              <Flex<React.FC<IconComponentProps>> flex={false} size="0.875em" {...closeIconProps} />
+              <Flex<React.ComponentType<IconComponentProps>>
+                flex={false}
+                size="0.875em"
+                {...closeIconProps}
+              />
             </Button>
           )}
         </HeaderRoot>

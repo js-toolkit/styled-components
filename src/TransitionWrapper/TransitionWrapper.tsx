@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/refs */
-import React, { useRef } from 'react';
+import React, { useRef, createElement } from 'react';
 import Fade from '@mui/material/Fade';
 import type { TransitionProps } from '@mui/material/transitions/transition';
 import type { DefaultComponentType } from 'reflexy/styled';
@@ -84,8 +84,8 @@ function TransitionWrapper<
     console.warn('You should not use `hidden` prop inside <TransitionGroup>.');
   }
 
-  return React.createElement(
-    transition as React.FC<TransitionProps>,
+  return createElement(
+    transition as React.ComponentType<TransitionProps>,
     {
       ...trProps,
       in: inProp ?? (hidden == null ? (trProps?.in ?? true) : !hidden),
@@ -97,7 +97,7 @@ function TransitionWrapper<
       onEntered: enteredHandler,
       onExited: exitedHandler,
     },
-    React.createElement(component, rootRest, children)
+    createElement(component, rootRest, children)
   );
 }
 

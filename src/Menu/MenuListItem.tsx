@@ -192,7 +192,7 @@ export default function MenuListItem<
       )}
 
       {!!checkIconProps && (
-        <Flex<React.FC<IconComponentProps>>
+        <Flex<React.ComponentType<IconComponentProps>>
           flex={false}
           ml
           shrink={0}
@@ -202,7 +202,7 @@ export default function MenuListItem<
       )}
 
       {!!submenuIconProps && (
-        <Flex<React.FC<IconComponentProps>>
+        <Flex<React.ComponentType<IconComponentProps>>
           flex={false}
           ml
           shrink={0}

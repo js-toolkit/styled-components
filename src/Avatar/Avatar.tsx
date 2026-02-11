@@ -10,7 +10,7 @@ export interface AvatarProps extends FlexComponentProps<'div'> {
 
 type RootProps = React.PropsWithChildren<FlexComponentProps & Pick<AvatarProps, 'size'>>;
 
-const Root = styled<React.FC<RootProps>>(Flex, {
+const Root = styled<React.ComponentType<RootProps>>(Flex, {
   shouldForwardProp(key) {
     const prop = key as keyof RootProps;
     return prop !== 'size';
